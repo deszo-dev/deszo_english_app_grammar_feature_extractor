@@ -1,0 +1,248 @@
+from __future__ import annotations
+
+import json
+from collections.abc import Mapping
+from typing import TypeAlias
+
+from grammar_feature_extractor._internal.errors import SerializationError
+from grammar_feature_extractor._internal.models import (
+    AnnotatedDocument,
+    DependencyEvidence,
+    EvidenceFeatures,
+    FeatureDiagnostic,
+    GrammarFeatureDocument,
+    GrammarFeaturePage,
+    GrammarFeatureSet,
+    LexicalFeatures,
+    MorphFeature,
+    MorphologyFeatures,
+    NormalizedMorph,
+    PageInfo,
+    SentenceFeature,
+    SentenceGrammarFeatures,
+    SyntaxFeatures,
+    TokenEvidence,
+)
+from grammar_feature_extractor._internal.validation import parse_annotated_document
+
+JsonScalar: TypeAlias = str | int | float | bool | None
+JsonValue: TypeAlias = JsonScalar | list["JsonValue"] | dict[str, "JsonValue"]
+JsonObject: TypeAlias = dict[str, JsonValue]
+
+
+def loads_document(payload: str) -> AnnotatedDocument:
+    try:
+        raw = json.loads(payload)
+    except json.JSONDecodeError as exc:
+        raise SerializationError("Invalid input JSON.") from exc
+    return parse_annotated_document(raw)
+
+
+def dumps_page(page: GrammarFeaturePage) -> str:
+    return (
+        json.dumps(page_to_dict(page), ensure_ascii=False, separators=(",", ":")) + "\n"
+    )
+
+
+def page_to_dict(page: GrammarFeaturePage) -> JsonObject:
+    return {
+        "schema_version": page.schema_version,
+        "page": _page_info_to_dict(page.page),
+        "features": [_sentence_to_dict(sentence) for sentence in page.features],
+    }
+
+
+def document_to_dict(document: GrammarFeatureDocument) -> JsonObject:
+    return {
+        "schema_version": document.schema_version,
+        "source_sentence_count": document.source_sentence_count,
+        "sentences": [_sentence_to_dict(sentence) for sentence in document.sentences],
+    }
+
+
+def _page_info_to_dict(page: PageInfo) -> JsonObject:
+    result: JsonObject = {
+        "page_number": page.page_number,
+        "page_size": page.page_size,
+        "total_sentences": page.total_sentences,
+        "sentence_start": page.sentence_start,
+        "sentence_end_exclusive": page.sentence_end_exclusive,
+        "has_next_page": page.has_next_page,
+    }
+    if page.next_page is not None:
+        result["next_page"] = page.next_page
+    return result
+
+
+def _sentence_to_dict(sentence: SentenceGrammarFeatures) -> JsonObject:
+    return {
+        "sentence_index": sentence.sentence_index,
+        "text": sentence.text,
+        "features": _feature_set_to_dict(sentence.features),
+    }
+
+
+def _feature_set_to_dict(features: GrammarFeatureSet) -> JsonObject:
+    return {
+        "evidence": _evidence_to_dict(features.evidence),
+        "morphology": _morphology_to_dict(features.morphology),
+        "syntax": _syntax_to_dict(features.syntax),
+        "lexical": _lexical_to_dict(features.lexical),
+        "constructions": _empty_feature_array(features.constructions),
+        "contrastive_support": _empty_feature_array(features.contrastive_support),
+        "absences": _empty_feature_array(features.absences),
+        "diagnostics": [_diagnostic_to_dict(item) for item in features.diagnostics],
+    }
+
+
+def _evidence_to_dict(evidence: EvidenceFeatures) -> JsonObject:
+    return {
+        "words": [_token_evidence_to_dict(item) for item in evidence.words],
+        "dependencies": [
+            _dependency_evidence_to_dict(item) for item in evidence.dependencies
+        ],
+    }
+
+
+def _token_evidence_to_dict(item: TokenEvidence) -> JsonObject:
+    result: JsonObject = {
+        "ref": item.ref,
+        "text": item.text,
+        "lower": item.lower,
+        "lemma": item.lemma,
+        "upos": item.upos,
+        "feats": dict(item.feats),
+        "head": item.head,
+        "deprel": item.deprel,
+        "children": list(item.children),
+        "start_char": item.start_char,
+        "end_char": item.end_char,
+        "position": item.position,
+    }
+    if item.xpos is not None:
+        result["xpos"] = item.xpos
+    return result
+
+
+def _dependency_evidence_to_dict(item: DependencyEvidence) -> JsonObject:
+    return {
+        "governor": item.governor,
+        "dependent": item.dependent,
+        "deprel": item.deprel,
+    }
+
+
+def _morphology_to_dict(morphology: MorphologyFeatures) -> JsonObject:
+    return {
+        "word_morphology": [
+            _morph_feature_to_dict(item) for item in morphology.word_morphology
+        ],
+        "normalized": [
+            _normalized_morph_to_dict(item) for item in morphology.normalized
+        ],
+    }
+
+
+def _morph_feature_to_dict(item: MorphFeature) -> JsonObject:
+    result: JsonObject = {
+        "ref": item.ref,
+        "pos": item.pos,
+        "lemma": item.lemma,
+        "features": dict(item.features),
+    }
+    if item.xpos is not None:
+        result["xpos"] = item.xpos
+    return result
+
+
+def _normalized_morph_to_dict(item: NormalizedMorph) -> JsonObject:
+    return {
+        "ref": item.ref,
+        "is_finite_verb": item.is_finite_verb,
+        "is_base_verb": item.is_base_verb,
+        "is_to_infinitive": item.is_to_infinitive,
+        "is_bare_infinitive": item.is_bare_infinitive,
+        "is_gerund": item.is_gerund,
+        "is_past_participle": item.is_past_participle,
+        "is_present_participle": item.is_present_participle,
+        "is_plural_noun": item.is_plural_noun,
+        "is_singular_noun": item.is_singular_noun,
+        "is_comparative": item.is_comparative,
+        "is_superlative": item.is_superlative,
+    }
+
+
+def _syntax_to_dict(syntax: SyntaxFeatures) -> JsonObject:
+    return {
+        "phrases": _empty_feature_array(syntax.phrases),
+        "clauses": _empty_feature_array(syntax.clauses),
+        "predicates": _empty_feature_array(syntax.predicates),
+        "complements": _empty_feature_array(syntax.complements),
+        "coordination": _empty_feature_array(syntax.coordination),
+        "subordination": _empty_feature_array(syntax.subordination),
+        "np_profiles": _empty_feature_array(syntax.np_profiles),
+        "pronouns": _empty_feature_array(syntax.pronouns),
+        "special_subject_constructions": _empty_feature_array(
+            syntax.special_subject_constructions
+        ),
+        "relative_clauses": _empty_feature_array(syntax.relative_clauses),
+        "conditionals": _empty_feature_array(syntax.conditionals),
+        "reported_speech": _empty_feature_array(syntax.reported_speech),
+        "passive": _empty_feature_array(syntax.passive),
+    }
+
+
+def _lexical_to_dict(lexical: LexicalFeatures) -> JsonObject:
+    return {
+        "sentence": _sentence_feature_to_dict(lexical.sentence),
+        "word_order": _empty_feature_array(lexical.word_order),
+        "negation": _empty_feature_array(lexical.negation),
+        "time_markers": _empty_feature_array(lexical.time_markers),
+        "lexical_classes": _empty_feature_array(lexical.lexical_classes),
+        "verb_patterns": _empty_feature_array(lexical.verb_patterns),
+        "adjective_patterns": _empty_feature_array(lexical.adjective_patterns),
+        "comparisons": _empty_feature_array(lexical.comparisons),
+        "quantifiers": _empty_feature_array(lexical.quantifiers),
+        "phrasal_verbs": _empty_feature_array(lexical.phrasal_verbs),
+        "discourse_markers": _empty_feature_array(lexical.discourse_markers),
+        "contractions": _empty_feature_array(lexical.contractions),
+        "noun_inflections": _empty_feature_array(lexical.noun_inflections),
+    }
+
+
+def _sentence_feature_to_dict(item: SentenceFeature) -> JsonObject:
+    return {
+        "sentence_kind": item.sentence_kind,
+        "clause_count": item.clause_count,
+        "sentence_type": item.sentence_type,
+        "polarity": item.polarity,
+        "has_subject_aux_inversion": item.has_subject_aux_inversion,
+        "has_do_support": item.has_do_support,
+        "has_wh_fronting": item.has_wh_fronting,
+        "has_tag_question": item.has_tag_question,
+        "has_exclamation_marker": item.has_exclamation_marker,
+    }
+
+
+def _diagnostic_to_dict(item: FeatureDiagnostic) -> JsonObject:
+    result: JsonObject = {
+        "severity": item.severity,
+        "code": item.code,
+        "message": item.message,
+        "refs": list(item.refs),
+    }
+    if item.feature_path is not None:
+        result["feature_path"] = item.feature_path
+    return result
+
+
+def _empty_feature_array(items: tuple[object, ...]) -> list[JsonValue]:
+    if items:
+        raise SerializationError(
+            "Serializer for this feature group is not implemented."
+        )
+    return []
+
+
+def ensure_json_object(value: Mapping[str, JsonValue]) -> Mapping[str, JsonValue]:
+    return value

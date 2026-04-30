@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "grammar-feature-extractor"
+version = "0.1.0"
+description = "Pure grammar feature extraction from stanza_annotator AnnotatedDocument JSON."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+grammar-feature-extractor = "grammar_feature_extractor._internal.cli:main"
+
+[project.optional-dependencies]
+dev = [
+  "black>=24.0",
+  "hypothesis>=6.0",
+  "mypy>=1.8",
+  "pytest>=8.0",
+  "ruff>=0.4",
+]
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+
+[tool.mypy]
+strict = true
+packages = ["grammar_feature_extractor"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
