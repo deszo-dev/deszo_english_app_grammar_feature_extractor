@@ -32,7 +32,7 @@ def test_extracts_v3_shell_evidence_and_morphology() -> None:
     }
     assert first.morphology.normalized[1].is_plural_noun is True
     assert first.morphology.normalized[3].is_finite_verb is True
-    assert first.syntax.predicates == ()
+    assert first.syntax.predicates[0].main == 4
     assert first.constructions == ()
     assert first.contrastive_support == ()
     assert first.absences == ()

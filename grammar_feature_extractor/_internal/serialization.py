@@ -6,7 +6,9 @@ from typing import TypeAlias
 
 from grammar_feature_extractor._internal.errors import SerializationError
 from grammar_feature_extractor._internal.models import (
+    AgreementFeature,
     AnnotatedDocument,
+    AuxiliaryFeature,
     ClauseFeature,
     ClauseMarkerFeature,
     Coordination,
@@ -17,16 +19,19 @@ from grammar_feature_extractor._internal.models import (
     GrammarFeaturePage,
     GrammarFeatureSet,
     LexicalFeatures,
+    ModalFeature,
     MorphFeature,
     MorphologyFeatures,
     NormalizedMorph,
     PageInfo,
     Phrase,
     PredicateComplementFeature,
+    PredicateFeature,
     Roles,
     SentenceFeature,
     SentenceGrammarFeatures,
     SyntaxFeatures,
+    TAVMFeature,
     TokenEvidence,
     Valency,
 )
@@ -183,7 +188,7 @@ def _syntax_to_dict(syntax: SyntaxFeatures) -> JsonObject:
     return {
         "phrases": [_phrase_to_dict(item) for item in syntax.phrases],
         "clauses": [_clause_to_dict(item) for item in syntax.clauses],
-        "predicates": _empty_feature_array(syntax.predicates),
+        "predicates": [_predicate_to_dict(item) for item in syntax.predicates],
         "complements": [_complement_to_dict(item) for item in syntax.complements],
         "coordination": [_coordination_to_dict(item) for item in syntax.coordination],
         "subordination": [
@@ -276,6 +281,101 @@ def _complement_to_dict(item: PredicateComplementFeature) -> JsonObject:
     if item.marker is not None:
         result["marker"] = item.marker
     return result
+
+
+def _predicate_to_dict(item: PredicateFeature) -> JsonObject:
+    result: JsonObject = {
+        "id": item.id,
+        "main": item.main,
+        "main_lemma": item.main_lemma,
+        "predicate_type": item.predicate_type,
+        "finite": item.finite,
+        "auxiliaries": [
+            _auxiliary_to_dict(auxiliary) for auxiliary in item.auxiliaries
+        ],
+        "tense": item.tense,
+        "aspect": item.aspect,
+        "voice": item.voice,
+        "polarity": item.polarity,
+        "clause_head": item.clause_head,
+        "complements": [
+            _complement_to_dict(complement) for complement in item.complements
+        ],
+        "agreement": _agreement_to_dict(item.agreement),
+        "tavm": _tavm_to_dict(item.tavm),
+        "form_signature": item.form_signature,
+        "evidence_refs": list(item.evidence_refs),
+        "confidence": item.confidence,
+    }
+    if item.copula is not None:
+        result["copula"] = item.copula
+    if item.negation is not None:
+        result["negation"] = item.negation
+    if item.modality is not None:
+        result["modality"] = _modal_to_dict(item.modality)
+    if item.subject is not None:
+        result["subject"] = item.subject
+    if item.object is not None:
+        result["object"] = item.object
+    if item.indirect_object is not None:
+        result["indirect_object"] = item.indirect_object
+    return result
+
+
+def _auxiliary_to_dict(item: AuxiliaryFeature) -> JsonObject:
+    return {
+        "ref": item.ref,
+        "lemma": item.lemma,
+        "surface": item.surface,
+        "role": item.role,
+    }
+
+
+def _modal_to_dict(item: ModalFeature) -> JsonObject:
+    result: JsonObject = {
+        "marker_refs": list(item.marker_refs),
+        "modal_type": item.modal_type,
+        "polarity": item.polarity,
+        "confidence": item.confidence,
+    }
+    if item.complement_verb is not None:
+        result["complement_verb"] = item.complement_verb
+    return result
+
+
+def _agreement_to_dict(item: AgreementFeature) -> JsonObject:
+    result: JsonObject = {
+        "agreement_type": item.agreement_type,
+        "evidence_refs": list(item.evidence_refs),
+        "confidence": item.confidence,
+    }
+    if item.subject is not None:
+        result["subject"] = item.subject
+    if item.predicate is not None:
+        result["predicate"] = item.predicate
+    if item.controller is not None:
+        result["controller"] = item.controller
+    if item.subject_person is not None:
+        result["subject_person"] = item.subject_person
+    if item.subject_number is not None:
+        result["subject_number"] = item.subject_number
+    if item.predicate_person is not None:
+        result["predicate_person"] = item.predicate_person
+    if item.predicate_number is not None:
+        result["predicate_number"] = item.predicate_number
+    if item.match is not None:
+        result["match"] = item.match
+    return result
+
+
+def _tavm_to_dict(item: TAVMFeature) -> JsonObject:
+    return {
+        "tense": item.tense,
+        "aspect": item.aspect,
+        "voice": item.voice,
+        "modality": item.modality,
+        "form_signature": item.form_signature,
+    }
 
 
 def _coordination_to_dict(item: Coordination) -> JsonObject:

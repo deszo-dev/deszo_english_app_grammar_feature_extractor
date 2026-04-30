@@ -8,6 +8,9 @@ from grammar_feature_extractor._internal.features.coordination_builder import (
     build_coordination,
 )
 from grammar_feature_extractor._internal.features.phrase_builder import build_phrases
+from grammar_feature_extractor._internal.features.predicate_builder import (
+    build_predicates,
+)
 from grammar_feature_extractor._internal.features.subordination_builder import (
     build_subordination,
 )
@@ -121,6 +124,7 @@ def extract_sentence_features(
         )
     subordination = build_subordination(context)
     clauses = build_clauses(context, subordination, diagnostics)
+    complements = build_complements(context)
 
     return GrammarFeatureSet(
         evidence=evidence,
@@ -128,7 +132,8 @@ def extract_sentence_features(
         syntax=SyntaxFeatures(
             phrases=build_phrases(context),
             clauses=clauses,
-            complements=build_complements(context),
+            predicates=build_predicates(context, clauses, complements),
+            complements=complements,
             coordination=build_coordination(context),
             subordination=subordination,
         ),

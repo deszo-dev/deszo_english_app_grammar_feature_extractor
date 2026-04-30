@@ -42,6 +42,58 @@ SentenceType: TypeAlias = Literal[
     "unknown",
 ]
 Polarity: TypeAlias = Literal["positive", "negative", "mixed", "unknown"]
+AuxiliaryRole: TypeAlias = Literal[
+    "tense_aux",
+    "perfect_aux",
+    "progressive_aux",
+    "passive_aux",
+    "do_support",
+    "modal",
+    "semi_modal",
+    "copula",
+    "unknown",
+]
+PredicateType: TypeAlias = Literal[
+    "verbal",
+    "copular_adjectival",
+    "copular_nominal",
+    "copular_prepositional",
+    "existential_there",
+    "unknown",
+]
+TenseValue: TypeAlias = Literal["present", "past", "future_like", "none", "unknown"]
+AspectValue: TypeAlias = Literal[
+    "simple",
+    "progressive",
+    "perfect",
+    "perfect_progressive",
+    "none",
+    "unknown",
+]
+VoiceValue: TypeAlias = Literal["active", "passive", "unknown"]
+ModalityValue: TypeAlias = Literal[
+    "ability",
+    "obligation",
+    "permission",
+    "advice",
+    "necessity",
+    "possibility",
+    "prohibition",
+    "prediction",
+    "expectation",
+    "past_habit",
+    "none",
+    "unknown",
+]
+AgreementType: TypeAlias = Literal[
+    "subject_verb",
+    "subject_copula",
+    "demonstrative_noun",
+    "determiner_noun",
+    "existential_there_noun",
+    "unknown",
+]
+NumberValue: TypeAlias = Literal["sing", "plur"]
 PhraseType: TypeAlias = Literal["NP", "VP", "PP"]
 ClauseType: TypeAlias = Literal[
     "root",
@@ -308,10 +360,78 @@ class Coordination:
 
 
 @dataclass(frozen=True, slots=True)
+class AuxiliaryFeature:
+    ref: WordRef
+    lemma: str
+    surface: str
+    role: AuxiliaryRole
+
+
+@dataclass(frozen=True, slots=True)
+class ModalFeature:
+    marker_refs: tuple[WordRef, ...]
+    modal_type: ModalityValue
+    complement_verb: WordRef | None
+    polarity: Polarity
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class TAVMFeature:
+    tense: TenseValue
+    aspect: AspectValue
+    voice: VoiceValue
+    modality: ModalityValue
+    form_signature: str
+
+
+@dataclass(frozen=True, slots=True)
+class AgreementFeature:
+    subject: WordRef | None
+    predicate: WordRef | None
+    controller: WordRef | None
+    subject_person: int | None
+    subject_number: NumberValue | None
+    predicate_person: int | None
+    predicate_number: NumberValue | None
+    match: bool | None
+    agreement_type: AgreementType
+    evidence_refs: tuple[WordRef, ...]
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class PredicateFeature:
+    id: str
+    main: WordRef
+    main_lemma: str
+    predicate_type: PredicateType
+    finite: bool
+    auxiliaries: tuple[AuxiliaryFeature, ...]
+    copula: WordRef | None
+    negation: WordRef | None
+    tense: TenseValue
+    aspect: AspectValue
+    voice: VoiceValue
+    modality: ModalFeature | None
+    polarity: Polarity
+    clause_head: WordRef
+    subject: WordRef | None
+    object: WordRef | None
+    indirect_object: WordRef | None
+    complements: tuple[PredicateComplementFeature, ...]
+    agreement: AgreementFeature
+    tavm: TAVMFeature
+    form_signature: str
+    evidence_refs: tuple[WordRef, ...]
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
 class SyntaxFeatures:
     phrases: tuple[Phrase, ...] = ()
     clauses: tuple[ClauseFeature, ...] = ()
-    predicates: tuple[object, ...] = ()
+    predicates: tuple[PredicateFeature, ...] = ()
     complements: tuple[PredicateComplementFeature, ...] = ()
     coordination: tuple[Coordination, ...] = ()
     subordination: tuple[ClauseMarkerFeature, ...] = ()

@@ -112,6 +112,39 @@ def assert_valid_feature_refs(
             check(ref)
         for ref in clause.local_tokens:
             check(ref)
+    for predicate in features.syntax.predicates:
+        check(predicate.main)
+        check(predicate.clause_head)
+        for auxiliary in predicate.auxiliaries:
+            check(auxiliary.ref)
+        if predicate.copula is not None:
+            check(predicate.copula)
+        if predicate.negation is not None:
+            check(predicate.negation)
+        if predicate.modality is not None:
+            for ref in predicate.modality.marker_refs:
+                check(ref)
+            if predicate.modality.complement_verb is not None:
+                check(predicate.modality.complement_verb)
+        for optional_ref in (
+            predicate.subject,
+            predicate.object,
+            predicate.indirect_object,
+            predicate.agreement.subject,
+            predicate.agreement.predicate,
+            predicate.agreement.controller,
+        ):
+            if optional_ref is not None:
+                check(optional_ref)
+        for complement in predicate.complements:
+            check(complement.governor)
+            check(complement.head)
+            for ref in complement.evidence_refs:
+                check(ref)
+        for ref in predicate.agreement.evidence_refs:
+            check(ref)
+        for ref in predicate.evidence_refs:
+            check(ref)
     for complement in features.syntax.complements:
         check(complement.governor)
         check(complement.head)

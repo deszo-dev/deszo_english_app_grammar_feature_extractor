@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added v3 predicate parity extraction under `syntax.predicates`, replacing
+  the old public `predicate_groups` shape.
 - Added the v3 M1 checkpoint fixture under `tests/fixtures/v3_minimal/`.
 - Added v3 structural syntax extraction for phrases, clauses, complements,
   coordination, and subordination.
