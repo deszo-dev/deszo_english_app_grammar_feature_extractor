@@ -8,6 +8,9 @@ from grammar_feature_extractor._internal.models import (
     GrammarFeaturePage,
     PagingConfig,
 )
+from grammar_feature_extractor._internal.proof_surface_validator import (
+    validate_proof_surface,
+)
 from grammar_feature_extractor._internal.validation import (
     assert_valid_feature_refs,
     validate_extractor_config,
@@ -29,6 +32,7 @@ class GrammarFeatureExtractor:
         result = extract_core(document, resolved_config)
         for index, sentence in enumerate(document.sentences):
             assert_valid_feature_refs(sentence, result.sentences[index].features)
+            validate_proof_surface(sentence, result.sentences[index].features)
         return result
 
     def extract_page(

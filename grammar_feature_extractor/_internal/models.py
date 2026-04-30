@@ -12,6 +12,26 @@ WordRef: TypeAlias = int
 
 Severity: TypeAlias = Literal["info", "warning", "error"]
 Confidence: TypeAlias = Literal["high", "medium", "low"]
+FeatureTier: TypeAlias = Literal[
+    "structural",
+    "deterministic",
+    "heuristic",
+    "external_oracle",
+]
+ProofSource: TypeAlias = Literal[
+    "word_order",
+    "upos",
+    "xpos",
+    "morphology",
+    "dependency",
+    "surface",
+    "lemma",
+    "closed_list",
+    "lexicon",
+    "phonology",
+    "task_context",
+    "discourse_heuristic",
+]
 FeatureSource: TypeAlias = Literal[
     "surface",
     "lemma",
@@ -151,6 +171,124 @@ SemanticRelation: TypeAlias = Literal[
     "reported_content",
     "unknown",
 ]
+NPType: TypeAlias = Literal[
+    "common_noun_np", "proper_noun_np", "pronoun_np", "gerund_np", "unknown"
+]
+ArticleRequiredness: TypeAlias = Literal[
+    "article_present",
+    "zero_article",
+    "determiner_present",
+    "missing_required_determiner_candidate",
+    "not_applicable",
+    "unknown",
+]
+ArticleForm: TypeAlias = Literal["a", "an", "the", "zero"]
+SpellingClass: TypeAlias = Literal["vowel_letter", "consonant_letter", "unknown"]
+SoundClass: TypeAlias = Literal["vowel_sound", "consonant_sound", "unknown"]
+Definiteness: TypeAlias = Literal["definite", "indefinite", "generic", "unknown"]
+DeterminerType: TypeAlias = Literal[
+    "article_definite",
+    "article_indefinite",
+    "demonstrative",
+    "possessive",
+    "quantifier",
+    "number",
+    "negative_no",
+    "interrogative",
+    "none",
+    "unknown",
+]
+DeterminerNumber: TypeAlias = Literal["singular", "plural", "both", "unknown"]
+ModifierType: TypeAlias = Literal[
+    "adjective",
+    "compound",
+    "number",
+    "possessive",
+    "relative_clause",
+    "prepositional_phrase",
+    "participle",
+    "unknown",
+]
+SyntacticRole: TypeAlias = Literal[
+    "subject",
+    "object",
+    "indirect_object",
+    "oblique",
+    "predicative_complement",
+    "appositive",
+    "unknown",
+]
+WordOrderPattern: TypeAlias = Literal[
+    "subject_verb_object",
+    "subject_aux_verb",
+    "aux_subject_verb",
+    "wh_aux_subject_verb",
+    "be_subject_complement",
+    "there_be_np",
+    "negative_aux_not_verb",
+    "unknown",
+]
+NegatorType: TypeAlias = Literal[
+    "not", "n't", "never", "no", "none", "nothing", "neither", "unknown"
+]
+NegationScope: TypeAlias = Literal[
+    "predicate", "noun_phrase", "clause", "sentence", "unknown"
+]
+ConstructionType: TypeAlias = Literal[
+    "tense_aspect",
+    "copular",
+    "existential",
+    "article_np",
+    "demonstrative_np",
+    "plural_noun",
+    "modal",
+    "passive",
+    "question",
+    "negation",
+    "comparison",
+    "subordination",
+    "relative_clause",
+    "conditional",
+    "gerund_infinitive",
+    "complement_pattern",
+    "reported_speech",
+]
+AbsenceScope: TypeAlias = Literal["np", "predicate", "clause", "sentence"]
+AbsenceTarget: TypeAlias = Literal[
+    "determiner",
+    "article",
+    "auxiliary",
+    "subject",
+    "object",
+    "negation",
+    "preposition",
+    "relative_marker",
+]
+AbsencePosition: TypeAlias = Literal[
+    "before_head", "after_aux", "before_clause", "unknown"
+]
+ContrastiveHint: TypeAlias = Literal[
+    "present_simple_vs_present_progressive",
+    "present_perfect_vs_past_simple",
+    "a_vs_an",
+    "a_an_vs_the",
+    "article_vs_zero_article",
+    "singular_vs_plural",
+    "this_that_vs_these_those",
+    "comparative_vs_as_as",
+    "some_vs_any",
+    "much_vs_many",
+    "gerund_vs_infinitive",
+    "unknown",
+]
+
+
+@dataclass(frozen=True, slots=True)
+class ProofProvenance:
+    tier: FeatureTier
+    source: ProofSource
+    evidence_refs: tuple[WordRef, ...]
+    confidence: Confidence
 
 
 @dataclass(frozen=True, slots=True)
@@ -297,6 +435,7 @@ class Phrase:
     type: PhraseType
     head: WordRef
     tokens: tuple[WordRef, ...]
+    provenance: ProofProvenance
 
 
 @dataclass(frozen=True, slots=True)
@@ -322,6 +461,7 @@ class ClauseMarkerFeature:
     marker_type: MarkerType
     confidence: Confidence
     sources: tuple[FeatureSource, ...]
+    provenance: ProofProvenance
 
 
 @dataclass(frozen=True, slots=True)
@@ -339,6 +479,7 @@ class ClauseFeature:
     tokens: tuple[WordRef, ...]
     local_tokens: tuple[WordRef, ...]
     confidence: Confidence
+    provenance: ProofProvenance
 
 
 @dataclass(frozen=True, slots=True)
@@ -351,12 +492,14 @@ class PredicateComplementFeature:
     deprel_source: str
     evidence_refs: tuple[WordRef, ...]
     confidence: Confidence
+    provenance: ProofProvenance
 
 
 @dataclass(frozen=True, slots=True)
 class Coordination:
     head: WordRef
     conjuncts: tuple[WordRef, ...]
+    provenance: ProofProvenance
 
 
 @dataclass(frozen=True, slots=True)
@@ -425,6 +568,114 @@ class PredicateFeature:
     form_signature: str
     evidence_refs: tuple[WordRef, ...]
     confidence: Confidence
+    provenance: ProofProvenance
+
+
+@dataclass(frozen=True, slots=True)
+class WordOrderFeature:
+    pattern: WordOrderPattern
+    ordered_refs: tuple[WordRef, ...]
+    confidence: Confidence
+    provenance: ProofProvenance
+
+
+@dataclass(frozen=True, slots=True)
+class NegationFeature:
+    ref: WordRef
+    negator: NegatorType
+    scope: NegationScope
+    governor: WordRef | None
+    confidence: Confidence
+    provenance: ProofProvenance
+
+
+@dataclass(frozen=True, slots=True)
+class DeterminerFeature:
+    ref: WordRef
+    text: str
+    lemma: str
+    determiner_type: DeterminerType
+    definite: bool | None
+    number: DeterminerNumber | None
+    provenance: ProofProvenance
+
+
+@dataclass(frozen=True, slots=True)
+class ArticleSlotFeature:
+    requiredness: ArticleRequiredness
+    article_form: ArticleForm | None
+    following_sound_class: SoundClass | None
+    following_spelling_class: SpellingClass | None
+    definiteness: Definiteness | None
+    provenance: ProofProvenance
+
+
+@dataclass(frozen=True, slots=True)
+class ModifierFeature:
+    ref: WordRef
+    modifier_type: ModifierType
+
+
+@dataclass(frozen=True, slots=True)
+class QuantifierFeature:
+    ref: WordRef
+    text: str
+
+
+@dataclass(frozen=True, slots=True)
+class NPFeature:
+    id: str
+    head: WordRef
+    head_lemma: str
+    phrase_type: NPType
+    number: DeterminerNumber | None
+    person: int | None
+    determiner: DeterminerFeature | None
+    has_determiner: bool
+    article_slot: ArticleSlotFeature
+    modifiers: tuple[ModifierFeature, ...]
+    quantifiers: tuple[QuantifierFeature, ...]
+    possessive: WordRef | None
+    syntactic_role: SyntacticRole
+    evidence_refs: tuple[WordRef, ...]
+    confidence: Confidence
+    provenance: ProofProvenance
+
+
+SlotValue: TypeAlias = WordRef | tuple[WordRef, ...] | str | bool | int
+
+
+@dataclass(frozen=True, slots=True)
+class ConstructionFeature:
+    key: str
+    family_hint: str | None
+    type: ConstructionType
+    signature: str
+    slots: dict[str, SlotValue]
+    evidence_refs: tuple[WordRef, ...]
+    confidence: Confidence
+    provenance: ProofProvenance
+
+
+@dataclass(frozen=True, slots=True)
+class AbsenceFeature:
+    scope: AbsenceScope
+    target: AbsenceTarget
+    expected_position: AbsencePosition | None
+    anchor_ref: WordRef
+    confidence: Confidence
+    provenance: ProofProvenance
+
+
+@dataclass(frozen=True, slots=True)
+class ContrastiveSupportFeature:
+    contrastive_hint: ContrastiveHint
+    observed_choice: str
+    competing_choices: tuple[str, ...]
+    local_cues: tuple[str, ...]
+    missing_context: tuple[str, ...]
+    confidence: Confidence
+    provenance: ProofProvenance
 
 
 @dataclass(frozen=True, slots=True)
@@ -435,7 +686,7 @@ class SyntaxFeatures:
     complements: tuple[PredicateComplementFeature, ...] = ()
     coordination: tuple[Coordination, ...] = ()
     subordination: tuple[ClauseMarkerFeature, ...] = ()
-    np_profiles: tuple[object, ...] = ()
+    np_profiles: tuple[NPFeature, ...] = ()
     pronouns: tuple[object, ...] = ()
     special_subject_constructions: tuple[object, ...] = ()
     relative_clauses: tuple[object, ...] = ()
@@ -447,8 +698,8 @@ class SyntaxFeatures:
 @dataclass(frozen=True, slots=True)
 class LexicalFeatures:
     sentence: SentenceFeature
-    word_order: tuple[object, ...] = ()
-    negation: tuple[object, ...] = ()
+    word_order: tuple[WordOrderFeature, ...] = ()
+    negation: tuple[NegationFeature, ...] = ()
     time_markers: tuple[object, ...] = ()
     lexical_classes: tuple[object, ...] = ()
     verb_patterns: tuple[object, ...] = ()
@@ -467,9 +718,9 @@ class GrammarFeatureSet:
     morphology: MorphologyFeatures
     syntax: SyntaxFeatures
     lexical: LexicalFeatures
-    constructions: tuple[object, ...]
-    contrastive_support: tuple[object, ...]
-    absences: tuple[object, ...]
+    constructions: tuple[ConstructionFeature, ...]
+    contrastive_support: tuple[ContrastiveSupportFeature, ...]
+    absences: tuple[AbsenceFeature, ...]
     diagnostics: tuple[FeatureDiagnostic, ...]
 
 

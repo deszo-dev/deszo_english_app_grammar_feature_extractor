@@ -6,13 +6,18 @@ from typing import TypeAlias
 
 from grammar_feature_extractor._internal.errors import SerializationError
 from grammar_feature_extractor._internal.models import (
+    AbsenceFeature,
     AgreementFeature,
     AnnotatedDocument,
+    ArticleSlotFeature,
     AuxiliaryFeature,
     ClauseFeature,
     ClauseMarkerFeature,
+    ConstructionFeature,
+    ContrastiveSupportFeature,
     Coordination,
     DependencyEvidence,
+    DeterminerFeature,
     EvidenceFeatures,
     FeatureDiagnostic,
     GrammarFeatureDocument,
@@ -22,18 +27,23 @@ from grammar_feature_extractor._internal.models import (
     ModalFeature,
     MorphFeature,
     MorphologyFeatures,
+    NegationFeature,
     NormalizedMorph,
+    NPFeature,
     PageInfo,
     Phrase,
     PredicateComplementFeature,
     PredicateFeature,
+    ProofProvenance,
     Roles,
     SentenceFeature,
     SentenceGrammarFeatures,
+    SlotValue,
     SyntaxFeatures,
     TAVMFeature,
     TokenEvidence,
     Valency,
+    WordOrderFeature,
 )
 from grammar_feature_extractor._internal.validation import parse_annotated_document
 
@@ -100,9 +110,13 @@ def _feature_set_to_dict(features: GrammarFeatureSet) -> JsonObject:
         "morphology": _morphology_to_dict(features.morphology),
         "syntax": _syntax_to_dict(features.syntax),
         "lexical": _lexical_to_dict(features.lexical),
-        "constructions": _empty_feature_array(features.constructions),
-        "contrastive_support": _empty_feature_array(features.contrastive_support),
-        "absences": _empty_feature_array(features.absences),
+        "constructions": [
+            _construction_to_dict(item) for item in features.constructions
+        ],
+        "contrastive_support": [
+            _contrastive_to_dict(item) for item in features.contrastive_support
+        ],
+        "absences": [_absence_to_dict(item) for item in features.absences],
         "diagnostics": [_diagnostic_to_dict(item) for item in features.diagnostics],
     }
 
@@ -194,7 +208,7 @@ def _syntax_to_dict(syntax: SyntaxFeatures) -> JsonObject:
         "subordination": [
             _clause_marker_to_dict(item) for item in syntax.subordination
         ],
-        "np_profiles": _empty_feature_array(syntax.np_profiles),
+        "np_profiles": [_np_to_dict(item) for item in syntax.np_profiles],
         "pronouns": _empty_feature_array(syntax.pronouns),
         "special_subject_constructions": _empty_feature_array(
             syntax.special_subject_constructions
@@ -211,6 +225,7 @@ def _phrase_to_dict(item: Phrase) -> JsonObject:
         "type": item.type,
         "head": item.head,
         "tokens": list(item.tokens),
+        "provenance": _provenance_to_dict(item.provenance),
     }
 
 
@@ -225,6 +240,7 @@ def _clause_to_dict(item: ClauseFeature) -> JsonObject:
         "tokens": list(item.tokens),
         "local_tokens": list(item.local_tokens),
         "confidence": item.confidence,
+        "provenance": _provenance_to_dict(item.provenance),
     }
     if item.subject is not None:
         result["subject"] = item.subject
@@ -264,6 +280,7 @@ def _clause_marker_to_dict(item: ClauseMarkerFeature) -> JsonObject:
         "marker_type": item.marker_type,
         "confidence": item.confidence,
         "sources": list(item.sources),
+        "provenance": _provenance_to_dict(item.provenance),
     }
 
 
@@ -275,6 +292,7 @@ def _complement_to_dict(item: PredicateComplementFeature) -> JsonObject:
         "deprel_source": item.deprel_source,
         "evidence_refs": list(item.evidence_refs),
         "confidence": item.confidence,
+        "provenance": _provenance_to_dict(item.provenance),
     }
     if item.preposition is not None:
         result["preposition"] = item.preposition
@@ -306,6 +324,7 @@ def _predicate_to_dict(item: PredicateFeature) -> JsonObject:
         "form_signature": item.form_signature,
         "evidence_refs": list(item.evidence_refs),
         "confidence": item.confidence,
+        "provenance": _provenance_to_dict(item.provenance),
     }
     if item.copula is not None:
         result["copula"] = item.copula
@@ -382,14 +401,24 @@ def _coordination_to_dict(item: Coordination) -> JsonObject:
     return {
         "head": item.head,
         "conjuncts": list(item.conjuncts),
+        "provenance": _provenance_to_dict(item.provenance),
+    }
+
+
+def _provenance_to_dict(item: ProofProvenance) -> JsonObject:
+    return {
+        "tier": item.tier,
+        "source": item.source,
+        "evidence_refs": list(item.evidence_refs),
+        "confidence": item.confidence,
     }
 
 
 def _lexical_to_dict(lexical: LexicalFeatures) -> JsonObject:
     return {
         "sentence": _sentence_feature_to_dict(lexical.sentence),
-        "word_order": _empty_feature_array(lexical.word_order),
-        "negation": _empty_feature_array(lexical.negation),
+        "word_order": [_word_order_to_dict(item) for item in lexical.word_order],
+        "negation": [_negation_to_dict(item) for item in lexical.negation],
         "time_markers": _empty_feature_array(lexical.time_markers),
         "lexical_classes": _empty_feature_array(lexical.lexical_classes),
         "verb_patterns": _empty_feature_array(lexical.verb_patterns),
@@ -400,6 +429,138 @@ def _lexical_to_dict(lexical: LexicalFeatures) -> JsonObject:
         "discourse_markers": _empty_feature_array(lexical.discourse_markers),
         "contractions": _empty_feature_array(lexical.contractions),
         "noun_inflections": _empty_feature_array(lexical.noun_inflections),
+    }
+
+
+def _np_to_dict(item: NPFeature) -> JsonObject:
+    result: JsonObject = {
+        "id": item.id,
+        "head": item.head,
+        "head_lemma": item.head_lemma,
+        "phrase_type": item.phrase_type,
+        "has_determiner": item.has_determiner,
+        "article_slot": _article_slot_to_dict(item.article_slot),
+        "modifiers": [
+            {"ref": modifier.ref, "modifier_type": modifier.modifier_type}
+            for modifier in item.modifiers
+        ],
+        "quantifiers": [
+            {"ref": quantifier.ref, "text": quantifier.text}
+            for quantifier in item.quantifiers
+        ],
+        "syntactic_role": item.syntactic_role,
+        "evidence_refs": list(item.evidence_refs),
+        "confidence": item.confidence,
+        "provenance": _provenance_to_dict(item.provenance),
+    }
+    if item.number is not None:
+        result["number"] = item.number
+    if item.person is not None:
+        result["person"] = item.person
+    if item.determiner is not None:
+        result["determiner"] = _determiner_to_dict(item.determiner)
+    if item.possessive is not None:
+        result["possessive"] = item.possessive
+    return result
+
+
+def _determiner_to_dict(item: DeterminerFeature) -> JsonObject:
+    result: JsonObject = {
+        "ref": item.ref,
+        "text": item.text,
+        "lemma": item.lemma,
+        "determiner_type": item.determiner_type,
+        "provenance": _provenance_to_dict(item.provenance),
+    }
+    if item.definite is not None:
+        result["definite"] = item.definite
+    if item.number is not None:
+        result["number"] = item.number
+    return result
+
+
+def _article_slot_to_dict(item: ArticleSlotFeature) -> JsonObject:
+    result: JsonObject = {
+        "requiredness": item.requiredness,
+        "provenance": _provenance_to_dict(item.provenance),
+    }
+    if item.article_form is not None:
+        result["article_form"] = item.article_form
+    if item.following_sound_class is not None:
+        result["following_sound_class"] = item.following_sound_class
+    if item.following_spelling_class is not None:
+        result["following_spelling_class"] = item.following_spelling_class
+    if item.definiteness is not None:
+        result["definiteness"] = item.definiteness
+    return result
+
+
+def _word_order_to_dict(item: WordOrderFeature) -> JsonObject:
+    return {
+        "pattern": item.pattern,
+        "ordered_refs": list(item.ordered_refs),
+        "confidence": item.confidence,
+        "provenance": _provenance_to_dict(item.provenance),
+    }
+
+
+def _negation_to_dict(item: NegationFeature) -> JsonObject:
+    result: JsonObject = {
+        "ref": item.ref,
+        "negator": item.negator,
+        "scope": item.scope,
+        "confidence": item.confidence,
+        "provenance": _provenance_to_dict(item.provenance),
+    }
+    if item.governor is not None:
+        result["governor"] = item.governor
+    return result
+
+
+def _construction_to_dict(item: ConstructionFeature) -> JsonObject:
+    result: JsonObject = {
+        "key": item.key,
+        "type": item.type,
+        "signature": item.signature,
+        "slots": _slots_to_dict(item.slots),
+        "evidence_refs": list(item.evidence_refs),
+        "confidence": item.confidence,
+        "provenance": _provenance_to_dict(item.provenance),
+    }
+    if item.family_hint is not None:
+        result["family_hint"] = item.family_hint
+    return result
+
+
+def _slots_to_dict(slots: dict[str, SlotValue]) -> JsonObject:
+    result: JsonObject = {}
+    for key, value in slots.items():
+        result[key] = list(value) if isinstance(value, tuple) else value
+    return result
+
+
+def _absence_to_dict(item: AbsenceFeature) -> JsonObject:
+    result: JsonObject = {
+        "scope": item.scope,
+        "target": item.target,
+        "anchor_ref": item.anchor_ref,
+        "confidence": item.confidence,
+        "provenance": _provenance_to_dict(item.provenance),
+    }
+    if item.expected_position is not None:
+        result["expected_position"] = item.expected_position
+    return result
+
+
+def _contrastive_to_dict(item: ContrastiveSupportFeature) -> JsonObject:
+    return {
+        "contrastive_hint": item.contrastive_hint,
+        "observed_choice": item.observed_choice,
+        "competing_choices": list(item.competing_choices),
+        "local_cues": list(item.local_cues),
+        "missing_context": list(item.missing_context),
+        "confidence": item.confidence,
+        "provenance": _provenance_to_dict(item.provenance),
     }
 
 

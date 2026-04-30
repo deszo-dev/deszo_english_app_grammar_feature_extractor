@@ -1,0 +1,30 @@
+{
+  "schema_version": "grammar_feature_extractor.v3",
+  "enums": {
+    "FeatureTier": ["structural", "deterministic", "heuristic", "external_oracle"],
+    "ProofSource": [
+      "word_order",
+      "upos",
+      "xpos",
+      "morphology",
+      "dependency",
+      "surface",
+      "lemma",
+      "closed_list",
+      "lexicon",
+      "phonology",
+      "task_context",
+      "discourse_heuristic"
+    ],
+    "Confidence": ["high", "medium", "low"],
+    "Polarity": ["positive", "negative", "mixed", "unknown"],
+    "PredicateType": [
+      "verbal",
+      "copular_adjectival",
+      "copular_nominal",
+      "copular_prepositional",
+      "existential_there",
+      "unknown"
+    ]
+  }
+}

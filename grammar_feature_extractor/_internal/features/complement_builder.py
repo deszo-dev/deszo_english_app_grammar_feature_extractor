@@ -6,8 +6,10 @@ from grammar_feature_extractor._internal.features.dependency_helpers import (
 )
 from grammar_feature_extractor._internal.models import (
     ComplementType,
+    Confidence,
     PredicateComplementFeature,
 )
+from grammar_feature_extractor._internal.proof_surface import make_provenance
 from grammar_feature_extractor._internal.sentence_context import SentenceContext
 
 
@@ -23,6 +25,9 @@ def build_complements(ctx: SentenceContext) -> tuple[PredicateComplementFeature,
         prepositions = children_with_deprel(ctx, ref, "case")
         markers = children_with_deprel(ctx, ref, "mark")
         evidence_refs = sorted_refs([word.head, ref, *prepositions, *markers])
+        confidence: Confidence = (
+            "medium" if complement_type == "prepositional_phrase" else "high"
+        )
         complements.append(
             PredicateComplementFeature(
                 governor=word.head,
@@ -34,8 +39,9 @@ def build_complements(ctx: SentenceContext) -> tuple[PredicateComplementFeature,
                 marker=ctx.word_by_ref[markers[0]].text if markers else None,
                 deprel_source=word.deprel,
                 evidence_refs=evidence_refs,
-                confidence=(
-                    "medium" if complement_type == "prepositional_phrase" else "high"
+                confidence=confidence,
+                provenance=make_provenance(
+                    "deterministic", "dependency", evidence_refs, confidence
                 ),
             )
         )

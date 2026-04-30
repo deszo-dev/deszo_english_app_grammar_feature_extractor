@@ -1,12 +1,25 @@
 from __future__ import annotations
 
+from grammar_feature_extractor._internal.features.absence_builder import build_absences
 from grammar_feature_extractor._internal.features.clause_builder import build_clauses
 from grammar_feature_extractor._internal.features.complement_builder import (
     build_complements,
 )
+from grammar_feature_extractor._internal.features.construction_builder import (
+    build_constructions,
+)
+from grammar_feature_extractor._internal.features.contrastive_support_builder import (
+    build_contrastive_support,
+)
 from grammar_feature_extractor._internal.features.coordination_builder import (
     build_coordination,
 )
+from grammar_feature_extractor._internal.features.lexical_builder import (
+    build_negation,
+    build_sentence_feature,
+    build_word_order,
+)
+from grammar_feature_extractor._internal.features.np_builder import build_np_profiles
 from grammar_feature_extractor._internal.features.phrase_builder import build_phrases
 from grammar_feature_extractor._internal.features.predicate_builder import (
     build_predicates,
@@ -28,11 +41,7 @@ from grammar_feature_extractor._internal.models import (
     MorphologyFeatures,
     PageInfo,
     PagingConfig,
-    Polarity,
-    SentenceFeature,
     SentenceGrammarFeatures,
-    SentenceKind,
-    SentenceType,
     SyntaxFeatures,
 )
 from grammar_feature_extractor._internal.sentence_context import (
@@ -40,10 +49,6 @@ from grammar_feature_extractor._internal.sentence_context import (
     build_sentence_context,
 )
 from grammar_feature_extractor._internal.validation import validate_paging_config
-
-WH_WORDS = frozenset(
-    {"what", "who", "whom", "whose", "which", "when", "where", "why", "how"}
-)
 
 
 def extract_core(
@@ -125,6 +130,21 @@ def extract_sentence_features(
     subordination = build_subordination(context)
     clauses = build_clauses(context, subordination, diagnostics)
     complements = build_complements(context)
+    predicates = build_predicates(context, clauses, complements)
+    np_profiles = build_np_profiles(context)
+    word_order = build_word_order(context, predicates)
+    negation = build_negation(context, predicates)
+    constructions = (
+        build_constructions(predicates, np_profiles, word_order)
+        if config.include_construction_signatures
+        else ()
+    )
+    contrastive_support = (
+        build_contrastive_support(constructions)
+        if config.include_contrastive_support
+        else ()
+    )
+    absences = build_absences(predicates, np_profiles)
 
     return GrammarFeatureSet(
         evidence=evidence,
@@ -132,15 +152,20 @@ def extract_sentence_features(
         syntax=SyntaxFeatures(
             phrases=build_phrases(context),
             clauses=clauses,
-            predicates=build_predicates(context, clauses, complements),
+            predicates=predicates,
             complements=complements,
             coordination=build_coordination(context),
             subordination=subordination,
+            np_profiles=np_profiles,
         ),
-        lexical=LexicalFeatures(sentence=_sentence_feature(sentence)),
-        constructions=() if config.include_construction_signatures else (),
-        contrastive_support=() if config.include_contrastive_support else (),
-        absences=(),
+        lexical=LexicalFeatures(
+            sentence=build_sentence_feature(context, clauses, predicates),
+            word_order=word_order,
+            negation=negation,
+        ),
+        constructions=constructions,
+        contrastive_support=contrastive_support,
+        absences=absences,
         diagnostics=tuple(diagnostics) if config.include_diagnostics else (),
     )
 
@@ -149,78 +174,3 @@ def _morphology_from_context(context: SentenceContext) -> MorphologyFeatures:
     word_morphology = tuple(context.morph_by_ref[ref] for ref in context.refs)
     normalized = tuple(context.normalized_morph_by_ref[ref] for ref in context.refs)
     return MorphologyFeatures(word_morphology=word_morphology, normalized=normalized)
-
-
-def _sentence_feature(sentence: AnnotatedSentence) -> SentenceFeature:
-    lower_words = tuple(word.text.casefold() for word in sentence.words)
-    has_negation = any(
-        word.deprel == "neg" or word.text.casefold() in {"not", "n't"}
-        for word in sentence.words
-    )
-    subject_positions = tuple(
-        index
-        for index, word in enumerate(sentence.words)
-        if word.deprel in {"nsubj", "nsubj:pass"}
-    )
-    aux_positions = tuple(
-        index for index, word in enumerate(sentence.words) if word.upos == "AUX"
-    )
-    has_subject_aux_inversion = bool(
-        subject_positions
-        and aux_positions
-        and min(aux_positions) < min(subject_positions)
-    )
-    return SentenceFeature(
-        sentence_kind=_sentence_kind(sentence),
-        clause_count=sum(
-            1
-            for word in sentence.words
-            if word.deprel in {"root", "ccomp", "xcomp", "advcl", "acl", "acl:relcl"}
-        ),
-        sentence_type=_sentence_type(sentence, has_subject_aux_inversion),
-        polarity=_polarity(has_negation),
-        has_subject_aux_inversion=has_subject_aux_inversion,
-        has_do_support=any(
-            word.upos == "AUX" and (word.lemma or word.text).casefold() == "do"
-            for word in sentence.words
-        ),
-        has_wh_fronting=bool(lower_words and lower_words[0] in WH_WORDS),
-        has_tag_question=False,
-        has_exclamation_marker=sentence.text.rstrip().endswith("!"),
-    )
-
-
-def _sentence_kind(sentence: AnnotatedSentence) -> SentenceKind:
-    text = sentence.text.strip()
-    if text.startswith(('"', "'")) and text.endswith(('"', "'")):
-        return "quote"
-    if any(word.upos in {"VERB", "AUX"} for word in sentence.words):
-        return "normal"
-    if text.endswith("!"):
-        return "exclamation_fragment"
-    if len(sentence.words) <= 8:
-        return "fragment"
-    return "unknown"
-
-
-def _sentence_type(
-    sentence: AnnotatedSentence,
-    has_subject_aux_inversion: bool,
-) -> SentenceType:
-    text = sentence.text.rstrip()
-    lower_words = tuple(word.text.casefold() for word in sentence.words)
-    if text.endswith("?"):
-        if lower_words and lower_words[0] in WH_WORDS:
-            return "wh_question"
-        if has_subject_aux_inversion:
-            return "yes_no_question"
-        return "unknown"
-    if text.endswith("!"):
-        return "exclamative"
-    if not any(word.upos in {"VERB", "AUX"} for word in sentence.words):
-        return "fragment"
-    return "declarative"
-
-
-def _polarity(has_negation: bool) -> Polarity:
-    return "negative" if has_negation else "positive"

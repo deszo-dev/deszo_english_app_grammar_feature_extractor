@@ -84,3 +84,32 @@ surface.
 If a public schema, semantic rule, CLI flag, diagnostic code, or default behavior
 changes, update `docs/architecture.md` in the same change as the implementation
 and tests.
+
+## Proof Surface Policy
+
+The v3 output is proof-surface-oriented. Matcher-facing features must expose
+`ProofProvenance`, use closed enum or registry-backed identifiers, and pass
+sentence-local reference validation before they are considered proof-certified.
+
+Current proof-surface checkpoints:
+
+```text
+PR4:
+  ProofProvenance
+  FeatureTier / ProofSource
+  evidence_refs normalization
+  feature id uniqueness validation
+  proof-surface validator
+
+PR5:
+  Coq v3 shell checkpoint
+
+PR6-PR12:
+  TAVM/form signatures
+  lexical word-order/negation
+  NP/article profiles
+  construction signatures
+  absences
+  contrastive support
+  catalog validation skeleton
+```

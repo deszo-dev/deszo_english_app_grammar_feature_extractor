@@ -157,6 +157,39 @@ def assert_valid_feature_refs(
     for marker in features.syntax.subordination:
         check(marker.marker_ref)
         check(marker.clause_head)
+    for np in features.syntax.np_profiles:
+        check(np.head)
+        if np.determiner is not None:
+            check(np.determiner.ref)
+        if np.possessive is not None:
+            check(np.possessive)
+        for modifier in np.modifiers:
+            check(modifier.ref)
+        for quantifier in np.quantifiers:
+            check(quantifier.ref)
+        for ref in np.evidence_refs:
+            check(ref)
+    for word_order in features.lexical.word_order:
+        for ref in word_order.ordered_refs:
+            check(ref)
+    for negation in features.lexical.negation:
+        check(negation.ref)
+        if negation.governor is not None:
+            check(negation.governor)
+    for construction in features.constructions:
+        for ref in construction.evidence_refs:
+            check(ref)
+        for value in construction.slots.values():
+            if isinstance(value, int) and value > 0:
+                check(value)
+            if isinstance(value, tuple):
+                for ref in value:
+                    check(ref)
+    for absence in features.absences:
+        check(absence.anchor_ref)
+    for contrastive in features.contrastive_support:
+        for ref in contrastive.provenance.evidence_refs:
+            check(ref)
     for diagnostic in features.diagnostics:
         for ref in diagnostic.refs:
             check(ref)

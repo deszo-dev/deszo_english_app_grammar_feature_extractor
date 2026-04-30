@@ -5,6 +5,7 @@ from grammar_feature_extractor._internal.models import (
     Confidence,
     MarkerType,
 )
+from grammar_feature_extractor._internal.proof_surface import make_provenance
 from grammar_feature_extractor._internal.sentence_context import SentenceContext
 
 PREPOSITIONAL_GERUND_MARKERS = frozenset({"in", "of", "by", "with", "without"})
@@ -28,6 +29,9 @@ def build_subordination(ctx: SentenceContext) -> tuple[ClauseMarkerFeature, ...]
                 marker_type=marker_type,
                 confidence=confidence,
                 sources=("dependency",),
+                provenance=make_provenance(
+                    "deterministic", "dependency", (ref, word.head), confidence
+                ),
             )
         )
     return tuple(markers)

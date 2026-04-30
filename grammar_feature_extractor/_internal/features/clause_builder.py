@@ -17,6 +17,7 @@ from grammar_feature_extractor._internal.models import (
     Valency,
     WordRef,
 )
+from grammar_feature_extractor._internal.proof_surface import make_provenance
 from grammar_feature_extractor._internal.sentence_context import SentenceContext
 
 
@@ -69,6 +70,9 @@ def build_clauses(
                 tokens=tokens,
                 local_tokens=local_tokens,
                 confidence="high",
+                provenance=make_provenance(
+                    "deterministic", "dependency", tokens, "high"
+                ),
             )
         )
     return tuple(clauses)

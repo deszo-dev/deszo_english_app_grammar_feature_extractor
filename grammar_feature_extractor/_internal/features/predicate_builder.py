@@ -4,14 +4,34 @@ from grammar_feature_extractor._internal.features.dependency_helpers import (
     children_with_deprel,
     sorted_refs,
 )
+from grammar_feature_extractor._internal.form_signature_registry import (
+    BE_PRESENT_COPULAR,
+    MODAL_BASE_VERB,
+    PASSIVE_BE_PARTICIPLE,
+    PAST_SIMPLE,
+    PRESENT_PERFECT,
+    PRESENT_PROGRESSIVE,
+    PRESENT_SIMPLE_DO_NEGATIVE,
+    PRESENT_SIMPLE_DO_QUESTION,
+    PRESENT_SIMPLE_LEXICAL,
+    UNKNOWN,
+)
+from grammar_feature_extractor._internal.modal_registry import (
+    ABILITY_MODALS,
+    MODAL_LEMMAS,
+    OBLIGATION_MODALS,
+    PREDICTION_MODALS,
+)
 from grammar_feature_extractor._internal.models import (
     AgreementFeature,
     AgreementType,
+    AspectValue,
     AuxiliaryFeature,
     AuxiliaryRole,
     ClauseFeature,
     Confidence,
     ModalFeature,
+    ModalityValue,
     NumberValue,
     Polarity,
     PredicateComplementFeature,
@@ -19,13 +39,11 @@ from grammar_feature_extractor._internal.models import (
     PredicateType,
     TAVMFeature,
     TenseValue,
+    VoiceValue,
     WordRef,
 )
+from grammar_feature_extractor._internal.proof_surface import make_provenance
 from grammar_feature_extractor._internal.sentence_context import SentenceContext
-
-MODAL_LEMMAS = frozenset(
-    {"can", "could", "may", "might", "must", "shall", "should", "will", "would"}
-)
 
 
 def build_predicates(
@@ -48,6 +66,19 @@ def build_predicates(
         polarity: Polarity = "negative" if negation is not None else "positive"
         tense = _tense(ctx, main, auxiliaries, copula)
         modality = _modality(main, auxiliaries, polarity)
+        aspect = _aspect(ctx, main, auxiliaries)
+        voice = _voice(ctx, main, auxiliaries, clause)
+        form_signature = _form_signature(
+            ctx,
+            main,
+            predicate_type,
+            auxiliaries,
+            copula,
+            negation,
+            tense,
+            aspect,
+            voice,
+        )
         agreement = _agreement(ctx, clause, main, auxiliaries, copula)
         evidence_refs = _predicate_evidence_refs(
             main,
@@ -68,8 +99,8 @@ def build_predicates(
                 copula=copula,
                 negation=negation,
                 tense=tense,
-                aspect="unknown",
-                voice="unknown",
+                aspect=aspect,
+                voice=voice,
                 modality=modality,
                 polarity=polarity,
                 clause_head=clause.head,
@@ -80,14 +111,20 @@ def build_predicates(
                 agreement=agreement,
                 tavm=TAVMFeature(
                     tense=tense,
-                    aspect="unknown",
-                    voice="unknown",
+                    aspect=aspect,
+                    voice=voice,
                     modality=modality.modal_type if modality is not None else "unknown",
-                    form_signature="unknown",
+                    form_signature=form_signature,
                 ),
-                form_signature="unknown",
+                form_signature=form_signature,
                 evidence_refs=evidence_refs,
                 confidence="high" if predicate_type != "unknown" else "low",
+                provenance=make_provenance(
+                    "deterministic",
+                    "dependency",
+                    evidence_refs,
+                    "high" if predicate_type != "unknown" else "low",
+                ),
             )
         )
     return tuple(predicates)
@@ -210,13 +247,101 @@ def _modality(
     )
     if not modal_refs:
         return None
+    modal_lemma = next(
+        auxiliary.lemma for auxiliary in auxiliaries if auxiliary.role == "modal"
+    )
+    confidence: Confidence = "medium" if modal_lemma in {"must", "should"} else "high"
     return ModalFeature(
         marker_refs=modal_refs,
-        modal_type="unknown",
+        modal_type=_modal_type(modal_lemma),
         complement_verb=main,
         polarity=polarity,
-        confidence="medium",
+        confidence=confidence,
     )
+
+
+def _modal_type(lemma: str) -> ModalityValue:
+    if lemma in ABILITY_MODALS:
+        return "ability"
+    if lemma in OBLIGATION_MODALS:
+        return "obligation"
+    if lemma in PREDICTION_MODALS:
+        return "prediction"
+    return "unknown"
+
+
+def _aspect(
+    ctx: SentenceContext,
+    main: WordRef,
+    auxiliaries: tuple[AuxiliaryFeature, ...],
+) -> AspectValue:
+    has_have = any(auxiliary.lemma == "have" for auxiliary in auxiliaries)
+    has_be = any(auxiliary.lemma == "be" for auxiliary in auxiliaries)
+    main_morph = ctx.morph_by_ref[main].features
+    if has_have and main_morph.get("VerbForm") == "Part":
+        if has_be:
+            return "perfect_progressive"
+        return "perfect"
+    if has_be and main_morph.get("VerbForm") in {"Ger", "Part"}:
+        return "progressive"
+    if main_morph.get("VerbForm") in {"Fin", "Inf"}:
+        return "simple"
+    return "unknown"
+
+
+def _voice(
+    ctx: SentenceContext,
+    main: WordRef,
+    auxiliaries: tuple[AuxiliaryFeature, ...],
+    clause: ClauseFeature,
+) -> VoiceValue:
+    if any(auxiliary.role == "passive_aux" for auxiliary in auxiliaries):
+        return "passive"
+    if (
+        clause.roles.subject is not None
+        and ctx.word_by_ref[clause.roles.subject].deprel == "nsubj:pass"
+    ):
+        return "passive"
+    return "active" if ctx.word_by_ref[main].upos in {"VERB", "AUX"} else "unknown"
+
+
+def _form_signature(
+    ctx: SentenceContext,
+    main: WordRef,
+    predicate_type: PredicateType,
+    auxiliaries: tuple[AuxiliaryFeature, ...],
+    copula: WordRef | None,
+    negation: WordRef | None,
+    tense: TenseValue,
+    aspect: AspectValue,
+    voice: VoiceValue,
+) -> str:
+    if copula is not None and tense == "present":
+        return BE_PRESENT_COPULAR
+    if voice == "passive":
+        return PASSIVE_BE_PARTICIPLE
+    if any(auxiliary.role == "modal" for auxiliary in auxiliaries):
+        return MODAL_BASE_VERB
+    if aspect == "perfect":
+        return PRESENT_PERFECT
+    if aspect == "progressive":
+        return PRESENT_PROGRESSIVE
+    if (
+        any(auxiliary.role == "do_support" for auxiliary in auxiliaries)
+        and negation is not None
+    ):
+        return PRESENT_SIMPLE_DO_NEGATIVE
+    if any(auxiliary.role == "do_support" for auxiliary in auxiliaries):
+        return PRESENT_SIMPLE_DO_QUESTION
+    if predicate_type == "verbal" and tense == "past":
+        return PAST_SIMPLE
+    if (
+        predicate_type == "verbal"
+        and tense == "present"
+        and ctx.normalized_morph_by_ref[main].is_finite_verb
+    ):
+        return PRESENT_SIMPLE_LEXICAL
+    return UNKNOWN
 
 
 def _agreement(

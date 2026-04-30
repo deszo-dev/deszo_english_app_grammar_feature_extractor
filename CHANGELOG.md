@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Added proof-surface foundation with `ProofProvenance`, feature tiers,
+  proof sources, provenance serialization, and proof-surface validation.
+- Updated the Coq spec to a v3 proof-surface shell with provenance and
+  matcher-facing structural invariants.
+- Added predicate TAVM/form signatures, lexical word-order/negation basics,
+  NP/article profiles, first construction signatures, absence features,
+  contrastive support hints, and catalog validation schema skeletons.
 - Added v3 predicate parity extraction under `syntax.predicates`, replacing
   the old public `predicate_groups` shape.
 - Added the v3 M1 checkpoint fixture under `tests/fixtures/v3_minimal/`.
