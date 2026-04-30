@@ -18,8 +18,12 @@ from grammar_feature_extractor._internal.form_signature_registry import (
 )
 from grammar_feature_extractor._internal.modal_registry import (
     ABILITY_MODALS,
+    ADVICE_MODALS,
+    CONDITIONAL_MODALS,
     MODAL_LEMMAS,
     OBLIGATION_MODALS,
+    PERMISSION_MODALS,
+    POSSIBILITY_MODALS,
     PREDICTION_MODALS,
 )
 from grammar_feature_extractor._internal.models import (
@@ -32,6 +36,7 @@ from grammar_feature_extractor._internal.models import (
     Confidence,
     ModalFeature,
     ModalityValue,
+    ModalType,
     NumberValue,
     Polarity,
     PredicateComplementFeature,
@@ -45,6 +50,12 @@ from grammar_feature_extractor._internal.models import (
 from grammar_feature_extractor._internal.proof_surface import make_provenance
 from grammar_feature_extractor._internal.sentence_context import SentenceContext
 
+STRICT_NEGATORS = frozenset(
+    {"not", "n't", "never", "no", "none", "nothing", "nobody", "neither", "nowhere"}
+)
+NEGATIVE_LIKE_ADVERBS = frozenset({"scarcely", "hardly"})
+NEGATIVE_COORDINATORS = frozenset({"nor"})
+
 
 def build_predicates(
     ctx: SentenceContext,
@@ -57,13 +68,14 @@ def build_predicates(
         auxiliaries = _auxiliaries(ctx, main)
         copula = _first_ref_with_deprel(ctx, main, "cop")
         negation = _negation(ctx, main, auxiliaries)
+        negation_refs = _negation_refs(ctx, clause, main, auxiliaries, negation)
         finite = _finite(ctx, main, auxiliaries, copula)
         predicate_complements = tuple(
             item
             for item in complements
             if item.governor == main or item.governor == clause.head
         )
-        polarity: Polarity = "negative" if negation is not None else "positive"
+        polarity = _polarity(ctx, negation_refs)
         tense = _tense(ctx, main, auxiliaries, copula)
         modality = _modality(main, auxiliaries, polarity)
         aspect = _aspect(ctx, main, auxiliaries)
@@ -113,7 +125,11 @@ def build_predicates(
                     tense=tense,
                     aspect=aspect,
                     voice=voice,
-                    modality=modality.modal_type if modality is not None else "unknown",
+                    modality=(
+                        _broad_modality(modality.modal_type)
+                        if modality is not None
+                        else "unknown"
+                    ),
                     form_signature=form_signature,
                 ),
                 form_signature=form_signature,
@@ -204,6 +220,59 @@ def _negation(
     return None
 
 
+def _negation_refs(
+    ctx: SentenceContext,
+    clause: ClauseFeature,
+    main: WordRef,
+    auxiliaries: tuple[AuxiliaryFeature, ...],
+    direct_negation: WordRef | None,
+) -> tuple[WordRef, ...]:
+    refs: list[WordRef] = []
+    if direct_negation is not None:
+        refs.append(direct_negation)
+    predicate_refs = {main, *(auxiliary.ref for auxiliary in auxiliaries)}
+    for ref in clause.local_tokens:
+        lower = ctx.word_by_ref[ref].text.casefold()
+        lemma = (ctx.word_by_ref[ref].lemma or ctx.word_by_ref[ref].text).casefold()
+        features = ctx.morph_by_ref[ref].features
+        if (
+            lower in STRICT_NEGATORS
+            or lower in NEGATIVE_LIKE_ADVERBS
+            or lower in NEGATIVE_COORDINATORS
+            or lemma in STRICT_NEGATORS
+            or features.get("Polarity") == "Neg"
+            or features.get("PronType") == "Neg"
+        ):
+            head = ctx.word_by_ref[ref].head
+            if (
+                ref in predicate_refs
+                or head in predicate_refs
+                or head
+                in {
+                    clause.roles.object,
+                    clause.roles.subject,
+                }
+                or ref
+                in {
+                    clause.roles.object,
+                    clause.roles.subject,
+                }
+            ):
+                refs.append(ref)
+    return sorted_refs(refs)
+
+
+def _polarity(ctx: SentenceContext, negation_refs: tuple[WordRef, ...]) -> Polarity:
+    if not negation_refs:
+        return "positive"
+    lowers = {ctx.word_by_ref[ref].text.casefold() for ref in negation_refs}
+    if lowers and lowers <= NEGATIVE_LIKE_ADVERBS:
+        return "mixed"
+    if lowers & NEGATIVE_LIKE_ADVERBS:
+        return "mixed"
+    return "negative"
+
+
 def _finite(
     ctx: SentenceContext,
     main: WordRef,
@@ -250,7 +319,10 @@ def _modality(
     modal_lemma = next(
         auxiliary.lemma for auxiliary in auxiliaries if auxiliary.role == "modal"
     )
-    confidence: Confidence = "medium" if modal_lemma in {"must", "should"} else "high"
+    medium_confidence_modals = {"can", "could", "must", "should", "will"}
+    confidence: Confidence = (
+        "medium" if modal_lemma in medium_confidence_modals else "high"
+    )
     return ModalFeature(
         marker_refs=modal_refs,
         modal_type=_modal_type(modal_lemma),
@@ -260,13 +332,47 @@ def _modality(
     )
 
 
-def _modal_type(lemma: str) -> ModalityValue:
+def _modal_type(lemma: str) -> ModalType:
     if lemma in ABILITY_MODALS:
-        return "ability"
+        return "can_ability" if lemma == "can" else "could_ability"
+    if lemma in PERMISSION_MODALS:
+        return "may_permission"
+    if lemma in POSSIBILITY_MODALS:
+        return "might_possibility"
     if lemma in OBLIGATION_MODALS:
-        return "obligation"
+        return "must_obligation"
+    if lemma in ADVICE_MODALS:
+        return "should_advice"
     if lemma in PREDICTION_MODALS:
+        return "will_prediction" if lemma == "will" else "shall_prediction"
+    if lemma in CONDITIONAL_MODALS:
+        return "would_conditional"
+    return "unknown"
+
+
+def _broad_modality(modal_type: ModalType) -> ModalityValue:
+    if modal_type.endswith("_ability"):
+        return "ability"
+    if modal_type.endswith("_permission"):
+        return "permission"
+    if modal_type.endswith("_possibility"):
+        return "possibility"
+    if modal_type.endswith("_obligation"):
+        return "obligation"
+    if modal_type.endswith("_deduction"):
+        return "deduction"
+    if modal_type.endswith("_advice"):
+        return "advice"
+    if modal_type.endswith("_prediction"):
         return "prediction"
+    if modal_type.endswith("_conditional"):
+        return "conditional"
+    if modal_type.endswith("_necessity"):
+        return "necessity"
+    if modal_type.endswith("_expectation"):
+        return "expectation"
+    if modal_type.endswith("_past_habit"):
+        return "past_habit"
     return "unknown"
 
 

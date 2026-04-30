@@ -93,16 +93,34 @@ AspectValue: TypeAlias = Literal[
 VoiceValue: TypeAlias = Literal["active", "passive", "unknown"]
 ModalityValue: TypeAlias = Literal[
     "ability",
-    "obligation",
     "permission",
-    "advice",
-    "necessity",
     "possibility",
-    "prohibition",
+    "obligation",
+    "deduction",
+    "advice",
     "prediction",
+    "conditional",
+    "necessity",
     "expectation",
     "past_habit",
-    "none",
+    "unknown",
+]
+ModalType: TypeAlias = Literal[
+    "can_ability",
+    "could_ability",
+    "may_permission",
+    "might_possibility",
+    "must_obligation",
+    "must_deduction",
+    "should_advice",
+    "will_prediction",
+    "would_conditional",
+    "shall_prediction",
+    "have_to_obligation",
+    "need_to_necessity",
+    "be_able_to_ability",
+    "be_supposed_to_expectation",
+    "used_to_past_habit",
     "unknown",
 ]
 AgreementType: TypeAlias = Literal[
@@ -229,7 +247,27 @@ WordOrderPattern: TypeAlias = Literal[
     "unknown",
 ]
 NegatorType: TypeAlias = Literal[
-    "not", "n't", "never", "no", "none", "nothing", "neither", "unknown"
+    "not",
+    "n't",
+    "never",
+    "no",
+    "none",
+    "nothing",
+    "nobody",
+    "neither",
+    "nor",
+    "nowhere",
+    "scarcely",
+    "hardly",
+    "unknown",
+]
+NegationType: TypeAlias = Literal[
+    "strict_negator",
+    "negative_determiner",
+    "negative_pronoun",
+    "negative_coordinator",
+    "negative_like_adverb",
+    "unknown",
 ]
 NegationScope: TypeAlias = Literal[
     "predicate", "noun_phrase", "clause", "sentence", "unknown"
@@ -513,7 +551,7 @@ class AuxiliaryFeature:
 @dataclass(frozen=True, slots=True)
 class ModalFeature:
     marker_refs: tuple[WordRef, ...]
-    modal_type: ModalityValue
+    modal_type: ModalType
     complement_verb: WordRef | None
     polarity: Polarity
     confidence: Confidence
@@ -575,6 +613,7 @@ class PredicateFeature:
 class WordOrderFeature:
     pattern: WordOrderPattern
     ordered_refs: tuple[WordRef, ...]
+    slots: dict[str, WordRef]
     confidence: Confidence
     provenance: ProofProvenance
 
@@ -583,8 +622,18 @@ class WordOrderFeature:
 class NegationFeature:
     ref: WordRef
     negator: NegatorType
+    negation_type: NegationType
     scope: NegationScope
     governor: WordRef | None
+    confidence: Confidence
+    provenance: ProofProvenance
+
+
+@dataclass(frozen=True, slots=True)
+class LexicalItemFeature:
+    kind: str
+    refs: tuple[WordRef, ...]
+    text: str
     confidence: Confidence
     provenance: ProofProvenance
 
@@ -700,16 +749,16 @@ class LexicalFeatures:
     sentence: SentenceFeature
     word_order: tuple[WordOrderFeature, ...] = ()
     negation: tuple[NegationFeature, ...] = ()
-    time_markers: tuple[object, ...] = ()
+    time_markers: tuple[LexicalItemFeature, ...] = ()
     lexical_classes: tuple[object, ...] = ()
     verb_patterns: tuple[object, ...] = ()
     adjective_patterns: tuple[object, ...] = ()
-    comparisons: tuple[object, ...] = ()
+    comparisons: tuple[LexicalItemFeature, ...] = ()
     quantifiers: tuple[object, ...] = ()
-    phrasal_verbs: tuple[object, ...] = ()
-    discourse_markers: tuple[object, ...] = ()
-    contractions: tuple[object, ...] = ()
-    noun_inflections: tuple[object, ...] = ()
+    phrasal_verbs: tuple[LexicalItemFeature, ...] = ()
+    discourse_markers: tuple[LexicalItemFeature, ...] = ()
+    contractions: tuple[LexicalItemFeature, ...] = ()
+    noun_inflections: tuple[LexicalItemFeature, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)

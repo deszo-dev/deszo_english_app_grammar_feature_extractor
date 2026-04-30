@@ -41,7 +41,12 @@ def build_absences(
                 )
             )
     for predicate in predicates:
-        if predicate.subject is None and predicate.predicate_type == "verbal":
+        if (
+            predicate.subject is None
+            and predicate.predicate_type == "verbal"
+            and predicate.finite
+            and predicate.main == min(predicate.evidence_refs)
+        ):
             items.append(
                 AbsenceFeature(
                     scope="clause",

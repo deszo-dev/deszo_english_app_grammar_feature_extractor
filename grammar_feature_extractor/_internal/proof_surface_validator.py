@@ -2,6 +2,10 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 
+from grammar_feature_extractor._internal.construction_registry import (
+    REGISTERED_CONSTRUCTION_SIGNATURES,
+)
+from grammar_feature_extractor._internal.diagnostic_registry import DIAGNOSTIC_CODE_SET
 from grammar_feature_extractor._internal.models import (
     AnnotatedSentence,
     ClauseFeature,
@@ -23,6 +27,7 @@ PREDICATE_TYPES = frozenset(
         "unknown",
     }
 )
+REGISTERED_CONSTRUCTION_SIGNATURE_SET = frozenset(REGISTERED_CONSTRUCTION_SIGNATURES)
 
 
 def validate_proof_surface(
@@ -58,6 +63,11 @@ def validate_proof_surface(
         _validate_provenance(max_ref, absence.provenance)
     for contrastive in features.contrastive_support:
         _validate_provenance(max_ref, contrastive.provenance)
+    for diagnostic in features.diagnostics:
+        if diagnostic.code not in DIAGNOSTIC_CODE_SET:
+            raise AssertionError(f"Unknown diagnostic code: {diagnostic.code}.")
+        for ref in diagnostic.refs:
+            _check_ref(max_ref, ref)
 
 
 def _validate_clause(max_ref: int, clause: ClauseFeature) -> None:
@@ -83,6 +93,10 @@ def _validate_np(max_ref: int, np: NPFeature) -> None:
 
 
 def _validate_construction(max_ref: int, construction: ConstructionFeature) -> None:
+    if construction.signature not in REGISTERED_CONSTRUCTION_SIGNATURE_SET:
+        raise AssertionError(
+            f"Unknown construction signature: {construction.signature}."
+        )
     if not construction.evidence_refs:
         raise AssertionError(
             f"Construction {construction.key} has empty evidence_refs."
@@ -90,6 +104,20 @@ def _validate_construction(max_ref: int, construction: ConstructionFeature) -> N
     _validate_provenance(max_ref, construction.provenance)
     for ref in construction.evidence_refs:
         _check_ref(max_ref, ref)
+    for slot_name, value in construction.slots.items():
+        if value is None:
+            raise AssertionError(
+                f"Construction {construction.key} has null slot {slot_name}."
+            )
+        if isinstance(value, int):
+            _check_ref(max_ref, value)
+        if isinstance(value, tuple):
+            if not value:
+                raise AssertionError(
+                    f"Construction {construction.key} has empty slot {slot_name}."
+                )
+            for ref in value:
+                _check_ref(max_ref, ref)
 
 
 def _validate_provenance(max_ref: int, provenance: ProofProvenance) -> None:

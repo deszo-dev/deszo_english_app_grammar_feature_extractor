@@ -6,11 +6,17 @@ from grammar_feature_extractor._internal.construction_registry import (
     ARTICLE_INDEFINITE_AN_NP,
     BE_SUBJECT_COMPLEMENT_QUESTION,
     COMPARISON_AS_AS,
+    COPULAR_BE_NEGATIVE,
     MODAL_MUST_BASE,
+    MODAL_NEGATIVE_BASE,
+    PASSIVE_NEGATIVE,
+    PAST_SIMPLE_NEGATIVE,
     PAST_SIMPLE_REGULAR,
+    PERFECT_NEGATIVE,
     PRESENT_PERFECT_HAVE_PARTICIPLE,
     PRESENT_PROGRESSIVE_AFFIRMATIVE,
     PRESENT_SIMPLE_DO_NEGATIVE,
+    PRESENT_SIMPLE_DO_NEGATIVE_QUESTION,
     PRESENT_SIMPLE_DO_QUESTION,
     PRESENT_SIMPLE_LEXICAL_AFFIRMATIVE,
     SUBJECT_BE_PRESENT_COMPLEMENT,
@@ -19,6 +25,7 @@ from grammar_feature_extractor._internal.construction_registry import (
 from grammar_feature_extractor._internal.form_signature_registry import (
     BE_PRESENT_COPULAR,
     MODAL_BASE_VERB,
+    PASSIVE_BE_PARTICIPLE,
     PAST_SIMPLE,
     PRESENT_PERFECT,
     PRESENT_PROGRESSIVE,
@@ -35,6 +42,7 @@ from grammar_feature_extractor._internal.models import (
     ConstructionType,
     NPFeature,
     PredicateFeature,
+    SlotValue,
     WordOrderFeature,
 )
 from grammar_feature_extractor._internal.proof_surface import make_provenance
@@ -77,6 +85,22 @@ def _predicate_signature(
     predicate: PredicateFeature,
     word_order: tuple[WordOrderFeature, ...],
 ) -> str | None:
+    if predicate.polarity != "positive":
+        if predicate.form_signature == FORM_PRESENT_SIMPLE_DO_NEGATIVE:
+            return PRESENT_SIMPLE_DO_NEGATIVE
+        if predicate.form_signature == FORM_PRESENT_SIMPLE_DO_QUESTION:
+            return PRESENT_SIMPLE_DO_NEGATIVE_QUESTION
+        if predicate.form_signature == PAST_SIMPLE:
+            return PAST_SIMPLE_NEGATIVE
+        if predicate.form_signature == BE_PRESENT_COPULAR:
+            return COPULAR_BE_NEGATIVE
+        if predicate.form_signature == MODAL_BASE_VERB:
+            return MODAL_NEGATIVE_BASE
+        if predicate.form_signature == PRESENT_PERFECT:
+            return PERFECT_NEGATIVE
+        if predicate.form_signature == PASSIVE_BE_PARTICIPLE:
+            return PASSIVE_NEGATIVE
+        return None
     if predicate.form_signature == PRESENT_SIMPLE_LEXICAL:
         return PRESENT_SIMPLE_LEXICAL_AFFIRMATIVE
     if predicate.form_signature == FORM_PRESENT_SIMPLE_DO_NEGATIVE:
@@ -104,16 +128,17 @@ def _predicate_construction(
     predicate: PredicateFeature,
     signature: str,
 ) -> ConstructionFeature:
+    slots: dict[str, SlotValue] = {"predicate": predicate.main}
+    if predicate.subject is not None:
+        slots["subject"] = predicate.subject
+    if predicate.object is not None:
+        slots["object"] = predicate.object
     return ConstructionFeature(
         key=f"construction-{signature}-{predicate.main}",
         family_hint="predicate",
         type=_construction_type(signature),
         signature=signature,
-        slots={
-            "predicate": predicate.main,
-            "subject": predicate.subject or 0,
-            "object": predicate.object or 0,
-        },
+        slots=slots,
         evidence_refs=predicate.evidence_refs,
         confidence=predicate.confidence,
         provenance=make_provenance(
@@ -136,12 +161,20 @@ def _np_signature(np: NPFeature) -> str | None:
 
 
 def _np_construction(np: NPFeature, signature: str) -> ConstructionFeature:
+    slots: dict[str, SlotValue] = {"np": np.head}
+    if (
+        np.determiner is not None
+        and np.article_slot.article_form is not None
+        and np.article_slot.article_form != "zero"
+    ):
+        slots["article"] = np.determiner.ref
+        slots["article_form"] = np.article_slot.article_form
     return ConstructionFeature(
         key=f"construction-{signature}-{np.head}",
         family_hint="article_np",
         type="article_np",
         signature=signature,
-        slots={"np": np.head, "article_form": np.article_slot.article_form or "none"},
+        slots=slots,
         evidence_refs=np.evidence_refs,
         confidence=np.confidence,
         provenance=make_provenance(
@@ -153,10 +186,16 @@ def _np_construction(np: NPFeature, signature: str) -> ConstructionFeature:
 def _construction_type(signature: str) -> ConstructionType:
     if signature.startswith("present") or signature.startswith("past"):
         return "tense_aspect"
-    if signature.startswith("subject_be") or signature.startswith("be_subject"):
+    if (
+        signature.startswith("subject_be")
+        or signature.startswith("be_subject")
+        or signature.startswith("copular")
+    ):
         return "copular"
     if signature.startswith("modal"):
         return "modal"
+    if signature.endswith("_negative"):
+        return "negation"
     return "complement_pattern"
 
 

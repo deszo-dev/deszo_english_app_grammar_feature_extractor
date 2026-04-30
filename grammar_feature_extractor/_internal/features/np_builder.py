@@ -96,11 +96,12 @@ def _article_slot(
 ) -> ArticleSlotFeature:
     word = ctx.word_by_ref[head]
     if determiner is None:
-        requiredness: ArticleRequiredness = (
-            "zero_article"
-            if ctx.normalized_morph_by_ref[head].is_plural_noun
-            else "missing_required_determiner_candidate"
-        )
+        if word.upos in {"PRON", "PROPN"}:
+            requiredness: ArticleRequiredness = "not_applicable"
+        elif ctx.normalized_morph_by_ref[head].is_plural_noun:
+            requiredness = "zero_article"
+        else:
+            requiredness = "unknown"
         article_form: ArticleForm | None = (
             "zero" if requiredness == "zero_article" else None
         )

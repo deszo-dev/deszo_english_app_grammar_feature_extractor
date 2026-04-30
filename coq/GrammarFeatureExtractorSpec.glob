@@ -1,4 +1,4 @@
-DIGEST 9834c76b85770bdd1733d686f99aa2ea
+DIGEST 98c369e79f744200017bb0fbf84fd273
 FGrammarFeatureExtractorSpec
 R27:37 Stdlib.Arith.Arith <> <> lib
 R67:76 Stdlib.Lists.List <> <> lib
@@ -266,242 +266,363 @@ R3405:3405 GrammarFeatureExtractorSpec <> c:57 var
 rec 3417:3435 GrammarFeatureExtractorSpec ConstructionFeature
 proj 3451:3466 GrammarFeatureExtractorSpec construction_key
 proj 3480:3501 GrammarFeatureExtractorSpec construction_signature
-proj 3515:3531 GrammarFeatureExtractorSpec construction_refs
-proj 3551:3573 GrammarFeatureExtractorSpec construction_provenance
+proj 3515:3536 GrammarFeatureExtractorSpec construction_slot_refs
+proj 3556:3572 GrammarFeatureExtractorSpec construction_refs
+proj 3592:3614 GrammarFeatureExtractorSpec construction_provenance
 R3470:3475 Stdlib.Strings.String <> string ind
 R3505:3510 Stdlib.Strings.String <> string ind
-R3535:3538 Corelib.Init.Datatypes <> list ind
-R3540:3546 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec WordRef def
-R3577:3591 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ProofProvenance rec
-def 3608:3625 GrammarFeatureExtractorSpec valid_construction
-R3632:3648 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedSentence rec
-binder 3628:3628 <> s:63
-R3656:3674 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ConstructionFeature rec
-binder 3652:3652 <> c:64
-R3714:3719 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
-R3708:3711 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
-R3689:3705 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec construction_refs proj
-R3707:3707 GrammarFeatureExtractorSpec <> c:64 var
-R3712:3713 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
-R3762:3767 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
-R3720:3725 Corelib.Lists.ListDef <> Forall ind
-R3742:3758 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec construction_refs proj
-R3760:3760 GrammarFeatureExtractorSpec <> c:64 var
-R3728:3736 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_ref def
-R3738:3738 GrammarFeatureExtractorSpec <> s:63 var
-R3768:3783 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_provenance def
-R3785:3785 GrammarFeatureExtractorSpec <> s:63 var
-R3788:3810 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec construction_provenance proj
-R3812:3812 GrammarFeatureExtractorSpec <> c:64 var
-rec 3824:3837 GrammarFeatureExtractorSpec AbsenceFeature
-proj 3853:3870 GrammarFeatureExtractorSpec absence_anchor_ref
-proj 3885:3902 GrammarFeatureExtractorSpec absence_provenance
-R3874:3880 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec WordRef def
-R3906:3920 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ProofProvenance rec
-def 3937:3949 GrammarFeatureExtractorSpec valid_absence
-R3956:3972 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedSentence rec
-binder 3952:3952 <> s:68
-R3980:3993 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AbsenceFeature rec
-binder 3976:3976 <> a:69
-R4042:4047 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
-R4008:4016 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_ref def
-R4018:4018 GrammarFeatureExtractorSpec <> s:68 var
-R4021:4038 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec absence_anchor_ref proj
-R4040:4040 GrammarFeatureExtractorSpec <> a:69 var
-R4048:4063 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_provenance def
-R4065:4065 GrammarFeatureExtractorSpec <> s:68 var
-R4068:4085 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec absence_provenance proj
-R4087:4087 GrammarFeatureExtractorSpec <> a:69 var
-rec 4099:4114 GrammarFeatureExtractorSpec SentenceFeatures
-proj 4130:4140 GrammarFeatureExtractorSpec sf_evidence
-proj 4165:4174 GrammarFeatureExtractorSpec sf_clauses
-proj 4200:4212 GrammarFeatureExtractorSpec sf_predicates
-proj 4241:4254 GrammarFeatureExtractorSpec sf_complements
-proj 4284:4299 GrammarFeatureExtractorSpec sf_constructions
-proj 4331:4341 GrammarFeatureExtractorSpec sf_absences
-R4144:4147 Corelib.Init.Datatypes <> list ind
-R4149:4160 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec WordEvidence rec
-R4178:4181 Corelib.Init.Datatypes <> list ind
-R4183:4195 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ClauseFeature rec
-R4216:4219 Corelib.Init.Datatypes <> list ind
-R4221:4236 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec PredicateFeature rec
-R4258:4261 Corelib.Init.Datatypes <> list ind
-R4263:4279 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ComplementFeature rec
-R4303:4306 Corelib.Init.Datatypes <> list ind
-R4308:4326 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ConstructionFeature rec
-R4345:4348 Corelib.Init.Datatypes <> list ind
-R4350:4363 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AbsenceFeature rec
-def 4380:4400 GrammarFeatureExtractorSpec ValidSentenceFeatures
-R4407:4423 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedSentence rec
-binder 4403:4403 <> s:77
-R4431:4446 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
-binder 4427:4427 <> f:78
-R4507:4512 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
-R4461:4466 Corelib.Lists.ListDef <> Forall ind
-R4493:4503 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_evidence proj
-R4505:4505 GrammarFeatureExtractorSpec <> f:78 var
-R4469:4487 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_word_evidence def
-R4489:4489 GrammarFeatureExtractorSpec <> s:77 var
-R4551:4556 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
-R4513:4518 Corelib.Lists.ListDef <> Forall ind
-R4538:4547 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_clauses proj
-R4549:4549 GrammarFeatureExtractorSpec <> f:78 var
-R4521:4532 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_clause def
-R4534:4534 GrammarFeatureExtractorSpec <> s:77 var
-R4601:4606 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
-R4557:4562 Corelib.Lists.ListDef <> Forall ind
-R4585:4597 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_predicates proj
-R4599:4599 GrammarFeatureExtractorSpec <> f:78 var
-R4565:4579 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_predicate def
-R4581:4581 GrammarFeatureExtractorSpec <> s:77 var
-R4653:4658 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
-R4607:4612 Corelib.Lists.ListDef <> Forall ind
-R4636:4649 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_complements proj
-R4651:4651 GrammarFeatureExtractorSpec <> f:78 var
-R4615:4630 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_complement def
-R4632:4632 GrammarFeatureExtractorSpec <> s:77 var
-R4709:4714 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
-R4659:4664 Corelib.Lists.ListDef <> Forall ind
-R4690:4705 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_constructions proj
-R4707:4707 GrammarFeatureExtractorSpec <> f:78 var
-R4667:4684 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_construction def
-R4686:4686 GrammarFeatureExtractorSpec <> s:77 var
-R4715:4720 Corelib.Lists.ListDef <> Forall ind
-R4741:4751 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_absences proj
-R4753:4753 GrammarFeatureExtractorSpec <> f:78 var
-R4723:4735 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_absence def
-R4737:4737 GrammarFeatureExtractorSpec <> s:77 var
-ax 4768:4792 GrammarFeatureExtractorSpec extract_sentence_features
-R4813:4816 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
-R4796:4812 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedSentence rec
-R4817:4832 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
-ax 4846:4874 GrammarFeatureExtractorSpec extraction_preserves_validity
-binder 4887:4887 <> s:81
-R4890:4910 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ValidSentenceFeatures def
-R4912:4912 GrammarFeatureExtractorSpec <> s:81 var
-R4915:4939 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec extract_sentence_features defax
-R4941:4941 GrammarFeatureExtractorSpec <> s:81 var
-prf 4954:4980 GrammarFeatureExtractorSpec valid_word_refs_in_features
-binder 4993:4993 <> s:84
-binder 4995:4995 <> f:85
-R5027:5034 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
-R5002:5022 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ValidSentenceFeatures def
-R5024:5024 GrammarFeatureExtractorSpec <> s:84 var
-R5026:5026 GrammarFeatureExtractorSpec <> f:85 var
-R5035:5040 Corelib.Lists.ListDef <> Forall ind
-R5067:5077 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_evidence proj
-R5079:5079 GrammarFeatureExtractorSpec <> f:85 var
-R5043:5061 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_word_evidence def
-R5063:5063 GrammarFeatureExtractorSpec <> s:84 var
-prf 5150:5173 GrammarFeatureExtractorSpec predicate_refs_are_valid
-binder 5186:5186 <> s:86
-binder 5188:5188 <> f:87
-R5220:5227 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
-R5195:5215 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ValidSentenceFeatures def
-R5217:5217 GrammarFeatureExtractorSpec <> s:86 var
-R5219:5219 GrammarFeatureExtractorSpec <> f:87 var
-R5228:5233 Corelib.Lists.ListDef <> Forall ind
-R5256:5268 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_predicates proj
-R5270:5270 GrammarFeatureExtractorSpec <> f:87 var
-R5236:5250 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_predicate def
-R5252:5252 GrammarFeatureExtractorSpec <> s:86 var
-rec 5356:5377 GrammarFeatureExtractorSpec GrammarFeatureDocument
-proj 5393:5414 GrammarFeatureExtractorSpec feature_schema_version
-proj 5428:5444 GrammarFeatureExtractorSpec feature_sentences
-R5418:5423 Stdlib.Strings.String <> string ind
-R5448:5451 Corelib.Init.Datatypes <> list ind
-R5453:5468 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
-def 5485:5496 GrammarFeatureExtractorSpec extract_core
-R5507:5523 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedDocument rec
-binder 5499:5503 <> input:91
-R5528:5549 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec GrammarFeatureDocument rec
-R5563:5584 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_schema_version proj
-R5563:5584 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_schema_version proj
-R5563:5584 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_schema_version proj
-R5609:5625 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_sentences proj
-R5609:5625 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_sentences proj
-R5589:5602 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec schema_version def
-R5630:5632 Corelib.Lists.ListDef <> map def
-R5661:5673 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec doc_sentences proj
-R5675:5679 GrammarFeatureExtractorSpec <> input:91 var
-R5634:5658 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec extract_sentence_features defax
-prf 5697:5723 GrammarFeatureExtractorSpec extraction_is_deterministic
-binder 5736:5740 <> input:92
-R5761:5763 Corelib.Init.Logic <> ::type_scope:x_'='_x not
-R5743:5754 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec extract_core def
-R5756:5760 GrammarFeatureExtractorSpec <> input:92 var
-R5764:5775 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec extract_core def
-R5777:5781 GrammarFeatureExtractorSpec <> input:92 var
-rec 5817:5828 GrammarFeatureExtractorSpec PagingConfig
-proj 5844:5854 GrammarFeatureExtractorSpec page_number
-proj 5865:5873 GrammarFeatureExtractorSpec page_size
-R5858:5860 Corelib.Init.Datatypes <> nat ind
-R5877:5879 Corelib.Init.Datatypes <> nat ind
-def 5896:5914 GrammarFeatureExtractorSpec valid_paging_config
-R5921:5932 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec PagingConfig rec
-binder 5917:5917 <> p:96
-R5964:5967 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
-R5960:5962 Corelib.Init.Peano <> ::nat_scope:x_'>'_x not
-R5947:5957 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_number proj
-R5959:5959 GrammarFeatureExtractorSpec <> p:96 var
-R5979:5981 Corelib.Init.Peano <> ::nat_scope:x_'>'_x not
-R5968:5976 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_size proj
-R5978:5978 GrammarFeatureExtractorSpec <> p:96 var
-def 5997:6017 GrammarFeatureExtractorSpec default_paging_config
-R6021:6032 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec PagingConfig rec
-R6042:6052 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_number proj
-R6042:6052 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_number proj
-R6042:6052 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_number proj
-R6060:6068 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_size proj
-R6060:6068 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_size proj
-R6073:6089 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec default_page_size def
-prf 6104:6130 GrammarFeatureExtractorSpec default_paging_config_valid
-R6136:6154 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_paging_config def
-R6156:6176 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec default_paging_config def
-R6195:6213 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_paging_config def
-R6216:6236 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec default_paging_config def
-R6239:6255 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec default_page_size def
-rec 6283:6300 GrammarFeatureExtractorSpec GrammarFeaturePage
-proj 6316:6328 GrammarFeatureExtractorSpec page_features
-proj 6357:6376 GrammarFeatureExtractorSpec page_total_sentences
-R6332:6335 Corelib.Init.Datatypes <> list ind
-R6337:6352 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
-R6380:6382 Corelib.Init.Datatypes <> nat ind
-def 6399:6423 GrammarFeatureExtractorSpec paginate_feature_document
-R6433:6444 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec PagingConfig rec
-binder 6428:6429 <> _p:100
-R6454:6475 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec GrammarFeatureDocument rec
-binder 6450:6450 <> d:101
-R6480:6497 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec GrammarFeaturePage rec
-R6507:6519 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_features proj
-R6507:6519 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_features proj
-R6507:6519 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_features proj
-R6550:6569 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_total_sentences proj
-R6550:6569 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_total_sentences proj
-R6524:6540 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_sentences proj
-R6542:6542 GrammarFeatureExtractorSpec <> d:101 var
-R6574:6584 Stdlib.Lists.List <> length abbrev
-R6587:6603 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_sentences proj
-R6605:6605 GrammarFeatureExtractorSpec <> d:101 var
-prf 6621:6658 GrammarFeatureExtractorSpec pagination_preserves_sentence_features
-binder 6671:6671 <> p:102
-binder 6673:6673 <> d:103
-R6725:6727 Corelib.Init.Logic <> ::type_scope:x_'='_x not
-R6680:6692 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_features proj
-R6695:6719 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec paginate_feature_document def
-R6721:6721 GrammarFeatureExtractorSpec <> p:102 var
-R6723:6723 GrammarFeatureExtractorSpec <> d:103 var
-R6728:6744 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_sentences proj
-R6746:6746 GrammarFeatureExtractorSpec <> d:103 var
-def 6786:6798 GrammarFeatureExtractorSpec observe_debug
-R6807:6828 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec GrammarFeatureDocument rec
-binder 6801:6803 <> doc:104
-R6833:6854 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec GrammarFeatureDocument rec
-R6859:6861 GrammarFeatureExtractorSpec <> doc:104 var
-prf 6873:6902 GrammarFeatureExtractorSpec debug_does_not_change_features
-binder 6915:6917 <> doc:105
-R6937:6939 Corelib.Init.Logic <> ::type_scope:x_'='_x not
-R6920:6932 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec observe_debug def
-R6934:6936 GrammarFeatureExtractorSpec <> doc:105 var
-R6940:6942 GrammarFeatureExtractorSpec <> doc:105 var
-R6975:7001 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec <> mod
+R3540:3543 Corelib.Init.Datatypes <> list ind
+R3545:3551 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec WordRef def
+R3576:3579 Corelib.Init.Datatypes <> list ind
+R3581:3587 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec WordRef def
+R3618:3632 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ProofProvenance rec
+def 3649:3660 GrammarFeatureExtractorSpec no_zero_refs
+R3670:3673 Corelib.Init.Datatypes <> list ind
+R3675:3681 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec WordRef def
+binder 3663:3666 <> refs:64
+R3696:3701 Corelib.Lists.ListDef <> Forall ind
+R3716:3719 GrammarFeatureExtractorSpec <> refs:64 var
+R3703:3714 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec positive_ref def
+def 3734:3751 GrammarFeatureExtractorSpec valid_construction
+R3758:3774 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedSentence rec
+binder 3754:3754 <> s:65
+R3782:3800 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ConstructionFeature rec
+binder 3778:3778 <> c:66
+R3840:3845 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R3834:3837 Corelib.Init.Logic <> ::type_scope:x_'<>'_x not
+R3815:3831 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec construction_refs proj
+R3833:3833 GrammarFeatureExtractorSpec <> c:66 var
+R3838:3839 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R3885:3890 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R3846:3857 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec no_zero_refs def
+R3860:3881 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec construction_slot_refs proj
+R3883:3883 GrammarFeatureExtractorSpec <> c:66 var
+R3938:3943 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R3891:3896 Corelib.Lists.ListDef <> Forall ind
+R3913:3934 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec construction_slot_refs proj
+R3936:3936 GrammarFeatureExtractorSpec <> c:66 var
+R3899:3907 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_ref def
+R3909:3909 GrammarFeatureExtractorSpec <> s:65 var
+R3986:3991 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R3944:3949 Corelib.Lists.ListDef <> Forall ind
+R3966:3982 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec construction_refs proj
+R3984:3984 GrammarFeatureExtractorSpec <> c:66 var
+R3952:3960 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_ref def
+R3962:3962 GrammarFeatureExtractorSpec <> s:65 var
+R3992:4007 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_provenance def
+R4009:4009 GrammarFeatureExtractorSpec <> s:65 var
+R4012:4034 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec construction_provenance proj
+R4036:4036 GrammarFeatureExtractorSpec <> c:66 var
+rec 4048:4061 GrammarFeatureExtractorSpec AbsenceFeature
+proj 4077:4094 GrammarFeatureExtractorSpec absence_anchor_ref
+proj 4109:4126 GrammarFeatureExtractorSpec absence_provenance
+R4098:4104 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec WordRef def
+R4130:4144 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ProofProvenance rec
+def 4161:4173 GrammarFeatureExtractorSpec valid_absence
+R4180:4196 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedSentence rec
+binder 4176:4176 <> s:70
+R4204:4217 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AbsenceFeature rec
+binder 4200:4200 <> a:71
+R4266:4271 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R4232:4240 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_ref def
+R4242:4242 GrammarFeatureExtractorSpec <> s:70 var
+R4245:4262 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec absence_anchor_ref proj
+R4264:4264 GrammarFeatureExtractorSpec <> a:71 var
+R4272:4287 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_provenance def
+R4289:4289 GrammarFeatureExtractorSpec <> s:70 var
+R4292:4309 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec absence_provenance proj
+R4311:4311 GrammarFeatureExtractorSpec <> a:71 var
+rec 4323:4338 GrammarFeatureExtractorSpec SentenceFeatures
+proj 4354:4364 GrammarFeatureExtractorSpec sf_evidence
+proj 4389:4398 GrammarFeatureExtractorSpec sf_clauses
+proj 4424:4436 GrammarFeatureExtractorSpec sf_predicates
+proj 4465:4478 GrammarFeatureExtractorSpec sf_complements
+proj 4508:4523 GrammarFeatureExtractorSpec sf_constructions
+proj 4555:4565 GrammarFeatureExtractorSpec sf_absences
+R4368:4371 Corelib.Init.Datatypes <> list ind
+R4373:4384 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec WordEvidence rec
+R4402:4405 Corelib.Init.Datatypes <> list ind
+R4407:4419 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ClauseFeature rec
+R4440:4443 Corelib.Init.Datatypes <> list ind
+R4445:4460 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec PredicateFeature rec
+R4482:4485 Corelib.Init.Datatypes <> list ind
+R4487:4503 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ComplementFeature rec
+R4527:4530 Corelib.Init.Datatypes <> list ind
+R4532:4550 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ConstructionFeature rec
+R4569:4572 Corelib.Init.Datatypes <> list ind
+R4574:4587 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AbsenceFeature rec
+def 4604:4624 GrammarFeatureExtractorSpec ValidSentenceFeatures
+R4631:4647 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedSentence rec
+binder 4627:4627 <> s:79
+R4655:4670 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+binder 4651:4651 <> f:80
+R4731:4736 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R4685:4690 Corelib.Lists.ListDef <> Forall ind
+R4717:4727 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_evidence proj
+R4729:4729 GrammarFeatureExtractorSpec <> f:80 var
+R4693:4711 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_word_evidence def
+R4713:4713 GrammarFeatureExtractorSpec <> s:79 var
+R4775:4780 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R4737:4742 Corelib.Lists.ListDef <> Forall ind
+R4762:4771 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_clauses proj
+R4773:4773 GrammarFeatureExtractorSpec <> f:80 var
+R4745:4756 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_clause def
+R4758:4758 GrammarFeatureExtractorSpec <> s:79 var
+R4825:4830 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R4781:4786 Corelib.Lists.ListDef <> Forall ind
+R4809:4821 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_predicates proj
+R4823:4823 GrammarFeatureExtractorSpec <> f:80 var
+R4789:4803 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_predicate def
+R4805:4805 GrammarFeatureExtractorSpec <> s:79 var
+R4877:4882 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R4831:4836 Corelib.Lists.ListDef <> Forall ind
+R4860:4873 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_complements proj
+R4875:4875 GrammarFeatureExtractorSpec <> f:80 var
+R4839:4854 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_complement def
+R4856:4856 GrammarFeatureExtractorSpec <> s:79 var
+R4933:4938 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R4883:4888 Corelib.Lists.ListDef <> Forall ind
+R4914:4929 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_constructions proj
+R4931:4931 GrammarFeatureExtractorSpec <> f:80 var
+R4891:4908 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_construction def
+R4910:4910 GrammarFeatureExtractorSpec <> s:79 var
+R4939:4944 Corelib.Lists.ListDef <> Forall ind
+R4965:4975 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_absences proj
+R4977:4977 GrammarFeatureExtractorSpec <> f:80 var
+R4947:4959 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_absence def
+R4961:4961 GrammarFeatureExtractorSpec <> s:79 var
+def 4993:5018 GrammarFeatureExtractorSpec NoZeroConstructionSlotRefs
+R5025:5040 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+binder 5021:5021 <> f:81
+R5055:5060 Corelib.Lists.ListDef <> Forall ind
+R5114:5129 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_constructions proj
+R5131:5131 GrammarFeatureExtractorSpec <> f:81 var
+binder 5067:5067 <> c:82
+R5072:5083 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec no_zero_refs def
+R5086:5107 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec construction_slot_refs proj
+R5109:5109 GrammarFeatureExtractorSpec <> c:82 var
+ax 5146:5176 GrammarFeatureExtractorSpec RegisteredConstructionSignature
+R5186:5189 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5180:5185 Stdlib.Strings.String <> string ind
+ax 5206:5229 GrammarFeatureExtractorSpec RegisteredDiagnosticCode
+R5239:5242 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5233:5238 Stdlib.Strings.String <> string ind
+ax 5259:5277 GrammarFeatureExtractorSpec RegisteredEnumValue
+R5287:5290 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5281:5286 Stdlib.Strings.String <> string ind
+R5297:5300 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R5291:5296 Stdlib.Strings.String <> string ind
+def 5319:5354 GrammarFeatureExtractorSpec RegisteredConstructionSignaturesOnly
+R5361:5376 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+binder 5357:5357 <> f:89
+R5391:5396 Corelib.Lists.ListDef <> Forall ind
+R5477:5492 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_constructions proj
+R5494:5494 GrammarFeatureExtractorSpec <> f:89 var
+binder 5407:5407 <> c:90
+R5412:5442 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec RegisteredConstructionSignature defax
+R5445:5466 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec construction_signature proj
+R5468:5468 GrammarFeatureExtractorSpec <> c:90 var
+def 5510:5538 GrammarFeatureExtractorSpec RegisteredDiagnosticCodesOnly
+R5546:5561 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+binder 5541:5542 <> _f:91
+R5574:5577 Corelib.Init.Logic <> True ind
+def 5592:5615 GrammarFeatureExtractorSpec RegisteredEnumValuesOnly
+R5623:5638 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+binder 5618:5619 <> _f:92
+R5651:5654 Corelib.Init.Logic <> True ind
+def 5669:5693 GrammarFeatureExtractorSpec ValidConstructionSlotRefs
+R5700:5716 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedSentence rec
+binder 5696:5696 <> s:93
+R5724:5739 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+binder 5720:5720 <> f:94
+R5754:5759 Corelib.Lists.ListDef <> Forall ind
+R5829:5844 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_constructions proj
+R5846:5846 GrammarFeatureExtractorSpec <> f:94 var
+binder 5770:5770 <> c:95
+R5775:5780 Corelib.Lists.ListDef <> Forall ind
+R5797:5818 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec construction_slot_refs proj
+R5820:5820 GrammarFeatureExtractorSpec <> c:95 var
+R5783:5791 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_ref def
+R5793:5793 GrammarFeatureExtractorSpec <> s:93 var
+def 5862:5880 GrammarFeatureExtractorSpec ValidAbsenceAnchors
+R5887:5903 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedSentence rec
+binder 5883:5883 <> s:96
+R5911:5926 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+binder 5907:5907 <> f:97
+R5941:5946 Corelib.Lists.ListDef <> Forall ind
+R5967:5977 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_absences proj
+R5979:5979 GrammarFeatureExtractorSpec <> f:97 var
+R5949:5961 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_absence def
+R5963:5963 GrammarFeatureExtractorSpec <> s:96 var
+def 5995:6013 GrammarFeatureExtractorSpec ValidProvenanceRefs
+R6020:6036 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedSentence rec
+binder 6016:6016 <> s:98
+R6044:6059 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+binder 6040:6040 <> f:99
+R6112:6117 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R6074:6079 Corelib.Lists.ListDef <> Forall ind
+R6099:6108 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_clauses proj
+R6110:6110 GrammarFeatureExtractorSpec <> f:99 var
+R6082:6093 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_clause def
+R6095:6095 GrammarFeatureExtractorSpec <> s:98 var
+R6162:6167 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R6118:6123 Corelib.Lists.ListDef <> Forall ind
+R6146:6158 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_predicates proj
+R6160:6160 GrammarFeatureExtractorSpec <> f:99 var
+R6126:6140 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_predicate def
+R6142:6142 GrammarFeatureExtractorSpec <> s:98 var
+R6214:6219 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R6168:6173 Corelib.Lists.ListDef <> Forall ind
+R6197:6210 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_complements proj
+R6212:6212 GrammarFeatureExtractorSpec <> f:99 var
+R6176:6191 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_complement def
+R6193:6193 GrammarFeatureExtractorSpec <> s:98 var
+R6270:6275 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R6220:6225 Corelib.Lists.ListDef <> Forall ind
+R6251:6266 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_constructions proj
+R6268:6268 GrammarFeatureExtractorSpec <> f:99 var
+R6228:6245 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_construction def
+R6247:6247 GrammarFeatureExtractorSpec <> s:98 var
+R6276:6281 Corelib.Lists.ListDef <> Forall ind
+R6302:6312 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_absences proj
+R6314:6314 GrammarFeatureExtractorSpec <> f:99 var
+R6284:6296 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_absence def
+R6298:6298 GrammarFeatureExtractorSpec <> s:98 var
+def 6330:6345 GrammarFeatureExtractorSpec UniqueFeatureIds
+R6353:6368 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+binder 6348:6349 <> _f:100
+R6381:6384 Corelib.Init.Logic <> True ind
+ax 6398:6422 GrammarFeatureExtractorSpec extract_sentence_features
+R6443:6446 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6426:6442 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedSentence rec
+R6447:6462 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+ax 6476:6504 GrammarFeatureExtractorSpec extraction_preserves_validity
+binder 6517:6517 <> s:103
+R6520:6540 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ValidSentenceFeatures def
+R6542:6542 GrammarFeatureExtractorSpec <> s:103 var
+R6545:6569 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec extract_sentence_features defax
+R6571:6571 GrammarFeatureExtractorSpec <> s:103 var
+prf 6584:6610 GrammarFeatureExtractorSpec valid_word_refs_in_features
+binder 6623:6623 <> s:106
+binder 6625:6625 <> f:107
+R6657:6664 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6632:6652 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ValidSentenceFeatures def
+R6654:6654 GrammarFeatureExtractorSpec <> s:106 var
+R6656:6656 GrammarFeatureExtractorSpec <> f:107 var
+R6665:6670 Corelib.Lists.ListDef <> Forall ind
+R6697:6707 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_evidence proj
+R6709:6709 GrammarFeatureExtractorSpec <> f:107 var
+R6673:6691 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_word_evidence def
+R6693:6693 GrammarFeatureExtractorSpec <> s:106 var
+prf 6780:6803 GrammarFeatureExtractorSpec predicate_refs_are_valid
+binder 6816:6816 <> s:108
+binder 6818:6818 <> f:109
+R6850:6857 Corelib.Init.Logic <> ::type_scope:x_'->'_x not
+R6825:6845 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec ValidSentenceFeatures def
+R6847:6847 GrammarFeatureExtractorSpec <> s:108 var
+R6849:6849 GrammarFeatureExtractorSpec <> f:109 var
+R6858:6863 Corelib.Lists.ListDef <> Forall ind
+R6886:6898 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec sf_predicates proj
+R6900:6900 GrammarFeatureExtractorSpec <> f:109 var
+R6866:6880 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_predicate def
+R6882:6882 GrammarFeatureExtractorSpec <> s:108 var
+rec 6986:7007 GrammarFeatureExtractorSpec GrammarFeatureDocument
+proj 7023:7044 GrammarFeatureExtractorSpec feature_schema_version
+proj 7058:7074 GrammarFeatureExtractorSpec feature_sentences
+R7048:7053 Stdlib.Strings.String <> string ind
+R7078:7081 Corelib.Init.Datatypes <> list ind
+R7083:7098 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+def 7115:7126 GrammarFeatureExtractorSpec extract_core
+R7137:7153 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec AnnotatedDocument rec
+binder 7129:7133 <> input:113
+R7158:7179 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec GrammarFeatureDocument rec
+R7193:7214 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_schema_version proj
+R7193:7214 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_schema_version proj
+R7193:7214 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_schema_version proj
+R7239:7255 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_sentences proj
+R7239:7255 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_sentences proj
+R7219:7232 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec schema_version def
+R7260:7262 Corelib.Lists.ListDef <> map def
+R7291:7303 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec doc_sentences proj
+R7305:7309 GrammarFeatureExtractorSpec <> input:113 var
+R7264:7288 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec extract_sentence_features defax
+prf 7327:7353 GrammarFeatureExtractorSpec extraction_is_deterministic
+binder 7366:7370 <> input:114
+R7391:7393 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7373:7384 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec extract_core def
+R7386:7390 GrammarFeatureExtractorSpec <> input:114 var
+R7394:7405 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec extract_core def
+R7407:7411 GrammarFeatureExtractorSpec <> input:114 var
+rec 7447:7458 GrammarFeatureExtractorSpec PagingConfig
+proj 7474:7484 GrammarFeatureExtractorSpec page_number
+proj 7495:7503 GrammarFeatureExtractorSpec page_size
+R7488:7490 Corelib.Init.Datatypes <> nat ind
+R7507:7509 Corelib.Init.Datatypes <> nat ind
+def 7526:7544 GrammarFeatureExtractorSpec valid_paging_config
+R7551:7562 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec PagingConfig rec
+binder 7547:7547 <> p:118
+R7594:7597 Corelib.Init.Logic <> ::type_scope:x_'/\'_x not
+R7590:7592 Corelib.Init.Peano <> ::nat_scope:x_'>'_x not
+R7577:7587 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_number proj
+R7589:7589 GrammarFeatureExtractorSpec <> p:118 var
+R7609:7611 Corelib.Init.Peano <> ::nat_scope:x_'>'_x not
+R7598:7606 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_size proj
+R7608:7608 GrammarFeatureExtractorSpec <> p:118 var
+def 7627:7647 GrammarFeatureExtractorSpec default_paging_config
+R7651:7662 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec PagingConfig rec
+R7672:7682 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_number proj
+R7672:7682 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_number proj
+R7672:7682 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_number proj
+R7690:7698 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_size proj
+R7690:7698 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_size proj
+R7703:7719 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec default_page_size def
+prf 7734:7760 GrammarFeatureExtractorSpec default_paging_config_valid
+R7766:7784 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_paging_config def
+R7786:7806 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec default_paging_config def
+R7825:7843 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec valid_paging_config def
+R7846:7866 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec default_paging_config def
+R7869:7885 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec default_page_size def
+rec 7913:7930 GrammarFeatureExtractorSpec GrammarFeaturePage
+proj 7946:7958 GrammarFeatureExtractorSpec page_features
+proj 7987:8006 GrammarFeatureExtractorSpec page_total_sentences
+R7962:7965 Corelib.Init.Datatypes <> list ind
+R7967:7982 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec SentenceFeatures rec
+R8010:8012 Corelib.Init.Datatypes <> nat ind
+def 8029:8053 GrammarFeatureExtractorSpec paginate_feature_document
+R8063:8074 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec PagingConfig rec
+binder 8058:8059 <> _p:122
+R8084:8105 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec GrammarFeatureDocument rec
+binder 8080:8080 <> d:123
+R8110:8127 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec GrammarFeaturePage rec
+R8137:8149 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_features proj
+R8137:8149 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_features proj
+R8137:8149 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_features proj
+R8180:8199 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_total_sentences proj
+R8180:8199 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_total_sentences proj
+R8154:8170 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_sentences proj
+R8172:8172 GrammarFeatureExtractorSpec <> d:123 var
+R8204:8214 Stdlib.Lists.List <> length abbrev
+R8217:8233 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_sentences proj
+R8235:8235 GrammarFeatureExtractorSpec <> d:123 var
+prf 8251:8288 GrammarFeatureExtractorSpec pagination_preserves_sentence_features
+binder 8301:8301 <> p:124
+binder 8303:8303 <> d:125
+R8355:8357 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8310:8322 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec page_features proj
+R8325:8349 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec paginate_feature_document def
+R8351:8351 GrammarFeatureExtractorSpec <> p:124 var
+R8353:8353 GrammarFeatureExtractorSpec <> d:125 var
+R8358:8374 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec feature_sentences proj
+R8376:8376 GrammarFeatureExtractorSpec <> d:125 var
+def 8416:8428 GrammarFeatureExtractorSpec observe_debug
+R8437:8458 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec GrammarFeatureDocument rec
+binder 8431:8433 <> doc:126
+R8463:8484 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec GrammarFeatureDocument rec
+R8489:8491 GrammarFeatureExtractorSpec <> doc:126 var
+prf 8503:8532 GrammarFeatureExtractorSpec debug_does_not_change_features
+binder 8545:8547 <> doc:127
+R8567:8569 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8550:8562 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec observe_debug def
+R8564:8566 GrammarFeatureExtractorSpec <> doc:127 var
+R8570:8572 GrammarFeatureExtractorSpec <> doc:127 var
+R8605:8631 GrammarFeatureExtractorSpec GrammarFeatureExtractorSpec <> mod

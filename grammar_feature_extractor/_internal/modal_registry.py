@@ -4,5 +4,9 @@ MODAL_LEMMAS = frozenset(
     {"can", "could", "may", "might", "must", "shall", "should", "will", "would"}
 )
 ABILITY_MODALS = frozenset({"can", "could"})
-OBLIGATION_MODALS = frozenset({"must", "should"})
-PREDICTION_MODALS = frozenset({"will", "would", "shall"})
+PERMISSION_MODALS = frozenset({"may"})
+POSSIBILITY_MODALS = frozenset({"might"})
+OBLIGATION_MODALS = frozenset({"must"})
+ADVICE_MODALS = frozenset({"should"})
+PREDICTION_MODALS = frozenset({"will", "shall"})
+CONDITIONAL_MODALS = frozenset({"would"})

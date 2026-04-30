@@ -2,9 +2,15 @@ from __future__ import annotations
 
 from grammar_feature_extractor._internal.models import (
     ClauseFeature,
+    Confidence,
+    LexicalItemFeature,
     NegationFeature,
+    NegationScope,
+    NegationType,
     NegatorType,
+    Polarity,
     PredicateFeature,
+    ProofSource,
     SentenceFeature,
     SentenceKind,
     SentenceType,
@@ -17,6 +23,49 @@ from grammar_feature_extractor._internal.sentence_context import SentenceContext
 WH_WORDS = frozenset(
     {"what", "who", "whom", "whose", "which", "when", "where", "why", "how"}
 )
+STRICT_NEGATORS = frozenset(
+    {"not", "n't", "never", "no", "none", "nothing", "nobody", "neither", "nowhere"}
+)
+NEGATIVE_LIKE_ADVERBS = frozenset({"scarcely", "hardly"})
+NEGATIVE_COORDINATORS = frozenset({"nor"})
+CONTRACTION_SUFFIXES = ("n't", "'m", "'re", "'ve", "'ll", "'s", "'d")
+DISCOURSE_MARKERS = frozenset(
+    {"certainly", "therefore", "however", "but", "then", "indeed", "well"}
+)
+MONTH_NAMES = frozenset(
+    {
+        "jan",
+        "january",
+        "feb",
+        "february",
+        "mar",
+        "march",
+        "apr",
+        "april",
+        "may",
+        "jun",
+        "june",
+        "jul",
+        "july",
+        "aug",
+        "august",
+        "sep",
+        "sept",
+        "september",
+        "oct",
+        "october",
+        "nov",
+        "november",
+        "dec",
+        "december",
+        "yesterday",
+        "today",
+        "tomorrow",
+        "now",
+        "soon",
+        "again",
+    }
+)
 
 
 def build_sentence_feature(
@@ -25,14 +74,20 @@ def build_sentence_feature(
     predicates: tuple[PredicateFeature, ...],
 ) -> SentenceFeature:
     text = ctx.text.rstrip()
-    has_negation = any(predicate.polarity == "negative" for predicate in predicates)
+    negative_count = sum(
+        1 for predicate in predicates if predicate.polarity == "negative"
+    )
+    mixed_count = sum(1 for predicate in predicates if predicate.polarity == "mixed")
+    positive_count = sum(
+        1 for predicate in predicates if predicate.polarity == "positive"
+    )
     has_subject_aux_inversion = _has_subject_aux_inversion(ctx)
     lower_words = tuple(word.text.casefold() for word in ctx.words)
     return SentenceFeature(
         sentence_kind=_sentence_kind(ctx),
         clause_count=len(clauses),
         sentence_type=_sentence_type(ctx, has_subject_aux_inversion),
-        polarity="negative" if has_negation else "positive",
+        polarity=_sentence_polarity(negative_count, mixed_count, positive_count),
         has_subject_aux_inversion=has_subject_aux_inversion,
         has_do_support=any(
             auxiliary.role == "do_support"
@@ -53,7 +108,7 @@ def build_word_order(
     lower_words = tuple(word.text.casefold() for word in ctx.words)
     wh_fronted = bool(lower_words and lower_words[0] in WH_WORDS)
     for predicate in predicates:
-        refs = _predicate_order_refs(predicate)
+        refs, slots = _predicate_order_refs(predicate)
         if not refs:
             continue
         pattern: WordOrderPattern = "unknown"
@@ -78,7 +133,8 @@ def build_word_order(
         items.append(
             WordOrderFeature(
                 pattern=pattern,
-                ordered_refs=tuple(sorted(refs)),
+                ordered_refs=refs,
+                slots=slots,
                 confidence="high" if pattern != "unknown" else "low",
                 provenance=make_provenance(
                     "deterministic",
@@ -96,14 +152,22 @@ def build_negation(
     predicates: tuple[PredicateFeature, ...],
 ) -> tuple[NegationFeature, ...]:
     items: list[NegationFeature] = []
+    predicate_by_ref = {
+        ref: predicate
+        for predicate in predicates
+        for ref in (predicate.main, *(aux.ref for aux in predicate.auxiliaries))
+    }
+    emitted: set[int] = set()
     for predicate in predicates:
         if predicate.negation is None:
             continue
+        emitted.add(predicate.negation)
         negator = _negator(ctx.word_by_ref[predicate.negation].text.casefold())
         items.append(
             NegationFeature(
                 ref=predicate.negation,
                 negator=negator,
+                negation_type=_negation_type(negator),
                 scope="predicate",
                 governor=predicate.main,
                 confidence="high",
@@ -115,21 +179,113 @@ def build_negation(
                 ),
             )
         )
+    for ref in ctx.refs:
+        if ref in emitted:
+            continue
+        lower = ctx.word_by_ref[ref].text.casefold()
+        lemma = (ctx.word_by_ref[ref].lemma or ctx.word_by_ref[ref].text).casefold()
+        negator = _negator(lower)
+        if negator == "unknown" and _is_negative_morph(ctx, ref):
+            negator = _negator(lemma)
+        if negator == "unknown":
+            continue
+        owner = _owning_predicate(ctx, ref, predicate_by_ref)
+        negation_type = _negation_type(negator)
+        scope: NegationScope = "predicate" if owner is not None else "unknown"
+        if negation_type == "negative_determiner":
+            scope = "noun_phrase"
+        if negation_type == "negative_coordinator" and owner is None:
+            scope = "unknown"
+        confidence: Confidence = (
+            "medium" if negation_type == "negative_like_adverb" else "high"
+        )
+        source: ProofSource = (
+            "discourse_heuristic"
+            if negation_type == "negative_like_adverb"
+            else "surface"
+        )
+        refs = (ref,) if owner is None else (ref, owner.main)
+        items.append(
+            NegationFeature(
+                ref=ref,
+                negator=negator,
+                negation_type=negation_type,
+                scope=scope,
+                governor=owner.main if owner is not None else None,
+                confidence=confidence,
+                provenance=make_provenance("heuristic", source, refs, confidence),
+            )
+        )
     return tuple(items)
 
 
-def _predicate_order_refs(predicate: PredicateFeature) -> tuple[int, ...]:
-    refs = [predicate.main]
+def build_lexical_items(
+    ctx: SentenceContext,
+) -> dict[str, tuple[LexicalItemFeature, ...]]:
+    return {
+        "time_markers": tuple(_time_markers(ctx)),
+        "comparisons": tuple(_comparisons(ctx)),
+        "phrasal_verbs": tuple(_phrasal_verbs(ctx)),
+        "discourse_markers": tuple(_discourse_markers(ctx)),
+        "contractions": tuple(_contractions(ctx)),
+        "noun_inflections": tuple(_noun_inflections(ctx)),
+    }
+
+
+def _predicate_order_refs(
+    predicate: PredicateFeature,
+) -> tuple[tuple[int, ...], dict[str, int]]:
+    slots: dict[str, int] = {"predicate": predicate.main}
     if predicate.subject is not None:
-        refs.append(predicate.subject)
-    if predicate.object is not None:
-        refs.append(predicate.object)
-    refs.extend(auxiliary.ref for auxiliary in predicate.auxiliaries)
+        slots["subject"] = predicate.subject
     if predicate.copula is not None:
-        refs.append(predicate.copula)
+        slots["copula"] = predicate.copula
+        slots["complement"] = predicate.main
+        return (
+            _unique_order(
+                predicate.subject,
+                predicate.copula,
+                predicate.main,
+            ),
+            slots,
+        )
+    first_aux = predicate.auxiliaries[0].ref if predicate.auxiliaries else None
+    if first_aux is not None:
+        slots["auxiliary"] = first_aux
+    if predicate.object is not None:
+        slots["object"] = predicate.object
     if predicate.negation is not None:
-        refs.append(predicate.negation)
-    return tuple(refs)
+        slots["negation"] = predicate.negation
+    if first_aux is not None and predicate.negation is not None:
+        return (
+            _unique_order(
+                predicate.subject,
+                first_aux,
+                predicate.negation,
+                predicate.main,
+                predicate.object,
+            ),
+            slots,
+        )
+    if first_aux is not None:
+        return (
+            _unique_order(
+                predicate.subject,
+                first_aux,
+                predicate.main,
+                predicate.object,
+            ),
+            slots,
+        )
+    return _unique_order(predicate.subject, predicate.main, predicate.object), slots
+
+
+def _unique_order(*refs: int | None) -> tuple[int, ...]:
+    ordered: list[int] = []
+    for ref in refs:
+        if ref is not None and ref not in ordered:
+            ordered.append(ref)
+    return tuple(ordered)
 
 
 def _sentence_kind(ctx: SentenceContext) -> SentenceKind:
@@ -187,6 +343,155 @@ def _negator(value: str) -> NegatorType:
         return "none"
     if value == "nothing":
         return "nothing"
+    if value == "nobody":
+        return "nobody"
     if value == "neither":
         return "neither"
+    if value == "nor":
+        return "nor"
+    if value == "nowhere":
+        return "nowhere"
+    if value == "scarcely":
+        return "scarcely"
+    if value == "hardly":
+        return "hardly"
     return "unknown"
+
+
+def _negation_type(negator: NegatorType) -> NegationType:
+    if negator == "no":
+        return "negative_determiner"
+    if negator in {"none", "nothing", "nobody", "nowhere"}:
+        return "negative_pronoun"
+    if negator == "nor":
+        return "negative_coordinator"
+    if negator in {"scarcely", "hardly"}:
+        return "negative_like_adverb"
+    if negator != "unknown":
+        return "strict_negator"
+    return "unknown"
+
+
+def _is_negative_morph(ctx: SentenceContext, ref: int) -> bool:
+    features = ctx.morph_by_ref[ref].features
+    return features.get("Polarity") == "Neg" or features.get("PronType") == "Neg"
+
+
+def _owning_predicate(
+    ctx: SentenceContext,
+    ref: int,
+    predicate_by_ref: dict[int, PredicateFeature],
+) -> PredicateFeature | None:
+    head = ctx.word_by_ref[ref].head
+    if head in predicate_by_ref:
+        return predicate_by_ref[head]
+    if head != 0:
+        grand_head = ctx.word_by_ref[head].head
+        if grand_head in predicate_by_ref:
+            return predicate_by_ref[grand_head]
+    if ref in predicate_by_ref:
+        return predicate_by_ref[ref]
+    return None
+
+
+def _sentence_polarity(
+    negative_count: int,
+    mixed_count: int,
+    positive_count: int,
+) -> Polarity:
+    if mixed_count:
+        return "mixed"
+    if negative_count and positive_count:
+        return "mixed"
+    if negative_count:
+        return "negative"
+    return "positive"
+
+
+def _time_markers(ctx: SentenceContext) -> list[LexicalItemFeature]:
+    items: list[LexicalItemFeature] = []
+    for ref in ctx.refs:
+        lower = ctx.word_by_ref[ref].text.strip(".").casefold()
+        if lower in MONTH_NAMES or lower.isdigit():
+            confidence: Confidence = "high" if lower in MONTH_NAMES else "medium"
+            items.append(_lexical_item(ctx, "time_marker", (ref,), confidence))
+    return items
+
+
+def _comparisons(ctx: SentenceContext) -> list[LexicalItemFeature]:
+    items: list[LexicalItemFeature] = []
+    for ref in ctx.refs:
+        lower = ctx.word_by_ref[ref].text.casefold()
+        features = ctx.morph_by_ref[ref].features
+        if features.get("Degree") in {"Cmp", "Sup"} or lower in {
+            "more",
+            "most",
+            "less",
+            "least",
+        }:
+            items.append(_lexical_item(ctx, "comparison", (ref,), "high"))
+    lowers = {ctx.word_by_ref[ref].text.casefold() for ref in ctx.refs}
+    if "as" in lowers:
+        as_refs = tuple(
+            ref for ref in ctx.refs if ctx.word_by_ref[ref].text.casefold() == "as"
+        )
+        if len(as_refs) >= 2:
+            items.append(_lexical_item(ctx, "comparison_as_as", as_refs[:2], "medium"))
+    return items
+
+
+def _phrasal_verbs(ctx: SentenceContext) -> list[LexicalItemFeature]:
+    return [
+        _lexical_item(
+            ctx,
+            "phrasal_verb_particle",
+            (ctx.word_by_ref[ref].head, ref),
+            "high",
+        )
+        for ref in ctx.refs
+        if ctx.word_by_ref[ref].deprel == "compound:prt"
+        and ctx.word_by_ref[ref].head != 0
+    ]
+
+
+def _discourse_markers(ctx: SentenceContext) -> list[LexicalItemFeature]:
+    return [
+        _lexical_item(ctx, "discourse_marker", (ref,), "medium")
+        for ref in ctx.refs
+        if ctx.word_by_ref[ref].text.strip(",.").casefold() in DISCOURSE_MARKERS
+    ]
+
+
+def _contractions(ctx: SentenceContext) -> list[LexicalItemFeature]:
+    return [
+        _lexical_item(ctx, "contraction", (ref,), "high")
+        for ref in ctx.refs
+        if ctx.word_by_ref[ref].text.casefold().endswith(CONTRACTION_SUFFIXES)
+    ]
+
+
+def _noun_inflections(ctx: SentenceContext) -> list[LexicalItemFeature]:
+    items: list[LexicalItemFeature] = []
+    for ref in ctx.refs:
+        normalized = ctx.normalized_morph_by_ref[ref]
+        if normalized.is_plural_noun:
+            items.append(_lexical_item(ctx, "plural_noun", (ref,), "high"))
+        elif normalized.is_singular_noun:
+            items.append(_lexical_item(ctx, "singular_noun", (ref,), "high"))
+    return items
+
+
+def _lexical_item(
+    ctx: SentenceContext,
+    kind: str,
+    refs: tuple[int, ...],
+    confidence: Confidence,
+) -> LexicalItemFeature:
+    text = " ".join(ctx.word_by_ref[ref].text for ref in refs)
+    return LexicalItemFeature(
+        kind=kind,
+        refs=refs,
+        text=text,
+        confidence=confidence,
+        provenance=make_provenance("deterministic", "surface", refs, confidence),
+    )

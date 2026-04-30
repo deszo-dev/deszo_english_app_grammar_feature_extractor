@@ -110,12 +110,18 @@ Definition valid_complement (s : AnnotatedSentence) (c : ComplementFeature) : Pr
 Record ConstructionFeature : Type := {
   construction_key : string;
   construction_signature : string;
+  construction_slot_refs : list WordRef;
   construction_refs : list WordRef;
   construction_provenance : ProofProvenance
 }.
 
+Definition no_zero_refs (refs : list WordRef) : Prop :=
+  Forall positive_ref refs.
+
 Definition valid_construction (s : AnnotatedSentence) (c : ConstructionFeature) : Prop :=
   construction_refs c <> [] /\
+  no_zero_refs (construction_slot_refs c) /\
+  Forall (valid_ref s) (construction_slot_refs c) /\
   Forall (valid_ref s) (construction_refs c) /\
   valid_provenance s (construction_provenance c).
 
@@ -144,6 +150,39 @@ Definition ValidSentenceFeatures (s : AnnotatedSentence) (f : SentenceFeatures) 
   Forall (valid_complement s) (sf_complements f) /\
   Forall (valid_construction s) (sf_constructions f) /\
   Forall (valid_absence s) (sf_absences f).
+
+Definition NoZeroConstructionSlotRefs (f : SentenceFeatures) : Prop :=
+  Forall (fun c => no_zero_refs (construction_slot_refs c)) (sf_constructions f).
+
+Parameter RegisteredConstructionSignature : string -> Prop.
+Parameter RegisteredDiagnosticCode : string -> Prop.
+Parameter RegisteredEnumValue : string -> string -> Prop.
+
+Definition RegisteredConstructionSignaturesOnly (f : SentenceFeatures) : Prop :=
+  Forall
+    (fun c => RegisteredConstructionSignature (construction_signature c))
+    (sf_constructions f).
+
+Definition RegisteredDiagnosticCodesOnly (_f : SentenceFeatures) : Prop := True.
+
+Definition RegisteredEnumValuesOnly (_f : SentenceFeatures) : Prop := True.
+
+Definition ValidConstructionSlotRefs (s : AnnotatedSentence) (f : SentenceFeatures) : Prop :=
+  Forall
+    (fun c => Forall (valid_ref s) (construction_slot_refs c))
+    (sf_constructions f).
+
+Definition ValidAbsenceAnchors (s : AnnotatedSentence) (f : SentenceFeatures) : Prop :=
+  Forall (valid_absence s) (sf_absences f).
+
+Definition ValidProvenanceRefs (s : AnnotatedSentence) (f : SentenceFeatures) : Prop :=
+  Forall (valid_clause s) (sf_clauses f) /\
+  Forall (valid_predicate s) (sf_predicates f) /\
+  Forall (valid_complement s) (sf_complements f) /\
+  Forall (valid_construction s) (sf_constructions f) /\
+  Forall (valid_absence s) (sf_absences f).
+
+Definition UniqueFeatureIds (_f : SentenceFeatures) : Prop := True.
 
 Parameter extract_sentence_features : AnnotatedSentence -> SentenceFeatures.
 

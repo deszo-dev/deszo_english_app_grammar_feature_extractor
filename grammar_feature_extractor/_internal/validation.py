@@ -172,15 +172,30 @@ def assert_valid_feature_refs(
     for word_order in features.lexical.word_order:
         for ref in word_order.ordered_refs:
             check(ref)
+        for ref in word_order.slots.values():
+            check(ref)
     for negation in features.lexical.negation:
         check(negation.ref)
         if negation.governor is not None:
             check(negation.governor)
+    for lexical_group in (
+        features.lexical.time_markers,
+        features.lexical.comparisons,
+        features.lexical.phrasal_verbs,
+        features.lexical.discourse_markers,
+        features.lexical.contractions,
+        features.lexical.noun_inflections,
+    ):
+        for item in lexical_group:
+            for ref in item.refs:
+                check(ref)
+            for ref in item.provenance.evidence_refs:
+                check(ref)
     for construction in features.constructions:
         for ref in construction.evidence_refs:
             check(ref)
         for value in construction.slots.values():
-            if isinstance(value, int) and value > 0:
+            if isinstance(value, int):
                 check(value)
             if isinstance(value, tuple):
                 for ref in value:

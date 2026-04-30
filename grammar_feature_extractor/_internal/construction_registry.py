@@ -7,10 +7,16 @@ BE_SUBJECT_COMPLEMENT_QUESTION = "be_subject_complement_question"
 THERE_BE_NP = "there_be_np"
 PRESENT_SIMPLE_LEXICAL_AFFIRMATIVE = "present_simple_lexical_affirmative"
 PRESENT_SIMPLE_DO_NEGATIVE = "present_simple_do_negative"
+PRESENT_SIMPLE_DO_NEGATIVE_QUESTION = "present_simple_do_negative_question"
 PRESENT_SIMPLE_DO_QUESTION = "present_simple_do_question"
 PRESENT_PROGRESSIVE_AFFIRMATIVE = "present_progressive_affirmative"
 PRESENT_PERFECT_HAVE_PARTICIPLE = "present_perfect_have_participle"
 PAST_SIMPLE_REGULAR = "past_simple_regular"
+PAST_SIMPLE_NEGATIVE = "past_simple_negative"
+COPULAR_BE_NEGATIVE = "copular_be_negative"
+MODAL_NEGATIVE_BASE = "modal_negative_base"
+PERFECT_NEGATIVE = "perfect_negative"
+PASSIVE_NEGATIVE = "passive_negative"
 MODAL_MUST_BASE = "modal_must_base"
 SEMI_MODAL_BE_ABLE_TO = "semi_modal_be_able_to"
 PASSIVE_BE_PARTICIPLE = "passive_be_participle"
@@ -26,10 +32,16 @@ ConstructionSignature: TypeAlias = Literal[
     "there_be_np",
     "present_simple_lexical_affirmative",
     "present_simple_do_negative",
+    "present_simple_do_negative_question",
     "present_simple_do_question",
     "present_progressive_affirmative",
     "present_perfect_have_participle",
     "past_simple_regular",
+    "past_simple_negative",
+    "copular_be_negative",
+    "modal_negative_base",
+    "perfect_negative",
+    "passive_negative",
     "modal_must_base",
     "semi_modal_be_able_to",
     "passive_be_participle",
@@ -46,10 +58,16 @@ REGISTERED_CONSTRUCTION_SIGNATURES = (
     THERE_BE_NP,
     PRESENT_SIMPLE_LEXICAL_AFFIRMATIVE,
     PRESENT_SIMPLE_DO_NEGATIVE,
+    PRESENT_SIMPLE_DO_NEGATIVE_QUESTION,
     PRESENT_SIMPLE_DO_QUESTION,
     PRESENT_PROGRESSIVE_AFFIRMATIVE,
     PRESENT_PERFECT_HAVE_PARTICIPLE,
     PAST_SIMPLE_REGULAR,
+    PAST_SIMPLE_NEGATIVE,
+    COPULAR_BE_NEGATIVE,
+    MODAL_NEGATIVE_BASE,
+    PERFECT_NEGATIVE,
+    PASSIVE_NEGATIVE,
     MODAL_MUST_BASE,
     SEMI_MODAL_BE_ABLE_TO,
     PASSIVE_BE_PARTICIPLE,

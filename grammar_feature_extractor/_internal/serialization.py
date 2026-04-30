@@ -24,6 +24,7 @@ from grammar_feature_extractor._internal.models import (
     GrammarFeaturePage,
     GrammarFeatureSet,
     LexicalFeatures,
+    LexicalItemFeature,
     ModalFeature,
     MorphFeature,
     MorphologyFeatures,
@@ -419,16 +420,22 @@ def _lexical_to_dict(lexical: LexicalFeatures) -> JsonObject:
         "sentence": _sentence_feature_to_dict(lexical.sentence),
         "word_order": [_word_order_to_dict(item) for item in lexical.word_order],
         "negation": [_negation_to_dict(item) for item in lexical.negation],
-        "time_markers": _empty_feature_array(lexical.time_markers),
+        "time_markers": [_lexical_item_to_dict(item) for item in lexical.time_markers],
         "lexical_classes": _empty_feature_array(lexical.lexical_classes),
         "verb_patterns": _empty_feature_array(lexical.verb_patterns),
         "adjective_patterns": _empty_feature_array(lexical.adjective_patterns),
-        "comparisons": _empty_feature_array(lexical.comparisons),
+        "comparisons": [_lexical_item_to_dict(item) for item in lexical.comparisons],
         "quantifiers": _empty_feature_array(lexical.quantifiers),
-        "phrasal_verbs": _empty_feature_array(lexical.phrasal_verbs),
-        "discourse_markers": _empty_feature_array(lexical.discourse_markers),
-        "contractions": _empty_feature_array(lexical.contractions),
-        "noun_inflections": _empty_feature_array(lexical.noun_inflections),
+        "phrasal_verbs": [
+            _lexical_item_to_dict(item) for item in lexical.phrasal_verbs
+        ],
+        "discourse_markers": [
+            _lexical_item_to_dict(item) for item in lexical.discourse_markers
+        ],
+        "contractions": [_lexical_item_to_dict(item) for item in lexical.contractions],
+        "noun_inflections": [
+            _lexical_item_to_dict(item) for item in lexical.noun_inflections
+        ],
     }
 
 
@@ -499,6 +506,7 @@ def _word_order_to_dict(item: WordOrderFeature) -> JsonObject:
     return {
         "pattern": item.pattern,
         "ordered_refs": list(item.ordered_refs),
+        "slots": dict(item.slots),
         "confidence": item.confidence,
         "provenance": _provenance_to_dict(item.provenance),
     }
@@ -508,6 +516,7 @@ def _negation_to_dict(item: NegationFeature) -> JsonObject:
     result: JsonObject = {
         "ref": item.ref,
         "negator": item.negator,
+        "negation_type": item.negation_type,
         "scope": item.scope,
         "confidence": item.confidence,
         "provenance": _provenance_to_dict(item.provenance),
@@ -515,6 +524,16 @@ def _negation_to_dict(item: NegationFeature) -> JsonObject:
     if item.governor is not None:
         result["governor"] = item.governor
     return result
+
+
+def _lexical_item_to_dict(item: LexicalItemFeature) -> JsonObject:
+    return {
+        "kind": item.kind,
+        "refs": list(item.refs),
+        "text": item.text,
+        "confidence": item.confidence,
+        "provenance": _provenance_to_dict(item.provenance),
+    }
 
 
 def _construction_to_dict(item: ConstructionFeature) -> JsonObject:

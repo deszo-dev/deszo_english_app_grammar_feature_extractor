@@ -14,7 +14,11 @@ from grammar_feature_extractor._internal.features.contrastive_support_builder im
 from grammar_feature_extractor._internal.features.coordination_builder import (
     build_coordination,
 )
+from grammar_feature_extractor._internal.features.diagnostics_builder import (
+    add_baseline_diagnostics,
+)
 from grammar_feature_extractor._internal.features.lexical_builder import (
+    build_lexical_items,
     build_negation,
     build_sentence_feature,
     build_word_order,
@@ -134,6 +138,7 @@ def extract_sentence_features(
     np_profiles = build_np_profiles(context)
     word_order = build_word_order(context, predicates)
     negation = build_negation(context, predicates)
+    lexical_items = build_lexical_items(context)
     constructions = (
         build_constructions(predicates, np_profiles, word_order)
         if config.include_construction_signatures
@@ -145,6 +150,8 @@ def extract_sentence_features(
         else ()
     )
     absences = build_absences(predicates, np_profiles)
+    if config.include_diagnostics:
+        add_baseline_diagnostics(context, predicates, np_profiles, diagnostics)
 
     return GrammarFeatureSet(
         evidence=evidence,
@@ -162,6 +169,12 @@ def extract_sentence_features(
             sentence=build_sentence_feature(context, clauses, predicates),
             word_order=word_order,
             negation=negation,
+            time_markers=lexical_items["time_markers"],
+            comparisons=lexical_items["comparisons"],
+            phrasal_verbs=lexical_items["phrasal_verbs"],
+            discourse_markers=lexical_items["discourse_markers"],
+            contractions=lexical_items["contractions"],
+            noun_inflections=lexical_items["noun_inflections"],
         ),
         constructions=constructions,
         contrastive_support=contrastive_support,
