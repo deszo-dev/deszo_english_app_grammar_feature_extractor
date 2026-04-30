@@ -1,0 +1,41 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+
+# Packaging and build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Coverage and test output
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Coq/Rocq compiled artifacts
+*.vo
+*.vos
+*.vok
+*.glob
+.*.aux
+.lia.cache
+
+# Local editor and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+Thumbs.db
+Desktop.ini
