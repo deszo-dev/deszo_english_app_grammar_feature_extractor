@@ -18,11 +18,13 @@
 - Reject raw text and malformed JSON as expected errors.
 - Derive `WordRef` from sentence word order and verify sentence-local feature refs.
 - Extract documented syntax mappings: phrases, clause-local roles and valency,
-  predicate groups, complements, coordination, subordination, and NP profiles.
+  complements, coordination, subordination, predicates, and NP profiles.
 - Extract predicate-local TAVM and agreement from UD `feats`, auxiliaries,
-  passive signals, modals, copulas, and finite subject/predicate morphology.
-- Extract lexical heuristics for question type, comparatives, phrasal verbs,
-  discourse markers, and complexity.
+  passive signals, modals, copulas, and finite subject/predicate morphology once
+  the predicate layer is enabled.
+- Extract lexical features for sentence type, polarity, inversion, negation,
+  comparisons, phrasal verbs, discourse markers, and time markers as those
+  layers are enabled.
 - Emit deterministic diagnostics for graceful degradation.
 - Preserve stable JSON field order and omit optional `None` fields.
 - Keep diagnostics as an always-present field, using `[]` when disabled.

@@ -87,6 +87,43 @@ def assert_valid_feature_refs(
         check(word_morph.ref)
     for normalized_morph in features.morphology.normalized:
         check(normalized_morph.ref)
+    for phrase in features.syntax.phrases:
+        check(phrase.head)
+        for ref in phrase.tokens:
+            check(ref)
+    for clause in features.syntax.clauses:
+        check(clause.head)
+        if clause.subject is not None:
+            check(clause.subject)
+        if clause.predicate is not None:
+            check(clause.predicate)
+        if clause.marker is not None:
+            check(clause.marker.marker_ref)
+            check(clause.marker.clause_head)
+        if clause.roles.subject is not None:
+            check(clause.roles.subject)
+        if clause.roles.object is not None:
+            check(clause.roles.object)
+        if clause.roles.indirect_object is not None:
+            check(clause.roles.indirect_object)
+        for ref in clause.roles.oblique:
+            check(ref)
+        for ref in clause.tokens:
+            check(ref)
+        for ref in clause.local_tokens:
+            check(ref)
+    for complement in features.syntax.complements:
+        check(complement.governor)
+        check(complement.head)
+        for ref in complement.evidence_refs:
+            check(ref)
+    for coordination in features.syntax.coordination:
+        check(coordination.head)
+        for ref in coordination.conjuncts:
+            check(ref)
+    for marker in features.syntax.subordination:
+        check(marker.marker_ref)
+        check(marker.clause_head)
     for diagnostic in features.diagnostics:
         for ref in diagnostic.refs:
             check(ref)

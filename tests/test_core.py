@@ -96,6 +96,24 @@ def test_no_evidence_keeps_empty_evidence_field_and_internal_morphology() -> Non
     assert feature_set.diagnostics[0].code == "evidence_omitted_by_config"
 
 
+def test_evidence_ref_position_head_lower_and_missing_feats() -> None:
+    raw = sample_document()
+    sentence = raw["sentences"][0]  # type: ignore[index]
+    word = sentence["words"][2]  # type: ignore[index]
+    word.pop("feats", None)  # type: ignore[attr-defined]
+    document = loads_document(json.dumps(raw))
+    evidence = (
+        GrammarFeatureExtractor().extract_page(document).features[0].features.evidence
+    )
+
+    assert evidence.words[2].ref == 3
+    assert evidence.words[2].position == 2
+    assert evidence.words[2].head == 4
+    assert evidence.words[2].lower == "will"
+    assert evidence.words[2].feats == {}
+    assert evidence.dependencies[3].governor == 0
+
+
 def test_suffix_only_comparative_does_not_create_normalized_comparative() -> None:
     words: list[dict[str, object]] = [
         {
@@ -140,6 +158,88 @@ def test_suffix_only_comparative_does_not_create_normalized_comparative() -> Non
     )
 
     assert page.features[0].features.morphology.normalized[0].is_comparative is False
+
+
+def test_normalizes_infinitive_gerund_and_participles() -> None:
+    words: list[dict[str, object]] = [
+        {
+            "text": "To",
+            "lemma": "to",
+            "upos": "PART",
+            "head": 2,
+            "deprel": "mark",
+            "start_char": 0,
+            "end_char": 2,
+        },
+        {
+            "text": "go",
+            "lemma": "go",
+            "upos": "VERB",
+            "feats": "VerbForm=Inf",
+            "head": 0,
+            "deprel": "root",
+            "start_char": 3,
+            "end_char": 5,
+        },
+        {
+            "text": "running",
+            "lemma": "run",
+            "upos": "VERB",
+            "feats": "VerbForm=Ger",
+            "head": 2,
+            "deprel": "advcl",
+            "start_char": 6,
+            "end_char": 13,
+        },
+        {
+            "text": "written",
+            "lemma": "write",
+            "upos": "VERB",
+            "xpos": "VBN",
+            "feats": "VerbForm=Part|Tense=Past",
+            "head": 2,
+            "deprel": "xcomp",
+            "start_char": 14,
+            "end_char": 21,
+        },
+        {
+            "text": "working",
+            "lemma": "work",
+            "upos": "VERB",
+            "xpos": "VBG",
+            "feats": "VerbForm=Part|Tense=Pres",
+            "head": 2,
+            "deprel": "xcomp",
+            "start_char": 22,
+            "end_char": 29,
+        },
+    ]
+    page = GrammarFeatureExtractor().extract_page(
+        loads_document(
+            json.dumps(
+                {
+                    "sentences": [
+                        {
+                            "text": "To go running written working.",
+                            "tokens": [
+                                {"text": str(word["text"]), "words": [word]}
+                                for word in words
+                            ],
+                            "words": words,
+                        }
+                    ],
+                    "entities": [],
+                }
+            )
+        )
+    )
+    normalized = page.features[0].features.morphology.normalized
+
+    assert normalized[1].is_to_infinitive is True
+    assert normalized[1].is_base_verb is True
+    assert normalized[2].is_gerund is True
+    assert normalized[3].is_past_participle is True
+    assert normalized[4].is_present_participle is True
 
 
 def test_strong_comparative_signals_create_normalized_comparative() -> None:

@@ -42,6 +42,63 @@ SentenceType: TypeAlias = Literal[
     "unknown",
 ]
 Polarity: TypeAlias = Literal["positive", "negative", "mixed", "unknown"]
+PhraseType: TypeAlias = Literal["NP", "VP", "PP"]
+ClauseType: TypeAlias = Literal[
+    "root",
+    "ccomp",
+    "xcomp",
+    "advcl",
+    "relcl",
+    "acl",
+    "participle",
+    "infinitive",
+    "conditional",
+    "reported_speech",
+    "unknown",
+]
+MarkerType: TypeAlias = Literal[
+    "finite_subordinator",
+    "infinitive_to",
+    "prepositional_gerund",
+    "comparative_than",
+    "relative_pronoun",
+    "conditional_if",
+    "conditional_unless",
+    "reported_that",
+    "purpose_to",
+    "ambiguous",
+    "unknown",
+]
+ComplementType: TypeAlias = Literal[
+    "object_np",
+    "indirect_object_np",
+    "object_complement_adj",
+    "object_complement_np",
+    "subject_complement_adj",
+    "subject_complement_np",
+    "subject_complement_pp",
+    "to_infinitive",
+    "bare_infinitive",
+    "gerund",
+    "participle_clause",
+    "that_clause",
+    "wh_clause",
+    "prepositional_phrase",
+    "comparative_than_phrase",
+    "as_as_phrase",
+    "unknown",
+]
+SemanticRelation: TypeAlias = Literal[
+    "time",
+    "reason",
+    "condition",
+    "purpose",
+    "result",
+    "contrast",
+    "relative",
+    "reported_content",
+    "unknown",
+]
 
 
 @dataclass(frozen=True, slots=True)
@@ -184,13 +241,80 @@ class SentenceFeature:
 
 
 @dataclass(frozen=True, slots=True)
+class Phrase:
+    type: PhraseType
+    head: WordRef
+    tokens: tuple[WordRef, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class Roles:
+    subject: WordRef | None
+    object: WordRef | None
+    indirect_object: WordRef | None
+    oblique: tuple[WordRef, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class Valency:
+    subject: bool
+    object: bool
+    indirect_object: bool
+
+
+@dataclass(frozen=True, slots=True)
+class ClauseMarkerFeature:
+    marker_ref: WordRef
+    marker: str
+    clause_head: WordRef
+    marker_type: MarkerType
+    confidence: Confidence
+    sources: tuple[FeatureSource, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class ClauseFeature:
+    id: str
+    head: WordRef
+    type: ClauseType
+    finite: bool
+    subject: WordRef | None
+    predicate: WordRef | None
+    marker: ClauseMarkerFeature | None
+    roles: Roles
+    valency: Valency
+    semantic_relation: SemanticRelation | None
+    tokens: tuple[WordRef, ...]
+    local_tokens: tuple[WordRef, ...]
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class PredicateComplementFeature:
+    governor: WordRef
+    head: WordRef
+    type: ComplementType
+    preposition: str | None
+    marker: str | None
+    deprel_source: str
+    evidence_refs: tuple[WordRef, ...]
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class Coordination:
+    head: WordRef
+    conjuncts: tuple[WordRef, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class SyntaxFeatures:
-    phrases: tuple[object, ...] = ()
-    clauses: tuple[object, ...] = ()
+    phrases: tuple[Phrase, ...] = ()
+    clauses: tuple[ClauseFeature, ...] = ()
     predicates: tuple[object, ...] = ()
-    complements: tuple[object, ...] = ()
-    coordination: tuple[object, ...] = ()
-    subordination: tuple[object, ...] = ()
+    complements: tuple[PredicateComplementFeature, ...] = ()
+    coordination: tuple[Coordination, ...] = ()
+    subordination: tuple[ClauseMarkerFeature, ...] = ()
     np_profiles: tuple[object, ...] = ()
     pronouns: tuple[object, ...] = ()
     special_subject_constructions: tuple[object, ...] = ()

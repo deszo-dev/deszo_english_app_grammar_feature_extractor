@@ -69,6 +69,16 @@ M1:
 
 Full matcher readiness belongs to the next milestone.
 
+Checkpoint artifacts:
+
+```text
+tests/fixtures/v3_minimal/
+```
+
+This fixture is the active minimal v3 reference for the shell, evidence,
+morphology, empty-but-present feature groups, and the first structural syntax
+surface.
+
 ## Documentation Rule
 
 If a public schema, semantic rule, CLI flag, diagnostic code, or default behavior

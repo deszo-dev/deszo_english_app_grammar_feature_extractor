@@ -7,6 +7,9 @@ from typing import TypeAlias
 from grammar_feature_extractor._internal.errors import SerializationError
 from grammar_feature_extractor._internal.models import (
     AnnotatedDocument,
+    ClauseFeature,
+    ClauseMarkerFeature,
+    Coordination,
     DependencyEvidence,
     EvidenceFeatures,
     FeatureDiagnostic,
@@ -18,10 +21,14 @@ from grammar_feature_extractor._internal.models import (
     MorphologyFeatures,
     NormalizedMorph,
     PageInfo,
+    Phrase,
+    PredicateComplementFeature,
+    Roles,
     SentenceFeature,
     SentenceGrammarFeatures,
     SyntaxFeatures,
     TokenEvidence,
+    Valency,
 )
 from grammar_feature_extractor._internal.validation import parse_annotated_document
 
@@ -174,12 +181,14 @@ def _normalized_morph_to_dict(item: NormalizedMorph) -> JsonObject:
 
 def _syntax_to_dict(syntax: SyntaxFeatures) -> JsonObject:
     return {
-        "phrases": _empty_feature_array(syntax.phrases),
-        "clauses": _empty_feature_array(syntax.clauses),
+        "phrases": [_phrase_to_dict(item) for item in syntax.phrases],
+        "clauses": [_clause_to_dict(item) for item in syntax.clauses],
         "predicates": _empty_feature_array(syntax.predicates),
-        "complements": _empty_feature_array(syntax.complements),
-        "coordination": _empty_feature_array(syntax.coordination),
-        "subordination": _empty_feature_array(syntax.subordination),
+        "complements": [_complement_to_dict(item) for item in syntax.complements],
+        "coordination": [_coordination_to_dict(item) for item in syntax.coordination],
+        "subordination": [
+            _clause_marker_to_dict(item) for item in syntax.subordination
+        ],
         "np_profiles": _empty_feature_array(syntax.np_profiles),
         "pronouns": _empty_feature_array(syntax.pronouns),
         "special_subject_constructions": _empty_feature_array(
@@ -189,6 +198,90 @@ def _syntax_to_dict(syntax: SyntaxFeatures) -> JsonObject:
         "conditionals": _empty_feature_array(syntax.conditionals),
         "reported_speech": _empty_feature_array(syntax.reported_speech),
         "passive": _empty_feature_array(syntax.passive),
+    }
+
+
+def _phrase_to_dict(item: Phrase) -> JsonObject:
+    return {
+        "type": item.type,
+        "head": item.head,
+        "tokens": list(item.tokens),
+    }
+
+
+def _clause_to_dict(item: ClauseFeature) -> JsonObject:
+    result: JsonObject = {
+        "id": item.id,
+        "head": item.head,
+        "type": item.type,
+        "finite": item.finite,
+        "roles": _roles_to_dict(item.roles),
+        "valency": _valency_to_dict(item.valency),
+        "tokens": list(item.tokens),
+        "local_tokens": list(item.local_tokens),
+        "confidence": item.confidence,
+    }
+    if item.subject is not None:
+        result["subject"] = item.subject
+    if item.predicate is not None:
+        result["predicate"] = item.predicate
+    if item.marker is not None:
+        result["marker"] = _clause_marker_to_dict(item.marker)
+    if item.semantic_relation is not None:
+        result["semantic_relation"] = item.semantic_relation
+    return result
+
+
+def _roles_to_dict(item: Roles) -> JsonObject:
+    result: JsonObject = {"oblique": list(item.oblique)}
+    if item.subject is not None:
+        result["subject"] = item.subject
+    if item.object is not None:
+        result["object"] = item.object
+    if item.indirect_object is not None:
+        result["indirect_object"] = item.indirect_object
+    return result
+
+
+def _valency_to_dict(item: Valency) -> JsonObject:
+    return {
+        "subject": item.subject,
+        "object": item.object,
+        "indirect_object": item.indirect_object,
+    }
+
+
+def _clause_marker_to_dict(item: ClauseMarkerFeature) -> JsonObject:
+    return {
+        "marker_ref": item.marker_ref,
+        "marker": item.marker,
+        "clause_head": item.clause_head,
+        "marker_type": item.marker_type,
+        "confidence": item.confidence,
+        "sources": list(item.sources),
+    }
+
+
+def _complement_to_dict(item: PredicateComplementFeature) -> JsonObject:
+    result: JsonObject = {
+        "governor": item.governor,
+        "head": item.head,
+        "type": item.type,
+        "deprel_source": item.deprel_source,
+        "evidence_refs": list(item.evidence_refs),
+        "confidence": item.confidence,
+    }
+    if item.preposition is not None:
+        result["preposition"] = item.preposition
+    if item.marker is not None:
+        result["marker"] = item.marker
+    return result
+
+
+def _coordination_to_dict(item: Coordination) -> JsonObject:
+    return {
+        "head": item.head,
+        "conjuncts": list(item.conjuncts),
     }
 
 

@@ -1,5 +1,16 @@
 from __future__ import annotations
 
+from grammar_feature_extractor._internal.features.clause_builder import build_clauses
+from grammar_feature_extractor._internal.features.complement_builder import (
+    build_complements,
+)
+from grammar_feature_extractor._internal.features.coordination_builder import (
+    build_coordination,
+)
+from grammar_feature_extractor._internal.features.phrase_builder import build_phrases
+from grammar_feature_extractor._internal.features.subordination_builder import (
+    build_subordination,
+)
 from grammar_feature_extractor._internal.models import (
     SCHEMA_VERSION,
     AnnotatedDocument,
@@ -108,11 +119,19 @@ def extract_sentence_features(
                 feature_path="evidence",
             )
         )
+    subordination = build_subordination(context)
+    clauses = build_clauses(context, subordination, diagnostics)
 
     return GrammarFeatureSet(
         evidence=evidence,
         morphology=_morphology_from_context(context),
-        syntax=SyntaxFeatures(),
+        syntax=SyntaxFeatures(
+            phrases=build_phrases(context),
+            clauses=clauses,
+            complements=build_complements(context),
+            coordination=build_coordination(context),
+            subordination=subordination,
+        ),
         lexical=LexicalFeatures(sentence=_sentence_feature(sentence)),
         constructions=() if config.include_construction_signatures else (),
         contrastive_support=() if config.include_contrastive_support else (),

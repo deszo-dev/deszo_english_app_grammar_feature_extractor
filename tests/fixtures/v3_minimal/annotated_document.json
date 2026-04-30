@@ -1,0 +1,87 @@
+{
+  "sentences": [
+    {
+      "text": "She reads books.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "feats": "Person=3|Number=Sing",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "reads",
+          "words": [
+            {
+              "text": "reads",
+              "lemma": "read",
+              "upos": "VERB",
+              "feats": "Tense=Pres|VerbForm=Fin|Person=3|Number=Sing",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "books",
+          "words": [
+            {
+              "text": "books",
+              "lemma": "book",
+              "upos": "NOUN",
+              "feats": "Number=Plur",
+              "head": 2,
+              "deprel": "obj",
+              "start_char": 10,
+              "end_char": 15
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "feats": "Person=3|Number=Sing",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "reads",
+          "lemma": "read",
+          "upos": "VERB",
+          "feats": "Tense=Pres|VerbForm=Fin|Person=3|Number=Sing",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "books",
+          "lemma": "book",
+          "upos": "NOUN",
+          "feats": "Number=Plur",
+          "head": 2,
+          "deprel": "obj",
+          "start_char": 10,
+          "end_char": 15
+        }
+      ]
+    }
+  ],
+  "entities": []
+}
