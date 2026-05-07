@@ -20,14 +20,21 @@ from grammar_feature_extractor._internal.features.coordination_builder import (
 from grammar_feature_extractor._internal.features.diagnostics_builder import (
     add_baseline_diagnostics,
 )
+from grammar_feature_extractor._internal.features.discourse_builder import (
+    build_discourse_segments,
+)
 from grammar_feature_extractor._internal.features.lexical_builder import (
     build_lexical_items,
     build_negation,
     build_sentence_feature,
     build_word_order,
 )
+from grammar_feature_extractor._internal.features.multiword_cue_builder import (
+    build_multiword_cues,
+)
 from grammar_feature_extractor._internal.features.np_builder import build_np_profiles
 from grammar_feature_extractor._internal.features.passive_builder import (
+    build_participial_clauses,
     build_passive_features,
 )
 from grammar_feature_extractor._internal.features.phrase_builder import build_phrases
@@ -46,6 +53,14 @@ from grammar_feature_extractor._internal.features.special_subject_builder import
 )
 from grammar_feature_extractor._internal.features.subordination_builder import (
     build_subordination,
+)
+from grammar_feature_extractor._internal.features.support_builder import (
+    build_feature_diagnostics,
+    build_feature_support,
+)
+from grammar_feature_extractor._internal.features.time_builder import (
+    attach_future_marking,
+    build_time_expressions,
 )
 from grammar_feature_extractor._internal.models import (
     SCHEMA_VERSION,
@@ -152,15 +167,20 @@ def extract_sentence_features(
     complements = build_complements(context)
     predicates = build_predicates(context, clauses, complements)
     np_profiles = build_np_profiles(context)
+    multiword_cues = build_multiword_cues(context, predicates)
+    time_expressions = build_time_expressions(context)
+    predicates = attach_future_marking(predicates, multiword_cues, time_expressions)
     word_order = build_word_order(context, predicates)
     negation = build_negation(context, predicates)
     lexical_items = build_lexical_items(context)
     pronouns = build_pronouns(context)
     special_subjects = build_special_subject_constructions(context, predicates)
-    relative_clauses = build_relative_clauses(context, clauses)
+    relative_clauses = build_relative_clauses(context, clauses, np_profiles)
     conditionals = build_conditionals(context, clauses, predicates)
     reported_speech = build_reported_speech_features(context, predicates, clauses)
     passive = build_passive_features(context, predicates)
+    participial_clauses = build_participial_clauses(context, np_profiles)
+    discourse = build_discourse_segments(context, predicates, np_profiles)
     constructions = (
         build_constructions(predicates, np_profiles, word_order)
         if config.include_construction_signatures
@@ -189,6 +209,7 @@ def extract_sentence_features(
             pronouns=pronouns,
             special_subject_constructions=special_subjects,
             relative_clauses=relative_clauses,
+            participial_clauses=participial_clauses,
             conditionals=conditionals,
             reported_speech=reported_speech,
             passive=passive,
@@ -203,11 +224,16 @@ def extract_sentence_features(
             discourse_markers=lexical_items["discourse_markers"],
             contractions=lexical_items["contractions"],
             noun_inflections=lexical_items["noun_inflections"],
+            multiword_cues=multiword_cues,
         ),
+        time_expressions=time_expressions,
+        discourse=discourse,
         constructions=constructions,
         contrastive_support=contrastive_support,
         absences=absences,
         diagnostics=tuple(diagnostics) if config.include_diagnostics else (),
+        feature_diagnostics=build_feature_diagnostics(relative_clauses, discourse),
+        feature_support=build_feature_support(),
     )
 
 

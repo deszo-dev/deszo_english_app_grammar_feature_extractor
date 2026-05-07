@@ -87,6 +87,10 @@ def runtime_assets() -> tuple[RuntimeAsset, ...]:
         root / "schema" / "catalog_feature_paths.json",
         root / "schema" / "registered_construction_signatures.json",
         root / "schema" / "registered_enums.json",
+        root
+        / "schema"
+        / "grammar_feature_extractor.v4"
+        / "construction_signature_registry.json",
     )
     return tuple(
         RuntimeAsset(

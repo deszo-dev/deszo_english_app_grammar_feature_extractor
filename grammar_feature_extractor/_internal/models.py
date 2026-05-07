@@ -61,6 +61,9 @@ SentenceType: TypeAlias = Literal[
     "fragment",
     "unknown",
 ]
+QuestionType: TypeAlias = Literal[
+    "none", "wh", "yes_no", "tag", "alternative", "echo", "unknown"
+]
 Polarity: TypeAlias = Literal["positive", "negative", "mixed", "unknown"]
 AuxiliaryRole: TypeAlias = Literal[
     "tense_aux",
@@ -366,8 +369,38 @@ RelativeType: TypeAlias = Literal[
     "reduced_to_infinitive_relative",
     "unknown",
 ]
+RelativeRole: TypeAlias = Literal[
+    "subject", "object", "oblique", "possessive", "unknown"
+]
+DefiningStatus: TypeAlias = Literal["defining", "nondefining", "unknown"]
+CueScopeType: TypeAlias = Literal["predicate", "pp", "unknown"]
+CueScopeStatus: TypeAlias = Literal["resolved", "unresolved"]
+TimeKind: TypeAlias = Literal[
+    "future_specific",
+    "past_specific",
+    "present_now",
+    "present_or_current_day",
+    "habitual_frequency",
+    "past_offset",
+    "duration",
+    "unknown",
+]
+FutureOrientation: TypeAlias = Literal[
+    "explicit_future", "inferred_future", "unknown"
+]
+QuoteSegmentationStatus: TypeAlias = Literal["complete", "partial", "unknown"]
+QuoteType: TypeAlias = Literal["direct_speech", "thought", "quoted_text"]
+FeatureSupportStatus: TypeAlias = Literal[
+    "supported",
+    "partial",
+    "heuristic",
+    "not_supported",
+    "not_supported_in_v4_scope",
+    "disabled",
+    "unknown",
+]
 RelativeMarkerText: TypeAlias = Literal[
-    "who", "which", "that", "where", "whose", "whom"
+    "who", "which", "that", "where", "when", "whose", "whom"
 ]
 ConditionalType: TypeAlias = Literal[
     "zero_conditional_candidate",
@@ -713,12 +746,17 @@ class SentenceFeature:
     sentence_kind: SentenceKind
     clause_count: int
     sentence_type: SentenceType
+    terminal_punctuation: str
+    terminal_question_mark: bool
+    question_type: QuestionType
     polarity: Polarity
     has_subject_aux_inversion: bool
     has_do_support: bool
     has_wh_fronting: bool
     has_tag_question: bool
     has_exclamation_marker: bool
+    sentence_type_confidence: Confidence
+    evidence_refs: tuple[WordRef, ...]
 
 
 @dataclass(frozen=True, slots=True)
@@ -820,6 +858,17 @@ class TAVMFeature:
 
 
 @dataclass(frozen=True, slots=True)
+class FutureMarkingFeature:
+    be_going_to: bool
+    will_shall: bool
+    future_time_expression_ids: tuple[str, ...]
+    future_orientation: FutureOrientation
+    source: FeatureSource
+    confidence: Confidence
+    evidence_refs: tuple[WordRef, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class AgreementFeature:
     subject: WordRef | None
     predicate: WordRef | None
@@ -861,6 +910,8 @@ class PredicateFeature:
     evidence_refs: tuple[WordRef, ...]
     confidence: Confidence
     provenance: ProofProvenance
+    future_marking: FutureMarkingFeature | None = None
+    expletive_subject: WordRef | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -1038,12 +1089,21 @@ class SpecialSubjectConstructionFeature:
 
 @dataclass(frozen=True, slots=True)
 class RelativeClauseFeature:
+    id: str
     clause_id: str
+    antecedent_np_id: str | None
     head_noun: WordRef
     relative_marker: WordRef | None
     marker_text: RelativeMarkerText | None
+    relative_role: RelativeRole
+    object_gap: bool | None
+    is_omitted_relative_pronoun: bool
+    defining_status: DefiningStatus
+    comma_delimited: bool
     relative_type: RelativeType
     restrictive: bool | None
+    source: FeatureSource
+    evidence_refs: tuple[WordRef, ...]
     confidence: Confidence
 
 
@@ -1185,6 +1245,98 @@ class CountabilityFeature:
 
 
 @dataclass(frozen=True, slots=True)
+class ParticipialClauseFeature:
+    id: str
+    head_ref: WordRef
+    voice: str
+    clause_type: str
+    modified_np_id: str | None
+    has_by_agent: bool
+    by_agent_np_id: str | None
+    source: FeatureSource
+    confidence: Confidence
+    evidence_refs: tuple[WordRef, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class MultiwordCueFeature:
+    cue_key: str
+    surface_refs: tuple[WordRef, ...]
+    lemma_sequence: tuple[str, ...]
+    surface_sequence: tuple[str, ...]
+    scope_type: CueScopeType
+    scope_owner_id: str | None
+    scope_status: CueScopeStatus
+    contiguous: bool
+    source: str
+    confidence: Confidence
+    evidence_refs: tuple[WordRef, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class TimeExpressionFeature:
+    id: str
+    token_refs: tuple[WordRef, ...]
+    surface: str
+    time_kind: TimeKind
+    source: str
+    confidence: Confidence
+    evidence_refs: tuple[WordRef, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class DirectSpeechSegmentFeature:
+    segment_id: str
+    token_refs: tuple[WordRef, ...]
+    speaker_tag_predicate_id: str | None
+    speaker_np_id: str | None
+    quote_type: QuoteType
+    source: str
+    confidence: Confidence
+    evidence_refs: tuple[WordRef, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class NarrationSegmentFeature:
+    segment_id: str
+    token_refs: tuple[WordRef, ...]
+    source: str
+    confidence: Confidence
+    evidence_refs: tuple[WordRef, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class DiscourseFeatures:
+    quote_segmentation_status: QuoteSegmentationStatus
+    direct_speech_segments: tuple[DirectSpeechSegmentFeature, ...] = ()
+    narration_segments: tuple[NarrationSegmentFeature, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class FeatureDiagnosticItem:
+    layer: str | None
+    feature_path: str | None
+    reason: str
+    severity: Severity | None = None
+    confidence: Confidence | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class FeatureDiagnostics:
+    missing_expected_layers: tuple[FeatureDiagnosticItem, ...] = ()
+    low_confidence_features: tuple[FeatureDiagnosticItem, ...] = ()
+    unsupported_features: tuple[FeatureDiagnosticItem, ...] = ()
+    feature_layer_warnings: tuple[FeatureDiagnosticItem, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class FeatureSupportItem:
+    status: FeatureSupportStatus
+    source: str | None
+    confidence: Confidence | Literal["none"]
+
+
+@dataclass(frozen=True, slots=True)
 class ReferenceFeature:
     reference_status: ReferenceStatus
     evidence: ReferenceEvidenceKind
@@ -1203,6 +1355,7 @@ class SyntaxFeatures:
     pronouns: tuple[PronounFeature, ...] = ()
     special_subject_constructions: tuple[SpecialSubjectConstructionFeature, ...] = ()
     relative_clauses: tuple[RelativeClauseFeature, ...] = ()
+    participial_clauses: tuple[ParticipialClauseFeature, ...] = ()
     conditionals: tuple[ConditionalFeature, ...] = ()
     reported_speech: tuple[ReportedSpeechFeature, ...] = ()
     passive: tuple[PassiveFeature, ...] = ()
@@ -1223,6 +1376,7 @@ class LexicalFeatures:
     discourse_markers: tuple[LexicalItemFeature, ...] = ()
     contractions: tuple[LexicalItemFeature, ...] = ()
     noun_inflections: tuple[LexicalItemFeature, ...] = ()
+    multiword_cues: tuple[MultiwordCueFeature, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -1231,10 +1385,14 @@ class GrammarFeatureSet:
     morphology: MorphologyFeatures
     syntax: SyntaxFeatures
     lexical: LexicalFeatures
+    time_expressions: tuple[TimeExpressionFeature, ...]
+    discourse: DiscourseFeatures
     constructions: tuple[ConstructionFeature, ...]
     contrastive_support: tuple[ContrastiveSupportFeature, ...]
     absences: tuple[AbsenceFeature, ...]
     diagnostics: tuple[FeatureDiagnostic, ...]
+    feature_diagnostics: FeatureDiagnostics
+    feature_support: dict[str, FeatureSupportItem]
 
 
 @dataclass(frozen=True, slots=True)

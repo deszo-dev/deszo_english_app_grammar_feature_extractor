@@ -142,6 +142,7 @@ def build_predicates(
                     evidence_refs,
                     "high" if predicate_type != "unknown" else "low",
                 ),
+                expletive_subject=_expletive_there_ref(ctx, clause),
             )
         )
     return tuple(predicates)
@@ -169,11 +170,15 @@ def _predicate_main(
 
 
 def _has_expletive_there(ctx: SentenceContext, clause: ClauseFeature) -> bool:
+    return _expletive_there_ref(ctx, clause) is not None
+
+
+def _expletive_there_ref(ctx: SentenceContext, clause: ClauseFeature) -> WordRef | None:
     for ref in clause.local_tokens:
         word = ctx.word_by_ref[ref]
         if word.text.casefold() == "there" and word.deprel in {"expl", "nsubj"}:
-            return True
-    return False
+            return ref
+    return None
 
 
 def _is_passive_clause(ctx: SentenceContext, clause: ClauseFeature) -> bool:

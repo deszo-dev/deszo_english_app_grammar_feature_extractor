@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from grammar_feature_extractor._internal.models import (
+    NPFeature,
+    ParticipialClauseFeature,
     PassiveFeature,
     PassiveType,
     PredicateFeature,
@@ -112,4 +114,59 @@ def _agent_by_phrase(
     return ()
 
 
-__all__ = ["build_passive_features"]
+def build_participial_clauses(
+    ctx: SentenceContext,
+    np_profiles: tuple[NPFeature, ...],
+) -> tuple[ParticipialClauseFeature, ...]:
+    items: list[ParticipialClauseFeature] = []
+    for ref in ctx.refs:
+        word = ctx.word_by_ref[ref]
+        if word.deprel != "acl":
+            continue
+        if ctx.morph_by_ref[ref].features.get("VerbForm") != "Part":
+            continue
+        modified_np_id = _np_id_for_head(np_profiles, word.head)
+        by_agent_np_id = _by_agent_np_id(ctx, ref, np_profiles)
+        evidence_refs = tuple(sorted({ref, word.head} if word.head else {ref}))
+        items.append(
+            ParticipialClauseFeature(
+                id=f"partcl-{ref}",
+                head_ref=ref,
+                voice="passive" if by_agent_np_id is not None else "unknown",
+                clause_type="participial_modifier",
+                modified_np_id=modified_np_id,
+                has_by_agent=by_agent_np_id is not None,
+                by_agent_np_id=by_agent_np_id,
+                source="heuristic",
+                confidence="medium",
+                evidence_refs=evidence_refs,
+            )
+        )
+    return tuple(items)
+
+
+def _np_id_for_head(np_profiles: tuple[NPFeature, ...], head: int) -> str | None:
+    for np in np_profiles:
+        if np.head == head:
+            return np.id
+    return None
+
+
+def _by_agent_np_id(
+    ctx: SentenceContext,
+    participle_ref: int,
+    np_profiles: tuple[NPFeature, ...],
+) -> str | None:
+    for child in ctx.children_by_head.get(participle_ref, ()):
+        if ctx.word_by_ref[child].deprel not in {"obl", "obl:agent"}:
+            continue
+        has_by = any(
+            ctx.word_by_ref[grand].text.casefold() == "by"
+            for grand in ctx.children_by_head.get(child, ())
+        )
+        if has_by:
+            return _np_id_for_head(np_profiles, child)
+    return None
+
+
+__all__ = ["build_participial_clauses", "build_passive_features"]

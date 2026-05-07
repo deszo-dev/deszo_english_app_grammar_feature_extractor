@@ -21,8 +21,14 @@ from grammar_feature_extractor._internal.models import (
     CountabilityFeature,
     DependencyEvidence,
     DeterminerFeature,
+    DirectSpeechSegmentFeature,
+    DiscourseFeatures,
     EvidenceFeatures,
     FeatureDiagnostic,
+    FeatureDiagnosticItem,
+    FeatureDiagnostics,
+    FeatureSupportItem,
+    FutureMarkingFeature,
     GrammarEligibilityFeature,
     GrammarFeatureDocument,
     GrammarFeaturePage,
@@ -33,10 +39,13 @@ from grammar_feature_extractor._internal.models import (
     ModalFeature,
     MorphFeature,
     MorphologyFeatures,
+    MultiwordCueFeature,
+    NarrationSegmentFeature,
     NegationFeature,
     NormalizedMorph,
     NPFeature,
     PageInfo,
+    ParticipialClauseFeature,
     PassiveFeature,
     Phrase,
     PluralAnalysisFeature,
@@ -54,6 +63,7 @@ from grammar_feature_extractor._internal.models import (
     SpecialSubjectConstructionFeature,
     SyntaxFeatures,
     TAVMFeature,
+    TimeExpressionFeature,
     TokenEvidence,
     TypedQuantifierFeature,
     Valency,
@@ -84,6 +94,7 @@ def dumps_page(page: GrammarFeaturePage) -> str:
 def page_to_dict(page: GrammarFeaturePage) -> JsonObject:
     return {
         "schema_version": page.schema_version,
+        "construction_signature_registry_version": "construction_signature_registry.v1",
         "page": _page_info_to_dict(page.page),
         "features": [_sentence_to_dict(sentence) for sentence in page.features],
     }
@@ -92,6 +103,7 @@ def page_to_dict(page: GrammarFeaturePage) -> JsonObject:
 def document_to_dict(document: GrammarFeatureDocument) -> JsonObject:
     return {
         "schema_version": document.schema_version,
+        "construction_signature_registry_version": "construction_signature_registry.v1",
         "source_sentence_count": document.source_sentence_count,
         "sentences": [_sentence_to_dict(sentence) for sentence in document.sentences],
     }
@@ -112,14 +124,26 @@ def _page_info_to_dict(page: PageInfo) -> JsonObject:
 
 
 def _sentence_to_dict(sentence: SentenceGrammarFeatures) -> JsonObject:
+    features = sentence.features
     return {
         "sentence_index": sentence.sentence_index,
         "text": sentence.text,
-        "tokens": _tokens_to_dict(sentence.features.evidence),
-        "syntax": _syntax_to_dict(sentence.features.syntax),
-        "diagnostics": [
-            _diagnostic_to_dict(item) for item in sentence.features.diagnostics
+        "sentence": _sentence_feature_to_dict(features.lexical.sentence),
+        "tokens": _tokens_to_dict(features.evidence),
+        "syntax": _syntax_to_dict(features.syntax, features.lexical.sentence),
+        "lexical": _lexical_v4_to_dict(features.lexical),
+        "time_expressions": [
+            _time_expression_to_dict(item) for item in features.time_expressions
         ],
+        "discourse": _discourse_to_dict(features.discourse),
+        "diagnostics": [_diagnostic_to_dict(item) for item in features.diagnostics],
+        "feature_diagnostics": _feature_diagnostics_to_dict(
+            features.feature_diagnostics
+        ),
+        "feature_support": {
+            key: _feature_support_to_dict(value)
+            for key, value in features.feature_support.items()
+        },
     }
 
 
@@ -239,14 +263,24 @@ def _normalized_morph_to_dict(item: NormalizedMorph) -> JsonObject:
     }
 
 
-def _syntax_to_dict(syntax: SyntaxFeatures) -> JsonObject:
+def _syntax_to_dict(
+    syntax: SyntaxFeatures,
+    sentence: SentenceFeature | None = None,
+) -> JsonObject:
     return {
         "clauses": [_clause_to_dict(item) for item in syntax.clauses],
-        "predicates": [_predicate_to_dict(item) for item in syntax.predicates],
+        "predicates": [
+            _predicate_to_dict(item, syntax.np_profiles, sentence)
+            for item in syntax.predicates
+        ],
         "np_profiles": [_np_to_dict(item) for item in syntax.np_profiles],
         "pps": [],
-        "relative_clauses": [],
-        "participial_clauses": [],
+        "relative_clauses": [
+            _relative_clause_to_dict(item) for item in syntax.relative_clauses
+        ],
+        "participial_clauses": [
+            _participial_clause_to_dict(item) for item in syntax.participial_clauses
+        ],
     }
 
 
@@ -282,18 +316,36 @@ def _special_subject_to_dict(item: SpecialSubjectConstructionFeature) -> JsonObj
 
 def _relative_clause_to_dict(item: RelativeClauseFeature) -> JsonObject:
     result: JsonObject = {
+        "id": item.id,
         "clause_id": item.clause_id,
-        "head_noun": item.head_noun,
-        "relative_type": item.relative_type,
+        "antecedent_np_id": item.antecedent_np_id,
+        "relative_marker_ref": item.relative_marker,
+        "relative_marker_surface": item.marker_text,
+        "relative_role": item.relative_role,
+        "object_gap": item.object_gap,
+        "is_omitted_relative_pronoun": item.is_omitted_relative_pronoun,
+        "defining_status": item.defining_status,
+        "comma_delimited": item.comma_delimited,
+        "source": item.source,
+        "evidence_refs": list(item.evidence_refs),
         "confidence": item.confidence,
     }
-    if item.relative_marker is not None:
-        result["relative_marker"] = item.relative_marker
-    if item.marker_text is not None:
-        result["marker_text"] = item.marker_text
-    if item.restrictive is not None:
-        result["restrictive"] = item.restrictive
     return result
+
+
+def _participial_clause_to_dict(item: ParticipialClauseFeature) -> JsonObject:
+    return {
+        "id": item.id,
+        "head_ref": item.head_ref,
+        "voice": item.voice,
+        "clause_type": item.clause_type,
+        "modified_np_id": item.modified_np_id,
+        "has_by_agent": item.has_by_agent,
+        "by_agent_np_id": item.by_agent_np_id,
+        "source": item.source,
+        "confidence": item.confidence,
+        "evidence_refs": list(item.evidence_refs),
+    }
 
 
 def _conditional_to_dict(item: ConditionalFeature) -> JsonObject:
@@ -418,7 +470,11 @@ def _complement_to_dict(item: PredicateComplementFeature) -> JsonObject:
     return result
 
 
-def _predicate_to_dict(item: PredicateFeature) -> JsonObject:
+def _predicate_to_dict(
+    item: PredicateFeature,
+    np_profiles: tuple[NPFeature, ...] = (),
+    sentence: SentenceFeature | None = None,
+) -> JsonObject:
     result: JsonObject = {
         "id": item.id,
         "clause_id": f"clause-{item.clause_head}",
@@ -446,7 +502,51 @@ def _predicate_to_dict(item: PredicateFeature) -> JsonObject:
         result["subject_ref"] = item.subject
     if item.indirect_object is not None:
         result["indirect_object_ref"] = item.indirect_object
+    if item.future_marking is not None:
+        result["future_marking"] = _future_marking_to_dict(item.future_marking)
+    if item.predicate_type == "existential_there":
+        expletive = _expletive_there_ref(item)
+        postverbal_np_id = _postverbal_np_id(item, np_profiles)
+        if expletive is not None:
+            result["expletive_subject_ref"] = expletive
+        if postverbal_np_id is not None:
+            result["postverbal_np_id"] = postverbal_np_id
+        if sentence is not None:
+            result["has_subject_aux_inversion"] = sentence.has_subject_aux_inversion
+            result["sentence_type"] = sentence.sentence_type
     return result
+
+
+def _future_marking_to_dict(item: FutureMarkingFeature) -> JsonObject:
+    return {
+        "be_going_to": item.be_going_to,
+        "will_shall": item.will_shall,
+        "future_time_expression_ids": list(item.future_time_expression_ids),
+        "future_orientation": item.future_orientation,
+        "source": item.source,
+        "confidence": item.confidence,
+        "evidence_refs": list(item.evidence_refs),
+    }
+
+
+def _expletive_there_ref(item: PredicateFeature) -> int | None:
+    return item.expletive_subject
+
+
+def _postverbal_np_id(
+    item: PredicateFeature,
+    np_profiles: tuple[NPFeature, ...],
+) -> str | None:
+    candidates = [
+        np
+        for np in np_profiles
+        if np.head > item.main
+        and np.head != item.expletive_subject
+        and np.phrase_type != "pronoun_np"
+    ]
+    if not candidates:
+        return None
+    return candidates[0].id
 
 
 def _auxiliary_to_dict(item: AuxiliaryFeature) -> JsonObject:
@@ -534,6 +634,30 @@ def _flat_source(item: ProofProvenance) -> str:
     if item.source in {"surface", "lemma", "discourse_heuristic", "task_context"}:
         return "heuristic"
     return "heuristic"
+
+
+def _lexical_v4_to_dict(lexical: LexicalFeatures) -> JsonObject:
+    return {
+        "multiword_cues": [
+            _multiword_cue_to_dict(item) for item in lexical.multiword_cues
+        ]
+    }
+
+
+def _multiword_cue_to_dict(item: MultiwordCueFeature) -> JsonObject:
+    return {
+        "cue_key": item.cue_key,
+        "surface_refs": list(item.surface_refs),
+        "lemma_sequence": list(item.lemma_sequence),
+        "surface_sequence": list(item.surface_sequence),
+        "scope_type": item.scope_type,
+        "scope_owner_id": item.scope_owner_id,
+        "scope_status": item.scope_status,
+        "contiguous": item.contiguous,
+        "source": item.source,
+        "confidence": item.confidence,
+        "evidence_refs": list(item.evidence_refs),
+    }
 
 
 def _lexical_to_dict(lexical: LexicalFeatures) -> JsonObject:
@@ -803,15 +927,107 @@ def _contrastive_to_dict(item: ContrastiveSupportFeature) -> JsonObject:
 
 def _sentence_feature_to_dict(item: SentenceFeature) -> JsonObject:
     return {
-        "sentence_kind": item.sentence_kind,
-        "clause_count": item.clause_count,
         "sentence_type": item.sentence_type,
+        "terminal_punctuation": item.terminal_punctuation,
+        "terminal_question_mark": item.terminal_question_mark,
+        "question_type": item.question_type,
         "polarity": item.polarity,
         "has_subject_aux_inversion": item.has_subject_aux_inversion,
         "has_do_support": item.has_do_support,
         "has_wh_fronting": item.has_wh_fronting,
         "has_tag_question": item.has_tag_question,
-        "has_exclamation_marker": item.has_exclamation_marker,
+        "sentence_type_confidence": item.sentence_type_confidence,
+        "evidence_refs": list(item.evidence_refs),
+    }
+
+
+def _time_expression_to_dict(item: TimeExpressionFeature) -> JsonObject:
+    return {
+        "id": item.id,
+        "token_refs": list(item.token_refs),
+        "surface": item.surface,
+        "time_kind": item.time_kind,
+        "source": item.source,
+        "confidence": item.confidence,
+        "evidence_refs": list(item.evidence_refs),
+    }
+
+
+def _discourse_to_dict(item: DiscourseFeatures) -> JsonObject:
+    return {
+        "quote_segmentation_status": item.quote_segmentation_status,
+        "direct_speech_segments": [
+            _direct_speech_segment_to_dict(segment)
+            for segment in item.direct_speech_segments
+        ],
+        "narration_segments": [
+            _narration_segment_to_dict(segment) for segment in item.narration_segments
+        ],
+    }
+
+
+def _direct_speech_segment_to_dict(item: DirectSpeechSegmentFeature) -> JsonObject:
+    return {
+        "segment_id": item.segment_id,
+        "token_refs": list(item.token_refs),
+        "speaker_tag_predicate_id": item.speaker_tag_predicate_id,
+        "speaker_np_id": item.speaker_np_id,
+        "quote_type": item.quote_type,
+        "source": item.source,
+        "confidence": item.confidence,
+        "evidence_refs": list(item.evidence_refs),
+    }
+
+
+def _narration_segment_to_dict(item: NarrationSegmentFeature) -> JsonObject:
+    return {
+        "segment_id": item.segment_id,
+        "token_refs": list(item.token_refs),
+        "source": item.source,
+        "confidence": item.confidence,
+        "evidence_refs": list(item.evidence_refs),
+    }
+
+
+def _feature_diagnostics_to_dict(item: FeatureDiagnostics) -> JsonObject:
+    return {
+        "missing_expected_layers": [
+            _feature_diagnostic_item_to_dict(entry)
+            for entry in item.missing_expected_layers
+        ],
+        "low_confidence_features": [
+            _feature_diagnostic_item_to_dict(entry)
+            for entry in item.low_confidence_features
+        ],
+        "unsupported_features": [
+            _feature_diagnostic_item_to_dict(entry)
+            for entry in item.unsupported_features
+        ],
+        "feature_layer_warnings": [
+            _feature_diagnostic_item_to_dict(entry)
+            for entry in item.feature_layer_warnings
+        ],
+    }
+
+
+def _feature_diagnostic_item_to_dict(item: FeatureDiagnosticItem) -> JsonObject:
+    result: JsonObject = {"reason": item.reason}
+    if item.layer is not None:
+        result["layer"] = item.layer
+    if item.feature_path is not None:
+        result["feature_path"] = item.feature_path
+    if item.severity is not None:
+        result["severity"] = item.severity
+    if item.confidence is not None:
+        result["confidence"] = item.confidence
+    return result
+
+
+def _feature_support_to_dict(item: FeatureSupportItem) -> JsonObject:
+    return {
+        "status": item.status,
+        "source": item.source,
+        "confidence": item.confidence,
     }
 
 

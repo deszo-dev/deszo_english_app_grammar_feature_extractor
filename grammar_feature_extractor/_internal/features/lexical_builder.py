@@ -11,6 +11,7 @@ from grammar_feature_extractor._internal.models import (
     Polarity,
     PredicateFeature,
     ProofSource,
+    QuestionType,
     SentenceFeature,
     SentenceKind,
     SentenceType,
@@ -83,10 +84,15 @@ def build_sentence_feature(
     )
     has_subject_aux_inversion = _has_subject_aux_inversion(ctx)
     lower_words = tuple(word.text.casefold() for word in ctx.words)
+    sentence_type = _sentence_type(ctx, has_subject_aux_inversion)
+    has_wh_fronting = _has_wh_fronting(lower_words)
     return SentenceFeature(
         sentence_kind=_sentence_kind(ctx),
         clause_count=len(clauses),
-        sentence_type=_sentence_type(ctx, has_subject_aux_inversion),
+        sentence_type=sentence_type,
+        terminal_punctuation=_terminal_punctuation(text),
+        terminal_question_mark=text.endswith("?"),
+        question_type=_question_type(sentence_type),
         polarity=_sentence_polarity(negative_count, mixed_count, positive_count),
         has_subject_aux_inversion=has_subject_aux_inversion,
         has_do_support=any(
@@ -94,9 +100,11 @@ def build_sentence_feature(
             for predicate in predicates
             for auxiliary in predicate.auxiliaries
         ),
-        has_wh_fronting=bool(lower_words and lower_words[0] in WH_WORDS),
+        has_wh_fronting=has_wh_fronting,
         has_tag_question=False,
         has_exclamation_marker=text.endswith("!"),
+        sentence_type_confidence="high" if sentence_type != "unknown" else "low",
+        evidence_refs=ctx.refs,
     )
 
 
@@ -308,7 +316,7 @@ def _sentence_type(
     text = ctx.text.rstrip()
     lower_words = tuple(word.text.casefold() for word in ctx.words)
     if text.endswith("?"):
-        if lower_words and lower_words[0] in WH_WORDS:
+        if _has_wh_fronting(lower_words):
             return "wh_question"
         if has_subject_aux_inversion:
             return "yes_no_question"
@@ -318,6 +326,36 @@ def _sentence_type(
     if not any(word.upos in {"VERB", "AUX"} for word in ctx.words):
         return "fragment"
     return "declarative"
+
+
+def _terminal_punctuation(text: str) -> str:
+    if text.endswith("?"):
+        return "?"
+    if text.endswith("!"):
+        return "!"
+    if text.endswith("."):
+        return "."
+    return "none"
+
+
+def _has_wh_fronting(lower_words: tuple[str, ...]) -> bool:
+    if not lower_words:
+        return False
+    if lower_words[0] in WH_WORDS:
+        return True
+    if len(lower_words) > 1 and lower_words[0] in {"pray", "well"}:
+        return lower_words[1] in WH_WORDS
+    return False
+
+
+def _question_type(sentence_type: SentenceType) -> QuestionType:
+    if sentence_type == "wh_question":
+        return "wh"
+    if sentence_type == "yes_no_question":
+        return "yes_no"
+    if sentence_type == "tag_question":
+        return "tag"
+    return "none"
 
 
 def _has_subject_aux_inversion(ctx: SentenceContext) -> bool:
