@@ -5,6 +5,9 @@ from grammar_feature_extractor._internal.features.clause_builder import build_cl
 from grammar_feature_extractor._internal.features.complement_builder import (
     build_complements,
 )
+from grammar_feature_extractor._internal.features.conditional_builder import (
+    build_conditionals,
+)
 from grammar_feature_extractor._internal.features.construction_builder import (
     build_constructions,
 )
@@ -24,9 +27,22 @@ from grammar_feature_extractor._internal.features.lexical_builder import (
     build_word_order,
 )
 from grammar_feature_extractor._internal.features.np_builder import build_np_profiles
+from grammar_feature_extractor._internal.features.passive_builder import (
+    build_passive_features,
+)
 from grammar_feature_extractor._internal.features.phrase_builder import build_phrases
 from grammar_feature_extractor._internal.features.predicate_builder import (
     build_predicates,
+)
+from grammar_feature_extractor._internal.features.pronoun_builder import build_pronouns
+from grammar_feature_extractor._internal.features.relative_clause_builder import (
+    build_relative_clauses,
+)
+from grammar_feature_extractor._internal.features.reported_speech_builder import (
+    build_reported_speech_features,
+)
+from grammar_feature_extractor._internal.features.special_subject_builder import (
+    build_special_subject_constructions,
 )
 from grammar_feature_extractor._internal.features.subordination_builder import (
     build_subordination,
@@ -139,6 +155,12 @@ def extract_sentence_features(
     word_order = build_word_order(context, predicates)
     negation = build_negation(context, predicates)
     lexical_items = build_lexical_items(context)
+    pronouns = build_pronouns(context)
+    special_subjects = build_special_subject_constructions(context, predicates)
+    relative_clauses = build_relative_clauses(context, clauses)
+    conditionals = build_conditionals(context, clauses, predicates)
+    reported_speech = build_reported_speech_features(context, predicates, clauses)
+    passive = build_passive_features(context, predicates)
     constructions = (
         build_constructions(predicates, np_profiles, word_order)
         if config.include_construction_signatures
@@ -164,6 +186,12 @@ def extract_sentence_features(
             coordination=build_coordination(context),
             subordination=subordination,
             np_profiles=np_profiles,
+            pronouns=pronouns,
+            special_subject_constructions=special_subjects,
+            relative_clauses=relative_clauses,
+            conditionals=conditionals,
+            reported_speech=reported_speech,
+            passive=passive,
         ),
         lexical=LexicalFeatures(
             sentence=build_sentence_feature(context, clauses, predicates),

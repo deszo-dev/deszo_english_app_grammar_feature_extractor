@@ -14,6 +14,12 @@ from grammar_feature_extractor._internal.models import (
     PagingConfig,
 )
 from grammar_feature_extractor._internal.pipeline import GrammarFeatureExtractor
+from grammar_feature_extractor._internal.runtime_metadata import (
+    PipelineRuntimeMetadata,
+    RuntimeAsset,
+    RuntimeDependency,
+    StageRuntimeMetadata,
+)
 
 __all__ = [
     "AnnotatedDocument",
@@ -24,6 +30,10 @@ __all__ = [
     "GrammarFeatureExtractor",
     "GrammarFeaturePage",
     "InputValidationError",
+    "PipelineRuntimeMetadata",
     "PagingConfig",
+    "RuntimeAsset",
+    "RuntimeDependency",
     "SerializationError",
+    "StageRuntimeMetadata",
 ]

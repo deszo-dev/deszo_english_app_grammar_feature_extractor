@@ -11,6 +11,12 @@ from grammar_feature_extractor._internal.models import (
 from grammar_feature_extractor._internal.proof_surface_validator import (
     validate_proof_surface,
 )
+from grammar_feature_extractor._internal.runtime_metadata import (
+    PipelineRuntimeMetadata,
+    extractor_config_to_fingerprint_payload,
+    grammar_feature_extractor_runtime_metadata,
+    stage_fingerprint,
+)
 from grammar_feature_extractor._internal.validation import (
     assert_valid_feature_refs,
     validate_extractor_config,
@@ -20,6 +26,29 @@ from grammar_feature_extractor._internal.validation import (
 
 class GrammarFeatureExtractor:
     """Extract deterministic grammar features from an AnnotatedDocument."""
+
+    def runtime_metadata(self) -> PipelineRuntimeMetadata:
+        """Return deterministic runtime metadata for orchestration reuse checks."""
+        return grammar_feature_extractor_runtime_metadata()
+
+    def stage_fingerprint(
+        self,
+        config: ExtractorConfig | None = None,
+        input_artifact_hashes: tuple[str, ...] = (),
+    ) -> str:
+        """Return the reusable-stage fingerprint for the current runtime."""
+        resolved_config = config or ExtractorConfig()
+        validate_extractor_config(resolved_config)
+        metadata = self.runtime_metadata()
+        stage = metadata.stages["grammar_feature_extraction"]
+        return stage_fingerprint(
+            stage,
+            pipeline_contract_version=metadata.pipeline_contract_version,
+            normalized_stage_config=extractor_config_to_fingerprint_payload(
+                resolved_config
+            ),
+            input_artifact_hashes=input_artifact_hashes,
+        )
 
     def extract(
         self,

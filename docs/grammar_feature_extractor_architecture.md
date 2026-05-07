@@ -2412,3 +2412,64 @@ Theorem match_evidence_refs_valid :
 A breaking proof-surface change includes changing a proof-relevant enum, removing or renaming a construction signature, weakening `WordRef` integrity, changing provenance semantics, allowing free text into proof-certified matching, changing ambiguity behavior, changing task-context requirements for contrastive diagnosis, or weakening a Coq theorem.
 
 Every such change requires architecture update, rule catalog schema update, matcher spec update, Coq spec update, and migration note for existing JSON catalogs.
+
+## 44. Production output-dir mode for grammar_extractor integration
+
+The existing single-page CLI mode remains valid. For integration with `grammar_extractor` and `grammar_rule_detector`, the module SHOULD also support a production `--output-dir` mode that writes all `GrammarFeaturePage` files plus a manifest.
+
+Recommended command:
+
+```text
+grammar-feature-extractor \
+  --input filtered_annotated_document.json \
+  --output-dir grammar_features \
+  --page-size 300 \
+  --debug
+```
+
+Output layout:
+
+```text
+grammar_features/
+  grammar_features.manifest.json
+  grammar_features.page_00001.json
+  grammar_features.page_00002.json
+  ...
+```
+
+Manifest schema:
+
+```typescript
+interface GrammarFeatureManifest {
+  schema_version: "grammar_feature_extractor.v3";
+  kind: "grammar_feature_manifest";
+  page_size: number;
+  page_count: number;
+  total_sentences: number;
+  pages: GrammarFeatureManifestPage[];
+  diagnostics: FeatureDiagnostic[];
+}
+
+interface GrammarFeatureManifestPage {
+  page_number: number;
+  file_name: string;
+  sentence_start: number;
+  sentence_end_exclusive: number;
+  sha256: string;
+}
+```
+
+Rules:
+
+- page numbers are 1-based;
+- page filenames use zero padding width at least 5;
+- lexical filename sorting must equal page order;
+- pages are written atomically;
+- manifest is written last;
+- page ranges must be gap-free and non-overlapping;
+- `page_size` default remains `300`;
+- an empty input document must produce exactly one valid empty page;
+- `--output-dir` is mutually exclusive with single-page `--output` unless explicitly documented otherwise;
+- debug mode must not alter page contents or manifest hashes.
+
+This addition lets `grammar_rule_detector` consume feature pages directly and lets `grammar_extractor` avoid reimplementing page materialization when using the CLI dependency mode.

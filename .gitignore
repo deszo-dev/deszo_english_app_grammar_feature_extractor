@@ -39,4 +39,4 @@ coverage.xml
 *.swo
 Thumbs.db
 Desktop.ini
-RESULTS
+docs/OUTPUT_EXAMPLES

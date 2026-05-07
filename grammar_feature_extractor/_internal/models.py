@@ -319,6 +319,234 @@ ContrastiveHint: TypeAlias = Literal[
     "gerund_vs_infinitive",
     "unknown",
 ]
+PronounType: TypeAlias = Literal[
+    "personal_subject",
+    "personal_object",
+    "possessive_determiner",
+    "possessive_pronoun",
+    "reflexive",
+    "relative",
+    "interrogative",
+    "demonstrative",
+    "indefinite",
+    "dummy_it",
+    "existential_there",
+    "unknown",
+]
+PronounNumber: TypeAlias = Literal["singular", "plural"]
+PronounCase: TypeAlias = Literal["subject", "object", "possessive", "unknown"]
+SpecialSubjectType: TypeAlias = Literal[
+    "existential_there",
+    "dummy_it_weather",
+    "dummy_it_extraposition",
+    "cleft_it",
+    "unknown",
+]
+RelativeType: TypeAlias = Literal[
+    "subject_relative",
+    "object_relative",
+    "possessive_relative",
+    "place_relative",
+    "reduced_participle_relative",
+    "reduced_to_infinitive_relative",
+    "unknown",
+]
+RelativeMarkerText: TypeAlias = Literal[
+    "who", "which", "that", "where", "whose", "whom"
+]
+ConditionalType: TypeAlias = Literal[
+    "zero_conditional_candidate",
+    "first_conditional_candidate",
+    "second_conditional_candidate",
+    "third_conditional_candidate",
+    "mixed_conditional_candidate",
+    "unless_conditional",
+    "unknown",
+]
+ReportType: TypeAlias = Literal[
+    "that_clause",
+    "reported_question",
+    "reported_command",
+    "direct_quote",
+    "unknown",
+]
+PassiveType: TypeAlias = Literal[
+    "be_passive",
+    "get_passive",
+    "modal_passive",
+    "perfect_passive",
+    "reduced_passive_participle",
+    "unknown",
+]
+TimeMarkerType: TypeAlias = Literal[
+    "now",
+    "current_period",
+    "habitual_frequency",
+    "past_finished_time",
+    "present_perfect_experience",
+    "present_perfect_result",
+    "duration_for",
+    "duration_since",
+    "future_time",
+    "sequence",
+    "deadline",
+    "unknown",
+]
+LexicalClass: TypeAlias = Literal[
+    "stative_verb",
+    "dynamic_verb",
+    "linking_verb",
+    "ditransitive_verb",
+    "reporting_verb",
+    "mental_state_verb",
+    "motion_verb",
+    "communication_verb",
+    "degree_adjective",
+    "gradable_adjective",
+    "absolute_adjective",
+    "frequency_adverb",
+    "time_adverb",
+]
+LexicalClassSource: TypeAlias = Literal["closed_list", "lexicon", "heuristic"]
+VerbPattern: TypeAlias = Literal[
+    "verb_np",
+    "verb_np_np",
+    "verb_np_pp",
+    "verb_to_infinitive",
+    "verb_object_to_infinitive",
+    "verb_gerund",
+    "verb_that_clause",
+    "verb_wh_clause",
+    "verb_object_complement_adj",
+    "verb_object_complement_np",
+    "verb_particle_object",
+    "unknown",
+]
+AdjectivePattern: TypeAlias = Literal[
+    "adjective_to_infinitive",
+    "adjective_preposition_gerund",
+    "adjective_that_clause",
+    "too_adjective_to_infinitive",
+    "adjective_enough_to_infinitive",
+    "comparative_adjective_than",
+    "as_adjective_as",
+    "not_as_adjective_as",
+    "unknown",
+]
+ComparisonType: TypeAlias = Literal[
+    "comparative_er",
+    "comparative_more",
+    "comparative_less",
+    "superlative_est",
+    "superlative_most",
+    "equality_as_as",
+    "negative_equality_not_as_as",
+    "as_much_many_as",
+    "comparative_than",
+    "unknown",
+]
+ComparisonRelation: TypeAlias = Literal[
+    "greater_degree",
+    "lower_degree",
+    "equal_degree",
+    "not_equal_degree",
+    "maximum_degree",
+    "unknown",
+]
+QuantifierType: TypeAlias = Literal[
+    "some",
+    "any",
+    "no",
+    "many",
+    "much",
+    "a_lot_of",
+    "few",
+    "little",
+    "enough",
+    "too_much",
+    "too_many",
+    "number",
+    "ordinal",
+    "unknown",
+]
+QuantifierCompatibleNumber: TypeAlias = Literal[
+    "singular", "plural", "uncountable", "unknown"
+]
+QuantifierPolaritySensitivity: TypeAlias = Literal[
+    "positive", "negative_or_question", "both", "unknown"
+]
+PhrasalVerbSeparability: TypeAlias = Literal["separated", "adjacent", "unknown"]
+DiscourseMarkerType: TypeAlias = Literal[
+    "contrast",
+    "addition",
+    "consequence",
+    "reason",
+    "condition",
+    "example",
+    "sequence",
+    "topic_shift",
+    "stance",
+    "unknown",
+]
+ContractionExpansion: TypeAlias = Literal[
+    "I am",
+    "he is",
+    "she is",
+    "it is",
+    "we are",
+    "they are",
+    "do not",
+    "does not",
+    "did not",
+    "will not",
+    "cannot",
+    "have",
+    "has",
+    "had",
+    "unknown",
+]
+ContractionTypeKind: TypeAlias = Literal[
+    "be_present", "aux_negative", "modal_negative", "have_perfect", "unknown"
+]
+PluralPattern: TypeAlias = Literal[
+    "regular_s",
+    "es_after_sibilant",
+    "consonant_y_to_ies",
+    "f_fe_to_ves",
+    "irregular",
+    "zero_plural",
+    "foreign_plural",
+    "unknown",
+]
+NounNumberValue: TypeAlias = Literal["singular", "plural", "unknown"]
+CountabilityValue: TypeAlias = Literal[
+    "count_singular",
+    "count_plural",
+    "uncountable",
+    "proper_name",
+    "dual_use",
+    "unknown",
+]
+CountabilitySource: TypeAlias = Literal[
+    "morphology", "lexicon", "heuristic", "unknown"
+]
+ReferenceStatus: TypeAlias = Literal[
+    "first_mention_candidate",
+    "previously_mentioned_candidate",
+    "unique_world_knowledge_candidate",
+    "situationally_identifiable_candidate",
+    "generic_class_reference_candidate",
+    "specific_reference_candidate",
+    "unknown",
+]
+ReferenceEvidenceKind: TypeAlias = Literal[
+    "same_lemma_previous_sentence",
+    "definite_article",
+    "unique_noun_whitelist",
+    "plural_generic_subject",
+    "context_unavailable",
+    "unknown",
+]
 
 
 @dataclass(frozen=True, slots=True)
@@ -689,6 +917,8 @@ class NPFeature:
     evidence_refs: tuple[WordRef, ...]
     confidence: Confidence
     provenance: ProofProvenance
+    countability: "CountabilityFeature | None" = None
+    reference: "ReferenceFeature | None" = None
 
 
 SlotValue: TypeAlias = WordRef | tuple[WordRef, ...] | str | bool | int
@@ -728,6 +958,182 @@ class ContrastiveSupportFeature:
 
 
 @dataclass(frozen=True, slots=True)
+class PronounFeature:
+    ref: WordRef
+    lemma: str
+    pronoun_type: PronounType
+    person: int | None
+    number: PronounNumber | None
+    case: PronounCase | None
+
+
+@dataclass(frozen=True, slots=True)
+class SpecialSubjectConstructionFeature:
+    type: SpecialSubjectType
+    subject_ref: WordRef
+    predicate_ref: WordRef
+    notional_subject: WordRef | None
+    agreement_controller: WordRef | None
+    evidence_refs: tuple[WordRef, ...]
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class RelativeClauseFeature:
+    clause_id: str
+    head_noun: WordRef
+    relative_marker: WordRef | None
+    marker_text: RelativeMarkerText | None
+    relative_type: RelativeType
+    restrictive: bool | None
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class ConditionalFeature:
+    if_clause: str
+    main_clause: str
+    conditional_type: ConditionalType
+    if_marker_ref: WordRef | None
+    main_tavm: TAVMFeature
+    subordinate_tavm: TAVMFeature
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class ReportedSpeechFeature:
+    reporting_verb: WordRef
+    reported_clause_head: WordRef
+    marker: WordRef | None
+    report_type: ReportType
+    backshift_candidate: bool
+    speaker_or_addressee_refs: tuple[WordRef, ...]
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class PassiveFeature:
+    predicate: WordRef
+    passive_type: PassiveType
+    aux_refs: tuple[WordRef, ...]
+    participle_ref: WordRef
+    agent_by_phrase: tuple[WordRef, ...]
+    patient_subject: WordRef | None
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class TimeMarkerFeature:
+    refs: tuple[WordRef, ...]
+    marker: str
+    type: TimeMarkerType
+    normalized_value: str | None
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class LexicalClassFeature:
+    ref: WordRef
+    lemma: str
+    classes: tuple[LexicalClass, ...]
+    source: LexicalClassSource
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class VerbPatternFeature:
+    predicate: WordRef
+    lemma: str
+    pattern: VerbPattern
+    complements: tuple[PredicateComplementFeature, ...]
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class AdjectivePatternFeature:
+    adjective: WordRef
+    lemma: str
+    pattern: AdjectivePattern
+    complement: PredicateComplementFeature | None
+    degree_modifier: WordRef | None
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class ComparisonFeature:
+    type: ComparisonType
+    adjective_or_adverb: WordRef | None
+    marker_refs: tuple[WordRef, ...]
+    than_ref: WordRef | None
+    standard_of_comparison: tuple[WordRef, ...]
+    semantic_relation: ComparisonRelation
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class TypedQuantifierFeature:
+    ref: WordRef
+    text: str
+    quantifier_type: QuantifierType
+    compatible_number: QuantifierCompatibleNumber | None
+    polarity_sensitivity: QuantifierPolaritySensitivity | None
+
+
+@dataclass(frozen=True, slots=True)
+class PhrasalVerbFeature:
+    verb: WordRef
+    particle_ref: WordRef
+    particle: str
+    object_ref: WordRef | None
+    separability: PhrasalVerbSeparability
+    lemma_signature: str
+    confidence: Confidence
+    sources: tuple[FeatureSource, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class DiscourseMarkerFeature:
+    refs: tuple[WordRef, ...]
+    marker: str
+    marker_type: DiscourseMarkerType
+    clause_scope: str | None
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class ContractionFeature:
+    surface_ref: WordRef
+    surface: str
+    expansion: ContractionExpansion
+    contraction_type: ContractionTypeKind
+
+
+@dataclass(frozen=True, slots=True)
+class NounInflectionFeature:
+    ref: WordRef
+    lemma: str
+    surface: str
+    number: NounNumberValue
+    plural_pattern: PluralPattern | None
+    expected_plural: tuple[str, ...]
+    is_plural_error_candidate: bool | None
+
+
+@dataclass(frozen=True, slots=True)
+class CountabilityFeature:
+    value: CountabilityValue
+    source: CountabilitySource
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
+class ReferenceFeature:
+    reference_status: ReferenceStatus
+    evidence: ReferenceEvidenceKind
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
 class SyntaxFeatures:
     phrases: tuple[Phrase, ...] = ()
     clauses: tuple[ClauseFeature, ...] = ()
@@ -736,12 +1142,12 @@ class SyntaxFeatures:
     coordination: tuple[Coordination, ...] = ()
     subordination: tuple[ClauseMarkerFeature, ...] = ()
     np_profiles: tuple[NPFeature, ...] = ()
-    pronouns: tuple[object, ...] = ()
-    special_subject_constructions: tuple[object, ...] = ()
-    relative_clauses: tuple[object, ...] = ()
-    conditionals: tuple[object, ...] = ()
-    reported_speech: tuple[object, ...] = ()
-    passive: tuple[object, ...] = ()
+    pronouns: tuple[PronounFeature, ...] = ()
+    special_subject_constructions: tuple[SpecialSubjectConstructionFeature, ...] = ()
+    relative_clauses: tuple[RelativeClauseFeature, ...] = ()
+    conditionals: tuple[ConditionalFeature, ...] = ()
+    reported_speech: tuple[ReportedSpeechFeature, ...] = ()
+    passive: tuple[PassiveFeature, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -750,11 +1156,11 @@ class LexicalFeatures:
     word_order: tuple[WordOrderFeature, ...] = ()
     negation: tuple[NegationFeature, ...] = ()
     time_markers: tuple[LexicalItemFeature, ...] = ()
-    lexical_classes: tuple[object, ...] = ()
-    verb_patterns: tuple[object, ...] = ()
-    adjective_patterns: tuple[object, ...] = ()
+    lexical_classes: tuple[LexicalClassFeature, ...] = ()
+    verb_patterns: tuple[VerbPatternFeature, ...] = ()
+    adjective_patterns: tuple[AdjectivePatternFeature, ...] = ()
     comparisons: tuple[LexicalItemFeature, ...] = ()
-    quantifiers: tuple[object, ...] = ()
+    quantifiers: tuple[TypedQuantifierFeature, ...] = ()
     phrasal_verbs: tuple[LexicalItemFeature, ...] = ()
     discourse_markers: tuple[LexicalItemFeature, ...] = ()
     contractions: tuple[LexicalItemFeature, ...] = ()

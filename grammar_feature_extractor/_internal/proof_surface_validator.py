@@ -63,6 +63,40 @@ def validate_proof_surface(
         _validate_provenance(max_ref, absence.provenance)
     for contrastive in features.contrastive_support:
         _validate_provenance(max_ref, contrastive.provenance)
+    for pronoun in features.syntax.pronouns:
+        _check_ref(max_ref, pronoun.ref)
+    for special in features.syntax.special_subject_constructions:
+        _check_ref(max_ref, special.subject_ref)
+        _check_ref(max_ref, special.predicate_ref)
+        if special.notional_subject is not None:
+            _check_ref(max_ref, special.notional_subject)
+        if special.agreement_controller is not None:
+            _check_ref(max_ref, special.agreement_controller)
+        for ref in special.evidence_refs:
+            _check_ref(max_ref, ref)
+    for relcl in features.syntax.relative_clauses:
+        _check_ref(max_ref, relcl.head_noun)
+        if relcl.relative_marker is not None:
+            _check_ref(max_ref, relcl.relative_marker)
+    for cond in features.syntax.conditionals:
+        if cond.if_marker_ref is not None:
+            _check_ref(max_ref, cond.if_marker_ref)
+    for report in features.syntax.reported_speech:
+        _check_ref(max_ref, report.reporting_verb)
+        _check_ref(max_ref, report.reported_clause_head)
+        if report.marker is not None:
+            _check_ref(max_ref, report.marker)
+        for ref in report.speaker_or_addressee_refs:
+            _check_ref(max_ref, ref)
+    for passive in features.syntax.passive:
+        _check_ref(max_ref, passive.predicate)
+        _check_ref(max_ref, passive.participle_ref)
+        for ref in passive.aux_refs:
+            _check_ref(max_ref, ref)
+        for ref in passive.agent_by_phrase:
+            _check_ref(max_ref, ref)
+        if passive.patient_subject is not None:
+            _check_ref(max_ref, passive.patient_subject)
     for diagnostic in features.diagnostics:
         if diagnostic.code not in DIAGNOSTIC_CODE_SET:
             raise AssertionError(f"Unknown diagnostic code: {diagnostic.code}.")
