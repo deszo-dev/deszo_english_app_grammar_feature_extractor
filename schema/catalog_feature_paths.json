@@ -1,17 +1,10 @@
 {
-  "schema_version": "grammar_feature_extractor.v3",
+  "schema_version": "grammar_feature_extractor.v4",
   "feature_paths": [
-    "evidence.words",
-    "morphology.normalized",
+    "tokens",
     "syntax.clauses",
     "syntax.predicates",
     "syntax.np_profiles",
-    "lexical.sentence",
-    "lexical.word_order",
-    "lexical.negation",
-    "constructions",
-    "absences",
-    "contrastive_support",
     "diagnostics"
   ]
 }

@@ -23,6 +23,7 @@ from grammar_feature_extractor._internal.models import (
     DeterminerFeature,
     EvidenceFeatures,
     FeatureDiagnostic,
+    GrammarEligibilityFeature,
     GrammarFeatureDocument,
     GrammarFeaturePage,
     GrammarFeatureSet,
@@ -38,6 +39,7 @@ from grammar_feature_extractor._internal.models import (
     PageInfo,
     PassiveFeature,
     Phrase,
+    PluralAnalysisFeature,
     PredicateComplementFeature,
     PredicateFeature,
     PronounFeature,
@@ -113,7 +115,11 @@ def _sentence_to_dict(sentence: SentenceGrammarFeatures) -> JsonObject:
     return {
         "sentence_index": sentence.sentence_index,
         "text": sentence.text,
-        "features": _feature_set_to_dict(sentence.features),
+        "tokens": _tokens_to_dict(sentence.features.evidence),
+        "syntax": _syntax_to_dict(sentence.features.syntax),
+        "diagnostics": [
+            _diagnostic_to_dict(item) for item in sentence.features.diagnostics
+        ],
     }
 
 
@@ -132,6 +138,28 @@ def _feature_set_to_dict(features: GrammarFeatureSet) -> JsonObject:
         "absences": [_absence_to_dict(item) for item in features.absences],
         "diagnostics": [_diagnostic_to_dict(item) for item in features.diagnostics],
     }
+
+
+def _tokens_to_dict(evidence: EvidenceFeatures) -> list[JsonValue]:
+    return [_token_to_dict(item) for item in evidence.words]
+
+
+def _token_to_dict(item: TokenEvidence) -> JsonObject:
+    result: JsonObject = {
+        "token_ref": item.ref,
+        "surface": item.text,
+        "lemma": item.lemma,
+        "upos": item.upos,
+        "head_ref": item.head,
+        "deprel": item.deprel,
+        "start_char": item.start_char,
+        "end_char": item.end_char,
+    }
+    if item.xpos is not None:
+        result["xpos"] = item.xpos
+    if item.feats:
+        result["features"] = dict(item.feats)
+    return result
 
 
 def _evidence_to_dict(evidence: EvidenceFeatures) -> JsonObject:
@@ -213,30 +241,12 @@ def _normalized_morph_to_dict(item: NormalizedMorph) -> JsonObject:
 
 def _syntax_to_dict(syntax: SyntaxFeatures) -> JsonObject:
     return {
-        "phrases": [_phrase_to_dict(item) for item in syntax.phrases],
         "clauses": [_clause_to_dict(item) for item in syntax.clauses],
         "predicates": [_predicate_to_dict(item) for item in syntax.predicates],
-        "complements": [_complement_to_dict(item) for item in syntax.complements],
-        "coordination": [_coordination_to_dict(item) for item in syntax.coordination],
-        "subordination": [
-            _clause_marker_to_dict(item) for item in syntax.subordination
-        ],
         "np_profiles": [_np_to_dict(item) for item in syntax.np_profiles],
-        "pronouns": [_pronoun_to_dict(item) for item in syntax.pronouns],
-        "special_subject_constructions": [
-            _special_subject_to_dict(item)
-            for item in syntax.special_subject_constructions
-        ],
-        "relative_clauses": [
-            _relative_clause_to_dict(item) for item in syntax.relative_clauses
-        ],
-        "conditionals": [
-            _conditional_to_dict(item) for item in syntax.conditionals
-        ],
-        "reported_speech": [
-            _reported_speech_to_dict(item) for item in syntax.reported_speech
-        ],
-        "passive": [_passive_to_dict(item) for item in syntax.passive],
+        "pps": [],
+        "relative_clauses": [],
+        "participial_clauses": [],
     }
 
 
@@ -340,22 +350,21 @@ def _phrase_to_dict(item: Phrase) -> JsonObject:
 def _clause_to_dict(item: ClauseFeature) -> JsonObject:
     result: JsonObject = {
         "id": item.id,
-        "head": item.head,
-        "type": item.type,
+        "head_ref": item.head,
+        "clause_type": item.type,
         "finite": item.finite,
-        "roles": _roles_to_dict(item.roles),
-        "valency": _valency_to_dict(item.valency),
-        "tokens": list(item.tokens),
-        "local_tokens": list(item.local_tokens),
+        "token_refs": list(item.tokens),
+        "local_token_refs": list(item.local_tokens),
+        "evidence_refs": list(item.provenance.evidence_refs),
+        "source": _flat_source(item.provenance),
         "confidence": item.confidence,
-        "provenance": _provenance_to_dict(item.provenance),
     }
     if item.subject is not None:
-        result["subject"] = item.subject
+        result["subject_ref"] = item.subject
     if item.predicate is not None:
-        result["predicate"] = item.predicate
+        result["predicate_ref"] = item.predicate
     if item.marker is not None:
-        result["marker"] = _clause_marker_to_dict(item.marker)
+        result["marker_ref"] = item.marker.marker_ref
     if item.semantic_relation is not None:
         result["semantic_relation"] = item.semantic_relation
     return result
@@ -412,40 +421,31 @@ def _complement_to_dict(item: PredicateComplementFeature) -> JsonObject:
 def _predicate_to_dict(item: PredicateFeature) -> JsonObject:
     result: JsonObject = {
         "id": item.id,
-        "main": item.main,
+        "clause_id": f"clause-{item.clause_head}",
+        "main_ref": item.main,
         "main_lemma": item.main_lemma,
+        "main_upos": item.main_upos,
         "predicate_type": item.predicate_type,
         "finite": item.finite,
-        "auxiliaries": [
-            _auxiliary_to_dict(auxiliary) for auxiliary in item.auxiliaries
-        ],
+        "auxiliary_refs": [auxiliary.ref for auxiliary in item.auxiliaries],
         "tense": item.tense,
         "aspect": item.aspect,
         "voice": item.voice,
         "polarity": item.polarity,
-        "clause_head": item.clause_head,
-        "complements": [
-            _complement_to_dict(complement) for complement in item.complements
-        ],
-        "agreement": _agreement_to_dict(item.agreement),
-        "tavm": _tavm_to_dict(item.tavm),
-        "form_signature": item.form_signature,
+        "object_refs": [ref for ref in (item.object,) if ref is not None],
+        "complement_refs": [complement.head for complement in item.complements],
         "evidence_refs": list(item.evidence_refs),
+        "source": _flat_source(item.provenance),
         "confidence": item.confidence,
-        "provenance": _provenance_to_dict(item.provenance),
     }
     if item.copula is not None:
-        result["copula"] = item.copula
+        result["copula_ref"] = item.copula
     if item.negation is not None:
-        result["negation"] = item.negation
-    if item.modality is not None:
-        result["modality"] = _modal_to_dict(item.modality)
+        result["negation_ref"] = item.negation
     if item.subject is not None:
-        result["subject"] = item.subject
-    if item.object is not None:
-        result["object"] = item.object
+        result["subject_ref"] = item.subject
     if item.indirect_object is not None:
-        result["indirect_object"] = item.indirect_object
+        result["indirect_object_ref"] = item.indirect_object
     return result
 
 
@@ -520,6 +520,20 @@ def _provenance_to_dict(item: ProofProvenance) -> JsonObject:
         "evidence_refs": list(item.evidence_refs),
         "confidence": item.confidence,
     }
+
+
+def _flat_source(item: ProofProvenance) -> str:
+    if item.source in {"dependency", "upos", "xpos", "word_order"}:
+        return "parser"
+    if item.source == "morphology":
+        return "morphology"
+    if item.source in {"lexicon", "closed_list"}:
+        return "lexicon"
+    if item.source == "phonology":
+        return "phonology"
+    if item.source in {"surface", "lemma", "discourse_heuristic", "task_context"}:
+        return "heuristic"
+    return "heuristic"
 
 
 def _lexical_to_dict(lexical: LexicalFeatures) -> JsonObject:
@@ -603,7 +617,7 @@ def _typed_quantifier_to_dict(item: TypedQuantifierFeature) -> JsonObject:
 
 def _countability_to_dict(item: CountabilityFeature) -> JsonObject:
     return {
-        "value": item.value,
+        "status": item.status,
         "source": item.source,
         "confidence": item.confidence,
     }
@@ -620,37 +634,53 @@ def _reference_to_dict(item: ReferenceFeature) -> JsonObject:
 def _np_to_dict(item: NPFeature) -> JsonObject:
     result: JsonObject = {
         "id": item.id,
-        "head": item.head,
+        "token_refs": list(item.token_refs),
+        "head_ref": item.head,
         "head_lemma": item.head_lemma,
+        "head_upos": item.head_upos,
+        "determiner_refs": list(item.determiner_refs),
         "phrase_type": item.phrase_type,
-        "has_determiner": item.has_determiner,
+        "grammar_eligibility": _grammar_eligibility_to_dict(
+            item.grammar_eligibility
+        ),
         "article_slot": _article_slot_to_dict(item.article_slot),
-        "modifiers": [
-            {"ref": modifier.ref, "modifier_type": modifier.modifier_type}
-            for modifier in item.modifiers
-        ],
-        "quantifiers": [
-            {"ref": quantifier.ref, "text": quantifier.text}
-            for quantifier in item.quantifiers
-        ],
+        "modifier_refs": [modifier.ref for modifier in item.modifiers],
+        "quantifier_refs": [quantifier.ref for quantifier in item.quantifiers],
         "syntactic_role": item.syntactic_role,
         "evidence_refs": list(item.evidence_refs),
+        "source": _flat_source(item.provenance),
         "confidence": item.confidence,
-        "provenance": _provenance_to_dict(item.provenance),
     }
     if item.number is not None:
         result["number"] = item.number
     if item.person is not None:
         result["person"] = item.person
-    if item.determiner is not None:
-        result["determiner"] = _determiner_to_dict(item.determiner)
     if item.possessive is not None:
-        result["possessive"] = item.possessive
+        result["possessive_ref"] = item.possessive
+    if item.plural_analysis is not None:
+        result["plural_analysis"] = _plural_analysis_to_dict(item.plural_analysis)
     if item.countability is not None:
         result["countability"] = _countability_to_dict(item.countability)
-    if item.reference is not None:
-        result["reference"] = _reference_to_dict(item.reference)
     return result
+
+
+def _grammar_eligibility_to_dict(item: GrammarEligibilityFeature) -> JsonObject:
+    return {
+        "article_choice_eligible": item.article_choice_eligible,
+        "countability_choice_eligible": item.countability_choice_eligible,
+        "plural_inflection_choice_eligible": item.plural_inflection_choice_eligible,
+        "reason": item.reason,
+    }
+
+
+def _plural_analysis_to_dict(item: PluralAnalysisFeature) -> JsonObject:
+    return {
+        "number": item.number,
+        "surface_plural_class": item.surface_plural_class,
+        "lemma": item.lemma,
+        "surface": item.surface,
+        "confidence": item.confidence,
+    }
 
 
 def _determiner_to_dict(item: DeterminerFeature) -> JsonObject:
@@ -670,15 +700,21 @@ def _determiner_to_dict(item: DeterminerFeature) -> JsonObject:
 
 def _article_slot_to_dict(item: ArticleSlotFeature) -> JsonObject:
     result: JsonObject = {
-        "requiredness": item.requiredness,
-        "provenance": _provenance_to_dict(item.provenance),
+        "owner_np_id": item.owner_np_id,
+        "article_presence": item.article_presence,
+        "head_ref": item.head_ref,
+        "following_word_ref": item.following_word_ref,
+        "following_sound_class": item.following_sound_class or "unknown",
+        "following_sound_source": item.following_sound_source,
+        "following_sound_confidence": item.following_sound_confidence,
+        "evidence_refs": list(item.evidence_refs),
+        "source": item.source,
+        "confidence": item.confidence,
     }
     if item.article_form is not None:
         result["article_form"] = item.article_form
-    if item.following_sound_class is not None:
-        result["following_sound_class"] = item.following_sound_class
-    if item.following_spelling_class is not None:
-        result["following_spelling_class"] = item.following_spelling_class
+    if item.determiner_ref is not None:
+        result["determiner_ref"] = item.determiner_ref
     if item.definiteness is not None:
         result["definiteness"] = item.definiteness
     return result

@@ -4,7 +4,6 @@ import os
 from pathlib import Path
 
 import pytest
-
 from regression_corpora.corpus_metrics import (
     CorpusMetrics,
     collect_results_metrics,
@@ -15,6 +14,8 @@ RESULTS = ROOT / "RESULTS"
 
 
 def test_results_quality_metrics_can_be_collected() -> None:
+    if not RESULTS.exists():
+        pytest.skip("RESULTS directory is not available in this checkout.")
     metrics = collect_results_metrics(RESULTS)
     assert metrics
     assert sum(item.sentences for item in metrics.values()) > 0

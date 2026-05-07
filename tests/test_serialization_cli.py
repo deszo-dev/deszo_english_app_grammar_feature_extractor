@@ -16,9 +16,9 @@ def test_stable_json_omits_none_fields() -> None:
 
     assert payload.endswith("\n")
     assert '"next_page"' not in payload
-    assert payload.startswith('{"schema_version":"grammar_feature_extractor.v3"')
-    assert '"evidence"' in payload
-    assert '"morphology"' in payload
+    assert payload.startswith('{"schema_version":"grammar_feature_extractor.v4"')
+    assert '"tokens"' in payload
+    assert '"provenance"' not in payload
     assert '"predicate_groups"' not in payload
 
 
@@ -32,7 +32,7 @@ def test_cli_stdout_contains_json_and_stderr_contains_logs() -> None:
     )
 
     assert result.returncode == 0
-    assert json.loads(result.stdout)["schema_version"] == "grammar_feature_extractor.v3"
+    assert json.loads(result.stdout)["schema_version"] == "grammar_feature_extractor.v4"
     assert "pipeline start" in result.stderr
 
 
@@ -46,10 +46,10 @@ def test_cli_no_evidence_keeps_empty_evidence_object() -> None:
     )
 
     payload = json.loads(result.stdout)
-    feature_set = payload["features"][0]["features"]
+    sentence = payload["features"][0]
     assert result.returncode == 0
-    assert feature_set["evidence"] == {"words": [], "dependencies": []}
-    assert feature_set["diagnostics"][0]["code"] == "evidence_omitted_by_config"
+    assert sentence["tokens"] == []
+    assert sentence["diagnostics"][0]["code"] == "evidence_omitted_by_config"
 
 
 def test_cli_rejects_raw_text_with_no_stdout() -> None:

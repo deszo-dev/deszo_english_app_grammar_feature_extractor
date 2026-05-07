@@ -1,5 +1,5 @@
 {
-  "schema_version": "grammar_feature_extractor.v3",
+  "schema_version": "grammar_feature_extractor.v4",
   "enums": {
     "FeatureTier": ["structural", "deterministic", "heuristic", "external_oracle"],
     "ProofSource": [
@@ -73,6 +73,7 @@
       "copular_adjectival",
       "copular_nominal",
       "copular_prepositional",
+      "passive_verbal",
       "existential_there",
       "unknown"
     ]

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal, TypeAlias
 
-SCHEMA_VERSION = "grammar_feature_extractor.v3"
+SCHEMA_VERSION = "grammar_feature_extractor.v4"
 DEFAULT_PAGE_SIZE = 300
 DEFAULT_PAGE_NUMBER = 1
 MAX_PAGE_SIZE = 5000
@@ -78,6 +78,7 @@ PredicateType: TypeAlias = Literal[
     "copular_adjectival",
     "copular_nominal",
     "copular_prepositional",
+    "passive_verbal",
     "existential_there",
     "unknown",
 ]
@@ -90,7 +91,9 @@ AspectValue: TypeAlias = Literal[
     "none",
     "unknown",
 ]
-VoiceValue: TypeAlias = Literal["active", "passive", "unknown"]
+VoiceValue: TypeAlias = Literal[
+    "active", "passive", "copular_not_applicable", "unknown"
+]
 ModalityValue: TypeAlias = Literal[
     "ability",
     "permission",
@@ -190,7 +193,13 @@ SemanticRelation: TypeAlias = Literal[
     "unknown",
 ]
 NPType: TypeAlias = Literal[
-    "common_noun_np", "proper_noun_np", "pronoun_np", "gerund_np", "unknown"
+    "common_noun_np",
+    "proper_noun_np",
+    "pronoun_np",
+    "quantified_np",
+    "metadata_label_np",
+    "gerund_np",
+    "unknown",
 ]
 ArticleRequiredness: TypeAlias = Literal[
     "article_present",
@@ -201,6 +210,12 @@ ArticleRequiredness: TypeAlias = Literal[
     "unknown",
 ]
 ArticleForm: TypeAlias = Literal["a", "an", "the", "zero"]
+ArticlePresence: TypeAlias = Literal[
+    "overt", "zero", "absent_not_applicable", "unknown"
+]
+PhonologySource: TypeAlias = Literal[
+    "exception_list", "spelling_heuristic", "unknown"
+]
 SpellingClass: TypeAlias = Literal["vowel_letter", "consonant_letter", "unknown"]
 SoundClass: TypeAlias = Literal["vowel_sound", "consonant_sound", "unknown"]
 Definiteness: TypeAlias = Literal["definite", "indefinite", "generic", "unknown"]
@@ -524,11 +539,21 @@ CountabilityValue: TypeAlias = Literal[
     "count_plural",
     "uncountable",
     "proper_name",
+    "pronoun_not_applicable",
     "dual_use",
     "unknown",
 ]
 CountabilitySource: TypeAlias = Literal[
-    "morphology", "lexicon", "heuristic", "unknown"
+    "morphology", "lexicon", "determiner_pattern", "parser", "unknown"
+]
+PluralSurfaceClass: TypeAlias = Literal[
+    "singular",
+    "regular_s",
+    "regular_es_after_sibilant",
+    "consonant_y_ies",
+    "irregular",
+    "invariant",
+    "unknown",
 ]
 ReferenceStatus: TypeAlias = Literal[
     "first_mention_candidate",
@@ -601,8 +626,8 @@ class AnnotatedDocument:
 class ExtractorConfig:
     include_diagnostics: bool = True
     include_evidence: bool = True
-    include_construction_signatures: bool = True
-    include_contrastive_support: bool = True
+    include_construction_signatures: bool = False
+    include_contrastive_support: bool = False
     enable_heuristics: bool = True
     debug: bool = False
 
@@ -814,6 +839,7 @@ class PredicateFeature:
     id: str
     main: WordRef
     main_lemma: str
+    main_upos: str
     predicate_type: PredicateType
     finite: bool
     auxiliaries: tuple[AuxiliaryFeature, ...]
@@ -880,10 +906,20 @@ class DeterminerFeature:
 @dataclass(frozen=True, slots=True)
 class ArticleSlotFeature:
     requiredness: ArticleRequiredness
+    owner_np_id: str
+    article_presence: ArticlePresence
     article_form: ArticleForm | None
+    determiner_ref: WordRef | None
+    head_ref: WordRef
+    following_word_ref: WordRef
     following_sound_class: SoundClass | None
+    following_sound_source: PhonologySource
+    following_sound_confidence: Confidence
     following_spelling_class: SpellingClass | None
     definiteness: Definiteness | None
+    evidence_refs: tuple[WordRef, ...]
+    source: FeatureSource
+    confidence: Confidence
     provenance: ProofProvenance
 
 
@@ -900,13 +936,34 @@ class QuantifierFeature:
 
 
 @dataclass(frozen=True, slots=True)
+class GrammarEligibilityFeature:
+    article_choice_eligible: bool
+    countability_choice_eligible: bool
+    plural_inflection_choice_eligible: bool
+    reason: str
+
+
+@dataclass(frozen=True, slots=True)
+class PluralAnalysisFeature:
+    number: DeterminerNumber
+    surface_plural_class: PluralSurfaceClass
+    lemma: str
+    surface: str
+    confidence: Confidence
+
+
+@dataclass(frozen=True, slots=True)
 class NPFeature:
     id: str
     head: WordRef
+    token_refs: tuple[WordRef, ...]
+    determiner_refs: tuple[WordRef, ...]
     head_lemma: str
+    head_upos: str
     phrase_type: NPType
     number: DeterminerNumber | None
     person: int | None
+    grammar_eligibility: GrammarEligibilityFeature
     determiner: DeterminerFeature | None
     has_determiner: bool
     article_slot: ArticleSlotFeature
@@ -917,6 +974,7 @@ class NPFeature:
     evidence_refs: tuple[WordRef, ...]
     confidence: Confidence
     provenance: ProofProvenance
+    plural_analysis: PluralAnalysisFeature | None = None
     countability: "CountabilityFeature | None" = None
     reference: "ReferenceFeature | None" = None
 
@@ -1121,7 +1179,7 @@ class NounInflectionFeature:
 
 @dataclass(frozen=True, slots=True)
 class CountabilityFeature:
-    value: CountabilityValue
+    status: CountabilityValue
     source: CountabilitySource
     confidence: Confidence
 

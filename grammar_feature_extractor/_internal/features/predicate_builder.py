@@ -79,7 +79,7 @@ def build_predicates(
         tense = _tense(ctx, main, auxiliaries, copula)
         modality = _modality(main, auxiliaries, polarity)
         aspect = _aspect(ctx, main, auxiliaries)
-        voice = _voice(ctx, main, auxiliaries, clause)
+        voice = _voice(ctx, main, auxiliaries, clause, predicate_type)
         form_signature = _form_signature(
             ctx,
             main,
@@ -102,9 +102,10 @@ def build_predicates(
         )
         predicates.append(
             PredicateFeature(
-                id=f"predicate-{clause.head}",
+                id=f"pred-{clause.head}",
                 main=main,
                 main_lemma=_lemma_or_text(ctx, main),
+                main_upos=ctx.word_by_ref[main].upos,
                 predicate_type=predicate_type,
                 finite=finite,
                 auxiliaries=auxiliaries,
@@ -151,14 +152,38 @@ def _predicate_main(
     clause: ClauseFeature,
 ) -> tuple[WordRef, PredicateType]:
     head = ctx.word_by_ref[clause.head]
+    if _has_expletive_there(ctx, clause):
+        return clause.head, "existential_there"
     if children_with_deprel(ctx, clause.head, "cop"):
         return clause.head, _copular_type(head.upos)
     if head.upos in {"VERB", "AUX"}:
+        if _is_passive_clause(ctx, clause):
+            return clause.head, "passive_verbal"
         return clause.head, "verbal"
     for ref in clause.local_tokens:
         if ctx.word_by_ref[ref].upos in {"VERB", "AUX"}:
+            if _is_passive_clause(ctx, clause):
+                return ref, "passive_verbal"
             return ref, "verbal"
     return clause.head, "unknown"
+
+
+def _has_expletive_there(ctx: SentenceContext, clause: ClauseFeature) -> bool:
+    for ref in clause.local_tokens:
+        word = ctx.word_by_ref[ref]
+        if word.text.casefold() == "there" and word.deprel in {"expl", "nsubj"}:
+            return True
+    return False
+
+
+def _is_passive_clause(ctx: SentenceContext, clause: ClauseFeature) -> bool:
+    if clause.roles.subject is not None:
+        if ctx.word_by_ref[clause.roles.subject].deprel == "nsubj:pass":
+            return True
+    for ref in clause.local_tokens:
+        if ctx.word_by_ref[ref].deprel == "aux:pass":
+            return True
+    return False
 
 
 def _copular_type(upos: str) -> PredicateType:
@@ -400,7 +425,10 @@ def _voice(
     main: WordRef,
     auxiliaries: tuple[AuxiliaryFeature, ...],
     clause: ClauseFeature,
+    predicate_type: PredicateType,
 ) -> VoiceValue:
+    if predicate_type.startswith("copular") or predicate_type == "existential_there":
+        return "copular_not_applicable"
     if any(auxiliary.role == "passive_aux" for auxiliary in auxiliaries):
         return "passive"
     if (

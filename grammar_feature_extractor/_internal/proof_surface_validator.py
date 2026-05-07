@@ -23,6 +23,7 @@ PREDICATE_TYPES = frozenset(
         "copular_adjectival",
         "copular_nominal",
         "copular_prepositional",
+        "passive_verbal",
         "existential_there",
         "unknown",
     }

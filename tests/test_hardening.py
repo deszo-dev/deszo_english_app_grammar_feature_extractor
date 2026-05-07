@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from grammar_feature_extractor import GrammarFeatureExtractor
+from grammar_feature_extractor import ExtractorConfig, GrammarFeatureExtractor
 from grammar_feature_extractor._internal.serialization import loads_document
 
 
@@ -33,7 +33,7 @@ def test_no_object_np_makes_predicate_negative() -> None:
     assert features.lexical.negation[0].negation_type == "negative_determiner"
 
 
-def test_construction_optional_slots_are_omitted() -> None:
+def test_rule_like_constructions_are_not_emitted_by_default() -> None:
     page = _extract(
         "Alice slept.",
         [
@@ -51,9 +51,8 @@ def test_construction_optional_slots_are_omitted() -> None:
             _word(".", ".", "PUNCT", 2, "punct", 11, 12),
         ],
     )
-    construction = page.features[0].features.constructions[0]
 
-    assert construction.slots == {"predicate": 2, "subject": 1}
+    assert page.features[0].features.constructions == ()
 
 
 def test_pronoun_and_proper_noun_article_slots_are_not_applicable() -> None:
@@ -114,7 +113,11 @@ def test_word_order_refs_are_unique() -> None:
     }
 
 
-def _extract(text: str, words: list[dict[str, object]]):
+def _extract(
+    text: str,
+    words: list[dict[str, object]],
+    config: ExtractorConfig | None = None,
+):
     document = loads_document(
         json.dumps(
             {
@@ -132,7 +135,7 @@ def _extract(text: str, words: list[dict[str, object]]):
             }
         )
     )
-    return GrammarFeatureExtractor().extract_page(document)
+    return GrammarFeatureExtractor().extract_page(document, config=config)
 
 
 def _word(

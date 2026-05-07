@@ -1,28 +1,11 @@
 {
-  "schema_version": "grammar_feature_extractor.v3",
+  "schema_version": "grammar_feature_extractor.v4",
   "signatures": [
     "subject_be_present_complement",
-    "be_subject_complement_question",
-    "there_be_np",
-    "present_simple_lexical_affirmative",
-    "present_simple_do_negative",
-    "present_simple_do_negative_question",
-    "present_simple_do_question",
-    "present_progressive_affirmative",
-    "present_perfect_have_participle",
-    "past_simple_regular",
-    "past_simple_negative",
-    "copular_be_negative",
-    "modal_negative_base",
-    "perfect_negative",
-    "passive_negative",
-    "modal_must_base",
-    "semi_modal_be_able_to",
+    "existential_there_be",
+    "article_marked_np",
+    "zero_article_common_np",
     "passive_be_participle",
-    "article_indefinite_a_np",
-    "article_indefinite_an_np",
-    "article_definite_the_np",
-    "zero_article_plural_generic_candidate",
-    "comparison_as_as"
+    "modal_auxiliary_predicate"
   ]
 }
