@@ -1,0 +1,9 @@
+{
+  "schema_version": "grammar_feature_extractor.v3",
+  "kind": "cli_error",
+  "error_code": "unexpected_system_error",
+  "message": "Unexpected runtime error.",
+  "details": {
+    "diagnostic_code": "duplicate_feature_id"
+  }
+}

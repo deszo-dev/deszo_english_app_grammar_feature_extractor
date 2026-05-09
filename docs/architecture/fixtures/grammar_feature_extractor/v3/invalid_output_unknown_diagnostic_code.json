@@ -1,0 +1,12 @@
+{
+  "schema_version": "grammar_feature_extractor.v3",
+  "kind": "grammar_feature_diagnostics",
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "not_registered",
+      "message": "bad",
+      "refs": []
+    }
+  ]
+}

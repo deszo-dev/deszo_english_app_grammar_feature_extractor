@@ -1,0 +1,441 @@
+{
+  "schema_version": "grammar_feature_extractor.v3",
+  "kind": "feature_path_registry",
+  "paths": [
+    {
+      "path": "features.evidence.words[*].ref",
+      "value_type": "word_ref",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "exists",
+        "equals",
+        "in"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null
+    },
+    {
+      "path": "features.evidence.words[*].upos",
+      "value_type": "string",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "exists",
+        "equals",
+        "in"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null
+    },
+    {
+      "path": "features.evidence.dependencies[*].deprel",
+      "value_type": "string",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "exists",
+        "equals",
+        "in",
+        "starts_with"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null
+    },
+    {
+      "path": "features.morphology.normalized[*].is_finite_verb",
+      "value_type": "boolean",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null
+    },
+    {
+      "path": "features.morphology.normalized[*].is_to_infinitive",
+      "value_type": "boolean",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null
+    },
+    {
+      "path": "features.syntax.predicates[*].tavm.form_signature",
+      "value_type": "enum",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "in",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "be_present_copular",
+        "present_simple_lexical",
+        "present_simple_do_negative",
+        "present_simple_do_question",
+        "present_progressive",
+        "present_perfect",
+        "present_perfect_progressive",
+        "past_simple",
+        "past_progressive",
+        "passive_be_participle",
+        "modal_base_verb",
+        "semi_modal_have_to",
+        "semi_modal_need_to",
+        "semi_modal_be_able_to",
+        "semi_modal_be_supposed_to",
+        "used_to_base",
+        "future_like_will_base",
+        "past_perfect",
+        "past_perfect_progressive",
+        "none",
+        "unknown"
+      ]
+    },
+    {
+      "path": "features.syntax.predicates[*].subject",
+      "value_type": "word_ref",
+      "cardinality": "optional",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "exists",
+        "equals"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null
+    },
+    {
+      "path": "features.syntax.predicates[*].object",
+      "value_type": "word_ref",
+      "cardinality": "optional",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "exists",
+        "equals"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null
+    },
+    {
+      "path": "features.syntax.predicates[*].polarity",
+      "value_type": "enum",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "in"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "positive",
+        "negative",
+        "mixed",
+        "unknown"
+      ]
+    },
+    {
+      "path": "features.syntax.predicates[*].voice",
+      "value_type": "enum",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "in"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "active",
+        "passive",
+        "unknown"
+      ]
+    },
+    {
+      "path": "features.syntax.clauses[*].type",
+      "value_type": "enum",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "in",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "root",
+        "ccomp",
+        "xcomp",
+        "advcl",
+        "relcl",
+        "acl",
+        "participle",
+        "infinitive",
+        "conditional",
+        "reported_speech",
+        "unknown"
+      ]
+    },
+    {
+      "path": "features.syntax.np_profiles[*].article_slot.requiredness",
+      "value_type": "enum",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "in",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "article_present",
+        "zero_article",
+        "determiner_present",
+        "missing_required_determiner_candidate",
+        "not_applicable",
+        "unknown"
+      ]
+    },
+    {
+      "path": "features.syntax.np_profiles[*].countability.value",
+      "value_type": "enum",
+      "cardinality": "optional",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "in",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "count_singular",
+        "count_plural",
+        "uncountable",
+        "proper_name",
+        "dual_use",
+        "unknown"
+      ]
+    },
+    {
+      "path": "features.lexical.sentence.sentence_type",
+      "value_type": "enum",
+      "cardinality": "one",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "in"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "declarative",
+        "yes_no_question",
+        "wh_question",
+        "tag_question",
+        "imperative",
+        "exclamative",
+        "short_answer",
+        "fragment",
+        "unknown"
+      ]
+    },
+    {
+      "path": "features.lexical.word_order[*].pattern",
+      "value_type": "enum",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "in",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "subject_verb_object",
+        "subject_aux_verb",
+        "aux_subject_verb",
+        "wh_aux_subject_verb",
+        "be_subject_complement",
+        "there_be_np",
+        "imperative_base_verb",
+        "negative_aux_not_verb",
+        "unknown"
+      ]
+    },
+    {
+      "path": "features.lexical.negation[*].negator_kind",
+      "value_type": "enum",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "in",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "not",
+        "nt",
+        "never",
+        "no",
+        "none",
+        "nothing",
+        "neither",
+        "other"
+      ]
+    },
+    {
+      "path": "features.constructions[*].signature",
+      "value_type": "enum",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "in",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "subject_be_present_complement",
+        "subject_be_present_not_complement",
+        "be_subject_complement_question",
+        "there_be_np",
+        "there_be_not_any_np",
+        "present_simple_lexical_affirmative",
+        "present_simple_do_negative",
+        "present_simple_do_question",
+        "present_progressive_affirmative",
+        "present_perfect_have_participle",
+        "present_perfect_ever_question",
+        "past_simple_regular",
+        "modal_must_base",
+        "semi_modal_be_able_to",
+        "passive_be_participle",
+        "to_infinitive_after_adjective",
+        "gerund_after_preposition",
+        "comparative_more_than",
+        "comparison_as_as",
+        "demonstrative_this_singular_np",
+        "article_indefinite_a_np",
+        "article_indefinite_an_np",
+        "article_definite_the_np",
+        "zero_article_plural_generic_candidate"
+      ]
+    },
+    {
+      "path": "features.constructions[*].slots",
+      "value_type": "object",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "has_slot",
+        "slot_equals",
+        "slot_exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null
+    },
+    {
+      "path": "features.contrastive_support[*].contrastive_hint",
+      "value_type": "enum",
+      "cardinality": "many",
+      "proof_relevant": false,
+      "allowed_operators": [
+        "equals",
+        "in",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "present_simple_vs_present_progressive",
+        "present_perfect_vs_past_simple",
+        "a_vs_an",
+        "a_an_vs_the",
+        "article_vs_zero_article",
+        "singular_vs_plural",
+        "this_that_vs_these_those",
+        "comparative_vs_as_as",
+        "some_vs_any",
+        "much_vs_many",
+        "gerund_vs_infinitive",
+        "unknown"
+      ]
+    },
+    {
+      "path": "features.absences[*].target",
+      "value_type": "enum",
+      "cardinality": "many",
+      "proof_relevant": true,
+      "allowed_operators": [
+        "equals",
+        "in",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "determiner",
+        "article",
+        "auxiliary",
+        "subject",
+        "object",
+        "negation",
+        "preposition",
+        "relative_marker"
+      ]
+    },
+    {
+      "path": "features.diagnostics[*].code",
+      "value_type": "enum",
+      "cardinality": "many",
+      "proof_relevant": false,
+      "allowed_operators": [
+        "equals",
+        "in",
+        "exists"
+      ],
+      "stable_since": "grammar_feature_extractor.v3",
+      "deprecated_since": null,
+      "enum_values": [
+        "missing_word_evidence",
+        "ambiguous_pos",
+        "ambiguous_clause_boundary",
+        "ambiguous_participle",
+        "ambiguous_article_reference",
+        "requires_discourse_context",
+        "requires_intended_meaning",
+        "requires_phonology",
+        "requires_countability_lexicon",
+        "competing_rule_candidates",
+        "unsupported_feature",
+        "internal_feature_error",
+        "malformed_morphology_feats",
+        "feature_group_failed",
+        "invalid_word_ref_generated",
+        "duplicate_feature_id",
+        "output_page_too_large",
+        "required_resource_missing",
+        "optional_resource_missing",
+        "disabled_feature_group",
+        "diagnostics_truncated"
+      ]
+    }
+  ]
+}

@@ -1,4 +1,335 @@
-# grammar_feature_extractor architecture
+# grammar_feature_extractor architecture v3.2 committed contract
+
+> Document revision: `v3.2-contract`  
+> Runtime/output schema version: `grammar_feature_extractor.v3`  
+> Status: corrected implementation contract for code generation and tests.
+
+This revision processes the v3.1 documentation review and supersedes `grammar_feature_extractor_architecture_v3_1.md` where conflicts exist.
+
+## v3.2 contract repair summary
+
+1. **Grammatical person fields are JSON integers.** `AgreementFeature.subject_person`, `AgreementFeature.predicate_person`, `NPFeature.person`, and `PronounFeature.person` serialize as `1 | 2 | 3`. UD morphology `MorphFeature.features.Person` remains a string enum `"1" | "2" | "3"` because it mirrors UD `feats`.
+2. **Construction slots are registry-typed.** `ConstructionFeature.slots` still has a broad JSON Schema shape, but `construction_signature_registry.v3.json` now defines `slots[]` with `name`, `required`, `value_type`, and optional `allowed_values`. Signature-specific validation is mandatory semantic validation.
+3. **Registry files have meta-schemas.** The following are committed and normative: `diagnostic_registry.v3.schema.json`, `construction_signature_registry.v3.schema.json`, `predicate_form_signature_registry.v3.schema.json`, `feature_path_registry.v3.schema.json`, and `semantic_validation_registry.v3.schema.json`.
+4. **Feature path registry is upgraded.** Each path defines `value_type`, optional `enum_values`, `cardinality`, `proof_relevant`, `allowed_operators`, `stable_since`, and `deprecated_since`.
+5. **Raw and resolved config are separated.** `grammar_feature_config.v3.schema.json` validates only resolved config. `grammar_feature_config.input.v3.schema.json` exists for explicit future raw config input, but v3 CLI still MUST NOT expose `--config` until that behavior is enabled by a versioned contract update.
+6. **Default resolved config is a fixture.** `fixtures/grammar_feature_extractor/v3/default_resolved_config.json` is the canonical source of default values. It MUST validate against `grammar_feature_config.v3.schema.json`.
+7. **Semantic validation is part of the contract.** JSON Schema validation is necessary but not sufficient. The implementation MUST perform semantic validation for input dependency graphs, feature graph refs, construction slots, diagnostics, config relationships, and manifest page ranges/hashes.
+8. **Fatal diagnostics are not serialized as successful output.** Diagnostics whose registry entry has `result_impact = "extraction_failed"` MUST be converted to exceptions before serialization.
+9. **Schema bundling drift is forbidden.** `grammar_feature_common.v3.schema.json` is the source of shared definitions. Bundled page/document/manifest/diagnostics schemas MUST be generated from, or byte-compared against, the common `$defs`.
+10. **TypeScript-like snippets are not normative unless marked.** All older interface snippets below are explanatory excerpts unless explicitly marked `normative projection`. For implementation, generate models from JSON Schemas or prove model/schema conformance.
+
+## v3.2 schema inventory
+
+Additional files introduced by v3.2:
+
+- `schema/diagnostic_registry.v3.schema.json`
+- `schema/construction_signature_registry.v3.schema.json`
+- `schema/predicate_form_signature_registry.v3.schema.json`
+- `schema/feature_path_registry.v3.schema.json`
+- `schema/grammar_feature_config.input.v3.schema.json`
+- `schema/semantic_validation_registry.v3.json`
+- `schema/semantic_validation_registry.v3.schema.json`
+- `fixtures/grammar_feature_extractor/v3/default_resolved_config.json`
+
+## Grammatical person representation
+
+All grammar feature person fields MUST use JSON integers:
+
+```typescript
+type GrammaticalPerson = 1 | 2 | 3;
+```
+
+Affected fields:
+
+- `AgreementFeature.subject_person`
+- `AgreementFeature.predicate_person`
+- `NPFeature.person`
+- `PronounFeature.person`
+
+Required JSON Schema pattern:
+
+```json
+{
+  "type": "integer",
+  "enum": [1, 2, 3]
+}
+```
+
+The UD morphology mirror field `MorphFeature.features.Person` intentionally remains:
+
+```json
+{
+  "type": "string",
+  "enum": ["1", "2", "3"]
+}
+```
+
+## Construction slot validation
+
+`ConstructionFeature.slots` validation is two-stage:
+
+1. JSON Schema validates broad value shape and globally known slot names.
+2. `construction_signature_registry.v3.json` validates selected-signature slot names, requiredness, value types, and allowed string values.
+
+Normative slot spec:
+
+```typescript
+interface ConstructionSlotSpec {
+  name: string;
+  required: boolean;
+  value_type:
+    | "word_ref"
+    | "word_ref_array"
+    | "string"
+    | "boolean"
+    | "number";
+  allowed_values?: string[];
+}
+```
+
+Rules:
+
+- all required slots for the selected `signature` MUST be present;
+- slots not listed by the selected signature are invalid;
+- `word_ref` and `word_ref_array` slots MUST be sentence-local and valid;
+- string slots with `allowed_values` MUST use one of those values;
+- invalid construction slot binding is a fatal output semantic validation error.
+
+## Raw config vs resolved config
+
+`schema/grammar_feature_config.v3.schema.json` validates only fully resolved config after defaults and explicit overrides.
+
+`schema/grammar_feature_config.input.v3.schema.json` is a partial raw config schema for future explicit config-file/API config. v3 CLI still follows this restriction:
+
+- MUST NOT read environment variables for configuration;
+- MUST NOT read implicit config files;
+- MUST NOT expose `--config` until a versioned contract enables it;
+- unknown `--config` in v3 is a CLI usage error, exit `2`.
+
+Canonical defaults live in:
+
+```text
+fixtures/grammar_feature_extractor/v3/default_resolved_config.json
+```
+
+## Public model implementation strategy
+
+Committed decision for code generation:
+
+- public data objects are immutable `dataclass(frozen=True, slots=True)` models or generated equivalents checked against JSON Schemas;
+- raw JSON adapters MAY accept `dict[str, object]`;
+- `core` accepts only validated model instances;
+- public `extract()` and `extract_page()` accept validated `AnnotatedDocument` model instances, not arbitrary raw text or unvalidated dictionaries;
+- helper adapters MAY be exposed for `load_annotated_document_json()` and `dump_feature_page_json()`.
+
+## Semantic validation contracts
+
+JSON Schema validation MUST be followed by semantic validation.
+
+Required validator contracts:
+
+```python
+def validate_annotated_document_semantics(document: AnnotatedDocument) -> None: ...
+def validate_resolved_config_semantics(config: ExtractorConfig) -> None: ...
+def validate_feature_document_semantics(document: GrammarFeatureDocument) -> None: ...
+def validate_feature_page_semantics(page: GrammarFeaturePage) -> None: ...
+def validate_manifest_semantics(manifest: GrammarFeatureManifest, output_dir: Path) -> None: ...
+def validate_diagnostic_against_registry(diagnostic: FeatureDiagnostic) -> None: ...
+def validate_construction_against_registry(feature: ConstructionFeature) -> None: ...
+```
+
+These validators are test-contract APIs. They MAY be private implementation functions, but CI MUST exercise them.
+
+### Input semantic validation codes
+
+Stable validation codes are registry-backed in `semantic_validation_registry.v3.json`.
+
+Required input codes include:
+
+- `head_out_of_range`
+- `missing_dependency_root`
+- `dependency_cycle`
+- `invalid_word_span`
+- `invalid_entity_span`
+- `token_words_mismatch`
+- `sentence_text_empty`
+- `sentence_words_empty`
+- `unknown_input_field`
+
+All input semantic validation failures map to `InputValidationError`, CLI `error_code = "input_validation_error"`, exit `1`.
+
+### Output semantic validation
+
+A schema-valid output is not necessarily proof-valid. Validators MUST check:
+
+- every `WordRef` is valid within the sentence;
+- every `evidence_refs` array is sorted, unique, and non-empty for positive matcher-facing features;
+- every feature id is unique within its feature group;
+- construction slots match the selected construction registry entry;
+- every diagnostic ref is valid;
+- every absence anchor is valid;
+- page ranges are consistent with `features.length`;
+- manifest ranges are sorted, gap-free, non-overlapping, and hash-verified.
+
+## Diagnostic registry validation
+
+Every emitted diagnostic MUST pass registry validation:
+
+- `severity` MUST equal registry severity;
+- `feature_path` MUST be present when `feature_path_required = true`;
+- `refs` MUST be non-empty when `refs_required = true`;
+- `result_impact` is obtained by registry lookup, not repeated ad hoc;
+- diagnostics with `result_impact = "extraction_failed"` MUST be converted to exceptions before output serialization.
+
+Fatal mapping:
+
+| Diagnostic code | Exception | CLI error code | Exit |
+|---|---|---|---:|
+| `invalid_word_ref_generated` | `FeatureExtractionError` | `unexpected_system_error` | 4 |
+| `duplicate_feature_id` | `FeatureExtractionError` | `unexpected_system_error` | 4 |
+| `output_page_too_large` | `SerializationError` | `output_serialization_error` | 1 |
+| `required_resource_missing` | `ConfigurationError` | `configuration_error` | 1 |
+
+## Diagnostics limit policy
+
+`max_diagnostics_per_sentence` behavior:
+
+- `0` means diagnostics are suppressed and `features.diagnostics = []`;
+- if positive and diagnostics exceed the limit, diagnostics are first sorted by deterministic diagnostic ordering;
+- if limit is `1`, emit only `diagnostics_truncated`;
+- if limit is `N > 1`, keep the first `N - 1` diagnostics and append `diagnostics_truncated`;
+- `diagnostics_truncated` has no refs requirement and does not change CLI exit behavior.
+
+## Manifest semantic validation
+
+A manifest is valid only if:
+
+- `page_count == len(pages)`;
+- pages are sorted by `page_number` ascending;
+- first page has `sentence_start = 0`;
+- page ranges are gap-free and non-overlapping;
+- last page `sentence_end_exclusive == total_sentences`;
+- empty document has exactly one page with `sentence_start = sentence_end_exclusive = 0`;
+- each page file exists and its SHA-256 matches canonical UTF-8 JSON bytes including the final newline.
+
+## Feature path registry contract
+
+Every feature path registry entry MUST define:
+
+```typescript
+interface FeaturePathRegistryEntry {
+  path: string;
+  value_type: "boolean" | "integer" | "number" | "string" | "enum" | "word_ref" | "word_ref_array" | "object" | "array";
+  enum_values?: string[];
+  cardinality: "one" | "optional" | "many";
+  proof_relevant: boolean;
+  allowed_operators: string[];
+  stable_since: string;
+  deprecated_since?: string | null;
+}
+```
+
+Catalog validation MUST reject a rule that uses an unregistered feature path, an incompatible operator, or an unknown enum value.
+
+## Resource hash policy
+
+`RuntimeResource.sha256` may be `null` only for built-in resources whose bytes are embedded in the installed package and whose package version is reported by `version`.
+
+For user-supplied or file-backed resources, `sha256` MUST be a lowercase 64-character SHA-256 hex digest.
+
+`ExtractorRuntimeMetadata.resources` MUST be semantically unique by `(kind, name)`.
+
+## Lowercase normalization
+
+`TokenEvidence.lower` MUST be generated with Python `str.casefold()` rather than locale-dependent lowercasing. This field is for matcher normalization, not a display field.
+
+## Schema bundling policy
+
+`schema/grammar_feature_common.v3.schema.json` is the source of truth for shared `$defs`.
+
+If document/page/manifest/diagnostics schemas inline `$defs`, they are generated artifacts. CI MUST verify that their `$defs` are byte-equivalent to the common source definitions after canonical JSON serialization.
+
+Manual edits to bundled `$defs` are forbidden.
+
+## Fixture release gate
+
+Implementation is not production-ready until fixtures under `fixtures/grammar_feature_extractor/v3/` are committed and validated in CI.
+
+Minimum committed fixtures in this v3.2 package:
+
+- `default_resolved_config.json`
+- `valid_minimal_input.json`
+- `valid_empty_document_page.json`
+- `valid_empty_document_manifest.json`
+- CLI error examples for usage, input validation, output write, and unexpected system error
+- selected invalid input/output examples
+
+Full production implementation SHOULD add a full one-sentence positive output fixture once the extraction logic is finalized.
+
+---
+
+# Legacy v3.1 contract body retained for context
+
+The content below is retained from v3.1. Where any statement conflicts with the v3.2 sections above or with committed JSON Schemas/registries, v3.2 wins.
+
+# grammar_feature_extractor architecture v3.1 committed contract
+
+> Document revision: `v3.1-contract`  
+> Runtime/output schema version: `grammar_feature_extractor.v3`  
+> Status: implementation contract for code generation and tests.
+
+This revision hardens the original `grammar_feature_extractor_architecture.md` into a stricter implementation contract. It resolves the review blockers around authoritative JSON Schemas, public Python API, config gating, proof provenance, diagnostics, undefined feature types, CLI errors, canonical serialization, filesystem safety, limits, and registry-backed identifiers.
+
+## 0. Normative status
+
+The normative implementation contract consists of this Markdown document plus the committed schema and registry files under `schema/`.
+
+The original TypeScript-like interfaces remain explanatory where they do not conflict with the committed JSON Schemas. In any conflict, the JSON Schema and registry files are authoritative for validation, code generation, fixtures, and downstream matcher compatibility.
+
+Normative schema and registry files:
+
+| File | Purpose |
+|---|---|
+| `schema/annotated_document.input.v3.schema.json` | accepted normalized `AnnotatedDocument` input envelope |
+| `schema/grammar_feature_document.v3.schema.json` | full unpaged core output |
+| `schema/grammar_feature_page.v3.schema.json` | paginated CLI/API output |
+| `schema/grammar_feature_config.v3.schema.json` | resolved extractor and paging config |
+| `schema/grammar_feature_manifest.v3.schema.json` | production output-dir manifest |
+| `schema/grammar_feature_diagnostics.v3.schema.json` | standalone diagnostic collection |
+| `schema/cli_error.v3.schema.json` | structured CLI stderr error object |
+| `schema/diagnostic_registry.v3.json` | closed diagnostic code registry |
+| `schema/construction_signature_registry.v3.json` | closed construction signature registry |
+| `schema/predicate_form_signature_registry.v3.json` | closed predicate `form_signature` registry |
+| `schema/feature_path_registry.v3.json` | stable matcher-facing feature paths |
+| `schema/grammar_feature_common.v3.schema.json` | shared `$defs` used by generated models/tests |
+
+All schemas use JSON Schema draft 2020-12. `additionalProperties: false` is the default. Intentional typed maps are limited to:
+
+- `TokenEvidence.feats`, because parsed UD morphology is a string map;
+- `ConstructionFeature.slots`, because slot names are constrained by `construction_signature_registry.v3.json` while values are typed.
+
+## 0.1 Final decisions from documentation review
+
+| Area | Committed decision |
+|---|---|
+| Schema authority | JSON Schemas and registries are normative. |
+| Public API | `GrammarFeatureExtractor` API is normative, not suggested. |
+| Config gating | Feature-group keys remain present; disabled groups are emitted empty and recorded in `output_completeness.omitted_feature_groups`. |
+| Matcher completeness | Disabling evidence or matcher-critical groups sets `output_completeness.matcher_complete = false`. |
+| Proof provenance | Every matcher-relevant positive feature includes `provenance: ProofProvenance`. |
+| Diagnostics | Diagnostic codes are closed and registry-backed. |
+| Construction signatures | Construction signatures are closed registry-backed identifiers. |
+| Undefined output types | `Coordination`, feature IDs, form signatures, diagnostic schema, CLI errors and manifest pages are defined. |
+| Free text | Proof-relevant fields use closed enums or registry-backed identifiers; surface strings are separated into `surface` fields. |
+| CLI errors | CLI usage errors exit `2`; output write failures exit `3`; unexpected runtime/system errors exit `4`. |
+| CLI stderr | Failure writes exactly one JSON `CliError` object to stderr; stdout remains empty. |
+| Canonical JSON | UTF-8, no BOM, 2-space indentation, schema-order keys, final newline, `ensure_ascii=false`. |
+| Output-dir mode | Production `--output-dir` is normative and atomic. |
+| Limits | Input/output limits are explicit and configurable through resolved config. |
+| Security | Output symlinks are rejected by default; manifest is written last; temp files are used for atomic writes. |
+
+---
 
 `grammar_feature_extractor` — модуль чистого извлечения грамматических признаков из уже готовых синтаксико-морфологических аннотаций.
 
@@ -186,16 +517,31 @@ type WordRef = number;
 
 ### 4.4 Инварианты входа
 
-- `sentences` присутствует всегда;
-- `entities` присутствует всегда, но extractor может не использовать entities;
-- `Sentence.text` не пустой для каждого существующего предложения;
-- `Sentence.words` не пустой для каждого существующего предложения;
-- `Token.words` не пустой для каждого токена;
-- `Word.text`, `Word.upos`, `Word.deprel` не пустые;
-- `Word.start_char <= Word.end_char`;
-- пустой документ допустим: `sentences = []`, `entities = []`.
+The accepted input is the normalized object validated by `schema/annotated_document.input.v3.schema.json`.
 
-Нарушение этих инвариантов является expected data error и должно завершать CLI с exit code `1`.
+Required structural invariants:
+
+- `schema_version` MUST equal `grammar_feature_extractor.annotated_document.input.v3`;
+- `sentences` MUST be present and an array;
+- `entities` MUST be present and an array;
+- empty document is valid only as `sentences = []`, `entities = []`;
+- each existing `AnnotatedSentence.text` MUST be non-empty;
+- each existing `AnnotatedSentence.tokens` MUST be non-empty;
+- each existing `AnnotatedSentence.words` MUST be non-empty;
+- each `Token.words` MUST be non-empty;
+- `Token.words` MUST be consistent with `AnnotatedSentence.words` by text/span order; implementations MUST validate this relation outside JSON Schema;
+- `Word.text`, `Word.lemma`, `Word.upos`, and `Word.deprel` MUST be non-empty;
+- `Word.head` MUST be an integer in range `0..len(sentence.words)`;
+- `head = 0` means UD root and MUST NOT be used as `WordRef`;
+- every non-empty sentence MUST contain at least one `head = 0` root;
+- dependency cycles among non-root heads are invalid;
+- character spans are 0-based half-open offsets `[start_char, end_char)`;
+- `Word.start_char < Word.end_char` is required by validator even if JSON Schema cannot express cross-field comparison;
+- entity spans MUST use the same half-open convention;
+- unknown input fields are invalid;
+- malformed optional `feats` values SHOULD degrade morphology extraction and emit diagnostic `malformed_morphology_feats` instead of failing the whole document.
+
+Violations are expected data errors and map to `InputValidationError` / CLI exit code `1`.
 
 ## 5. Output contract
 
@@ -205,7 +551,30 @@ type WordRef = number;
 type GrammarFeatureSchemaVersion = "grammar_feature_extractor.v3";
 ```
 
-`v3` — breaking change относительно `v2`, потому что output теперь содержит matcher-oriented evidence layer, morphology layer, construction signatures, absences и contrastive support hints.
+`v3` is the first committed matcher-oriented schema version for this module revision.
+
+All serialized extractor outputs MUST contain:
+
+```json
+"schema_version": "grammar_feature_extractor.v3"
+```
+
+All page/document/manifest outputs MUST also contain `kind`, `runtime_metadata`, and, where applicable, `output_completeness`.
+
+### 5.1.1 Authoritative schemas
+
+The authoritative machine-readable contracts are the committed files under `schema/` listed in Section `0`.
+
+Schema files MUST be used by:
+
+- input validation;
+- output validation in tests;
+- fixture validation;
+- generated Python models or model conformance tests;
+- downstream matcher contract tests;
+- Coq projection tests.
+
+A schema or registry change is breaking if it changes accepted input, serialized output, default config behavior, proof-relevant enums, construction signatures, paging semantics, diagnostic codes, or manifest layout.
 
 ### 5.2 Core output
 
@@ -214,6 +583,9 @@ type GrammarFeatureSchemaVersion = "grammar_feature_extractor.v3";
 ```typescript
 interface GrammarFeatureDocument {
   schema_version: "grammar_feature_extractor.v3";
+  kind: "grammar_feature_document";
+  runtime_metadata: ExtractorRuntimeMetadata;
+  output_completeness: OutputCompleteness;
   source_sentence_count: number;
   sentences: SentenceGrammarFeatures[];
 }
@@ -234,6 +606,25 @@ interface GrammarFeatureSet {
   absences: AbsenceFeature[];
   diagnostics: FeatureDiagnostic[];
 }
+
+interface OutputCompleteness {
+  matcher_complete: boolean;
+  omitted_feature_groups: string[];
+}
+
+interface ExtractorRuntimeMetadata {
+  schema_version: "grammar_feature_extractor.v3";
+  extractor_version: string;
+  resources: RuntimeResource[];
+}
+
+interface RuntimeResource {
+  name: string;
+  kind: "closed_list" | "lexicon" | "phonology" | "heuristic_table" | "registry" | "schema";
+  version: string;
+  sha256?: string | null;
+  required: boolean;
+}
 ```
 
 ### 5.3 Paginated CLI/API output
@@ -243,6 +634,9 @@ CLI выводит одну страницу features.
 ```typescript
 interface GrammarFeaturePage {
   schema_version: "grammar_feature_extractor.v3";
+  kind: "grammar_feature_page";
+  runtime_metadata: ExtractorRuntimeMetadata;
+  output_completeness: OutputCompleteness;
   page: PageInfo;
   features: SentenceGrammarFeatures[];
 }
@@ -322,6 +716,83 @@ interface FeatureMeta {
 - feature не должен ссылаться на raw payload за пределами предложения;
 - если feature основан на heuristic, `sources` обязан включать `"heuristic"`;
 - если feature требует внешнего контекста, extractor должен добавить diagnostic или `missing_context`.
+
+### 6.4 Proof provenance
+
+Every matcher-relevant positive feature MUST expose explicit provenance.
+
+```typescript
+interface ProofProvenance {
+  tier: "structural" | "deterministic" | "heuristic" | "external_oracle";
+  source:
+    | "word_order"
+    | "upos"
+    | "xpos"
+    | "morphology"
+    | "dependency"
+    | "surface"
+    | "lemma"
+    | "closed_list"
+    | "lexicon"
+    | "phonology"
+    | "task_context"
+    | "discourse_heuristic";
+  evidence_refs: WordRef[];
+  confidence: Confidence;
+}
+```
+
+`confidence`, `sources`, and `evidence_refs` alone are not sufficient for proof-certified matching.
+
+Required on all top-level feature objects in matcher-facing groups:
+
+- morphology features;
+- phrase, clause, predicate, complement, coordination, NP, pronoun and other syntax features;
+- lexical features;
+- construction features;
+- contrastive support features;
+- absence features.
+
+Nested helper records such as `Roles`, `Valency`, and `TAVMFeature` do not need independent provenance if their parent feature has provenance and evidence refs.
+
+### 6.5 Feature IDs
+
+Every matcher-facing feature object MUST have deterministic sentence-local `id`.
+
+Format:
+
+```text
+s{sentence_index}.{feature_group}.{ordinal}
+```
+
+Examples:
+
+```text
+s0.predicate.1
+s0.clause.2
+s0.np.3
+s0.construction.4
+```
+
+Rules:
+
+- `sentence_index` is 0-based;
+- ordinals are 1-based within feature group;
+- ordinals are assigned after deterministic sorting;
+- IDs MUST be unique within a feature group;
+- duplicate IDs are fatal internal errors and emit/raise `duplicate_feature_id`.
+
+### 6.6 Output ordering
+
+Arrays MUST be deterministic:
+
+1. sentences: source sentence order;
+2. word evidence: source word order;
+3. dependencies: `(dependent, governor, deprel)` order;
+4. morphology: source word order;
+5. syntax and lexical feature arrays: primary evidence start position, then feature id;
+6. construction features: signature registry order, then evidence start position, then feature id;
+7. diagnostics: severity order `error`, `warning`, `info`, then feature path, then code.
 
 ## 7. Evidence layer
 
@@ -440,6 +911,30 @@ interface SyntaxFeatures {
   conditionals: ConditionalFeature[];
   reported_speech: ReportedSpeechFeature[];
   passive: PassiveFeature[];
+}
+```
+
+### 9.1 Coordination
+
+`SyntaxFeatures.coordination` is defined and schema-backed.
+
+```typescript
+interface Coordination {
+  id: string;
+  coordinator_ref?: WordRef;
+  coordinator_text?: "and" | "or" | "but" | "nor" | "yet" | "so" | "unknown";
+  conjunct_refs: WordRef[];
+  head_ref: WordRef;
+  coordination_type:
+    | "np_coordination"
+    | "vp_coordination"
+    | "clause_coordination"
+    | "adjective_coordination"
+    | "adverb_coordination"
+    | "unknown";
+  evidence_refs: WordRef[];
+  confidence: Confidence;
+  provenance: ProofProvenance;
 }
 ```
 
@@ -1622,35 +2117,47 @@ Rules:
 
 Diagnostics explain degraded extraction without failing the whole sentence.
 
+Diagnostic codes are closed for `grammar_feature_extractor.v3` and defined in `schema/diagnostic_registry.v3.json`.
+
 ```typescript
 interface FeatureDiagnostic {
   severity: "info" | "warning" | "error";
-  code:
-    | "missing_word_evidence"
-    | "ambiguous_pos"
-    | "ambiguous_clause_boundary"
-    | "ambiguous_participle"
-    | "ambiguous_article_reference"
-    | "requires_discourse_context"
-    | "requires_intended_meaning"
-    | "requires_phonology"
-    | "requires_countability_lexicon"
-    | "competing_rule_candidates"
-    | "unsupported_feature"
-    | "internal_feature_error"
-    | string;
+  code: DiagnosticCode;
   message: string;
   refs: WordRef[];
   feature_path?: string;
 }
 ```
 
+Registry entry contract:
+
+```typescript
+interface DiagnosticRegistryEntry {
+  code: string;
+  severity: "info" | "warning" | "error";
+  when_emitted: string;
+  affected_entity: "document" | "sentence" | "word" | "feature" | "config" | "output";
+  refs_required: boolean;
+  feature_path_required: boolean;
+  message_template: string;
+  result_impact:
+    | "none"
+    | "feature_omitted"
+    | "confidence_lowered"
+    | "group_omitted"
+    | "extraction_failed";
+  cli_exit_code: 0 | 1 | 2 | 3 | 4;
+  stable_since: string;
+}
+```
+
 Rules:
 
-- extractor should prefer graceful degradation over failure for sentence-local feature issues;
-- schema-level input violations remain expected data errors;
-- diagnostics are deterministic and must not include sensitive raw payload beyond sentence-local evidence already present in input;
-- `requires_discourse_context`, `requires_intended_meaning`, `requires_phonology`, `requires_countability_lexicon` should be emitted whenever matcher quality would otherwise be overstated.
+- arbitrary diagnostic code strings are invalid;
+- diagnostic wording is human-readable and SHOULD NOT be used as a stable test oracle;
+- tests SHOULD assert `code`, `severity`, `refs`, `feature_path`, and `result_impact`, not full prose wording;
+- feature diagnostics with severity `error` do not automatically fail CLI execution unless registry `result_impact = "extraction_failed"`;
+- `requires_discourse_context`, `requires_intended_meaning`, `requires_phonology`, and `requires_countability_lexicon` MUST be emitted whenever matcher quality would otherwise be overstated.
 
 ## 29. Determinism and graceful degradation
 
@@ -1718,32 +2225,43 @@ P2 features must not be treated as strict truth. They are candidate signals for 
 
 ## 31. Configuration
 
+The authoritative resolved config schema is `schema/grammar_feature_config.v3.schema.json`.
+
+Unknown config keys are invalid in CLI and library mode.
+
+Environment variables are not part of the v3 contract. Implementations MUST NOT read environment configuration in `core`. CLI MAY read only CLI arguments and an explicit config file if such option is later added by a versioned contract update.
+
 ```typescript
 interface ExtractorConfig {
+  schema_version: "grammar_feature_extractor.v3";
   include_diagnostics: boolean;
   include_evidence: boolean;
   include_construction_signatures: boolean;
   include_contrastive_support: boolean;
   enable_heuristics: boolean;
   debug: boolean;
+  page_number: number;
+  page_size: number;
+  limits: ExtractorLimits;
 }
 
-interface PagingConfig {
-  page_number: number; // default = 1
-  page_size: number;   // default = 300
+interface ExtractorLimits {
+  max_input_bytes: number;
+  max_sentences: number;
+  max_words_per_sentence: number;
+  max_total_words: number;
+  max_page_size: number;
+  max_output_page_bytes: number;
+  max_output_pages: number;
+  max_diagnostics_per_sentence: number;
 }
 ```
-
-Config resolution priority:
-
-1. CLI args;
-2. ENV, if explicitly documented by implementation;
-3. defaults.
 
 Defaults:
 
 ```json
 {
+  "schema_version": "grammar_feature_extractor.v3",
   "include_diagnostics": true,
   "include_evidence": true,
   "include_construction_signatures": true,
@@ -1751,37 +2269,103 @@ Defaults:
   "enable_heuristics": true,
   "debug": false,
   "page_number": 1,
-  "page_size": 300
+  "page_size": 300,
+  "limits": {
+    "max_input_bytes": 104857600,
+    "max_sentences": 200000,
+    "max_words_per_sentence": 512,
+    "max_total_words": 5000000,
+    "max_page_size": 5000,
+    "max_output_page_bytes": 104857600,
+    "max_output_pages": 100000,
+    "max_diagnostics_per_sentence": 100
+  }
 }
 ```
 
-Validation:
+### 31.1 Feature group gating semantics
 
-- `page_number >= 1`;
-- `page_size >= 1`;
-- disabling `include_evidence` is allowed only for compact output modes and must be documented as unsuitable for full matcher operation;
-- if `enable_heuristics = false`, heuristic-only features should be omitted and diagnostics may explain omitted capabilities;
-- unsupported config keys in strict CLI mode are expected configuration errors;
-- config resolution must be deterministic.
+Config flags control emitted content, not schema shape.
+
+`GrammarFeatureSet` MUST always contain these keys:
+
+- `evidence`
+- `morphology`
+- `syntax`
+- `lexical`
+- `constructions`
+- `contrastive_support`
+- `absences`
+- `diagnostics`
+
+When a feature group is disabled:
+
+- object-valued groups remain present with empty arrays inside;
+- array-valued groups remain present as `[]`;
+- disabled diagnostics are represented as `diagnostics: []`;
+- disabled evidence is represented as:
+
+```json
+"evidence": {
+  "words": [],
+  "dependencies": []
+}
+```
+
+The page/document MUST include disabled groups in `output_completeness.omitted_feature_groups`.
+
+`include_evidence = false` is valid only for compact inspection output and MUST set `output_completeness.matcher_complete = false`.
+
+`include_diagnostics = false` MAY suppress diagnostic payload but MUST NOT suppress fatal exceptions or CLI errors.
+
+`enable_heuristics = false` MUST omit heuristic-only features. If diagnostics are enabled, omitted heuristic capabilities SHOULD emit `disabled_feature_group` or a more specific diagnostic.
+
 
 ## 32. Public Python API
 
-Public API is exported only through `grammar_feature_extractor.__init__`.
+The public Python API is normative.
+
+The package MUST export exactly these public names from `grammar_feature_extractor.__init__`:
 
 ```python
 from grammar_feature_extractor import (
     AnnotatedDocument,
+    AnnotatedSentence,
+    Token,
+    Word,
+    Entity,
     ExtractorConfig,
-    FeatureExtractionError,
-    GrammarFeatureDocument,
-    GrammarFeatureExtractor,
-    GrammarFeaturePage,
-    InputValidationError,
     PagingConfig,
+    GrammarFeatureDocument,
+    GrammarFeaturePage,
+    GrammarFeatureManifest,
+    GrammarFeatureExtractor,
+    FeatureExtractionError,
+    InputValidationError,
+    ConfigurationError,
+    SerializationError,
 )
 ```
 
-Suggested API:
+`ExtractorConfig` and `PagingConfig` MUST be immutable typed models.
+
+```python
+@dataclass(frozen=True, slots=True)
+class ExtractorConfig:
+    include_diagnostics: bool = True
+    include_evidence: bool = True
+    include_construction_signatures: bool = True
+    include_contrastive_support: bool = True
+    enable_heuristics: bool = True
+    debug: bool = False
+
+@dataclass(frozen=True, slots=True)
+class PagingConfig:
+    page_number: int = 1
+    page_size: int = 300
+```
+
+Normative extractor API:
 
 ```python
 class GrammarFeatureExtractor:
@@ -1789,17 +2373,36 @@ class GrammarFeatureExtractor:
         self,
         document: AnnotatedDocument,
         config: ExtractorConfig | None = None,
-    ) -> GrammarFeatureDocument:
-        """Extract deterministic grammar features from an AnnotatedDocument."""
+    ) -> GrammarFeatureDocument: ...
 
     def extract_page(
         self,
         document: AnnotatedDocument,
         paging: PagingConfig | None = None,
         config: ExtractorConfig | None = None,
-    ) -> GrammarFeaturePage:
-        """Extract features and return a deterministic paginated page."""
+    ) -> GrammarFeaturePage: ...
+
+    def extract_pages(
+        self,
+        document: AnnotatedDocument,
+        paging: PagingConfig | None = None,
+        config: ExtractorConfig | None = None,
+    ) -> list[GrammarFeaturePage]: ...
+
+    def get_runtime_metadata(self) -> ExtractorRuntimeMetadata: ...
 ```
+
+Library behavior:
+
+- invalid input raises `InputValidationError`;
+- invalid config or paging raises `ConfigurationError`;
+- JSON encode/decode failures in helper adapters raise `SerializationError`;
+- sentence-local feature degradation is represented as diagnostics, not failed result objects;
+- unexpected implementation failures raise `FeatureExtractionError` or a subclass;
+- methods perform no filesystem IO;
+- methods are deterministic for the same input and config;
+- methods do not mutate the input document;
+- instances are stateless and safe to reuse across calls if no injected adapter has mutable state.
 
 Python requirements:
 
@@ -1815,17 +2418,15 @@ Python requirements:
 - dependency injection for serializer/logger/runtime adapters;
 - unit tests without external IO for `core`.
 
+
 ## 33. CLI contract
 
-CLI should support:
+CLI MUST support single-page output and production output-dir mode.
+
+Single-page command:
 
 ```text
-grammar-feature-extractor \
-  --input annotated_document.json \
-  --output features.page.json \
-  --page 1 \
-  --page-size 300 \
-  --debug
+grammar-feature-extractor   --input annotated_document.json   --output features.page.json   --page 1   --page-size 300   --debug
 ```
 
 Arguments:
@@ -1834,38 +2435,91 @@ Arguments:
 | --- | --- | --- | --- |
 | `--input` | no | `stdin` | JSON `AnnotatedDocument` input file |
 | `--output` | no | `stdout` | JSON `GrammarFeaturePage` output file |
+| `--output-dir` | no | none | write all pages plus manifest |
 | `--page` | no | `1` | 1-based page number |
 | `--page-size` | no | `300` | number of sentences per page |
-| `--no-evidence` | no | false | compact mode, not suitable for full matcher |
+| `--no-evidence` | no | false | compact mode, not matcher-complete |
 | `--no-heuristics` | no | false | disable heuristic-only features |
 | `--debug`, `-d` | no | false | debug observability only |
+| `--overwrite` | no | false | allow replacing existing output/output-dir contents according to filesystem policy |
 
-Output streams:
-
-- `stdout` — only serialized `GrammarFeaturePage`, unless `--output` is set;
-- `stderr` — only logs and errors;
-- if `--output` is set, `stdout` remains empty;
-- errors never create partial `stdout` or partial output file.
-
-Exit codes:
+### 33.1 CLI exit codes
 
 | Code | Meaning |
-| ---: | --- |
+|---:|---|
 | `0` | success |
-| `1` | expected data/configuration error |
-| `2+` | system/runtime error |
+| `1` | input data, schema, or configuration error after valid CLI parsing |
+| `2` | CLI usage error |
+| `3` | output write failure |
+| `4` | unexpected runtime/system error |
+
+CLI argument parsing errors MUST exit with code `2`.
+
+Examples:
+
+- unknown CLI flag;
+- missing value for an option;
+- non-integer `--page`;
+- non-integer `--page-size`;
+- `--page < 1`;
+- `--page-size < 1`;
+- `--page-size > limits.max_page_size`;
+- `--output` used together with `--output-dir`;
+- `--input` path does not exist;
+- `--output` target is a directory.
+
+### 33.2 Output streams
+
+- `stdout` contains only serialized `GrammarFeaturePage` when `--output` and `--output-dir` are absent;
+- `stderr` contains logs and, on failure, exactly one structured JSON `CliError` object;
+- if `--output` or `--output-dir` is set, `stdout` remains empty;
+- failure MUST NOT create partial stdout;
+- failure MUST NOT leave a completed manifest.
+
+### 33.3 CLI error serialization
+
+On failure, CLI MUST write exactly one JSON error object to `stderr` and leave `stdout` empty.
+
+```typescript
+interface CliError {
+  schema_version: "grammar_feature_extractor.v3";
+  kind: "cli_error";
+  error_code:
+    | "input_validation_error"
+    | "configuration_error"
+    | "input_json_serialization_error"
+    | "output_serialization_error"
+    | "output_write_error"
+    | "cli_usage_error"
+    | "unexpected_system_error";
+  message: string;
+  details?: Record<string, string | number | boolean | null>;
+}
+```
+
+The machine-readable schema is `schema/cli_error.v3.schema.json`.
+
 
 ## 34. Serialization contract
 
-JSON serialization must be stable:
+All output JSON files MUST be serialized as canonical UTF-8 bytes:
 
-- UTF-8;
-- object key order fixed by schema order;
-- arrays preserve source sentence order;
-- no nondeterministic metadata such as timestamps;
-- no debug data in result payload;
-- diagnostics are part of result payload only when enabled and deterministic;
-- logs are never mixed with JSON result.
+- encoding: UTF-8;
+- no BOM;
+- final newline: yes;
+- indentation: 2 spaces;
+- object key order: schema order;
+- array order: deterministic order defined by each feature group;
+- `ensure_ascii = false`;
+- no trailing whitespace;
+- no timestamps;
+- no environment-dependent values;
+- no debug data in result payload.
+
+Manifest `sha256` is computed over the exact canonical bytes of each final page file.
+
+Logs are never mixed with JSON result.
+
 
 ## 35. Logging and debug
 
@@ -1914,11 +2568,38 @@ Mapping:
 
 | Error | CLI exit code | Stream |
 | --- | ---: | --- |
-| `InputValidationError` | `1` | `stderr` |
-| `ConfigurationError` | `1` | `stderr` |
-| `SerializationError` for invalid input JSON | `1` | `stderr` |
-| output write failure | `2+` | `stderr` |
-| unexpected system error | `2+` | `stderr` |
+| `InputValidationError` | `1` | structured JSON `CliError` on `stderr` |
+| `ConfigurationError` | `1` | structured JSON `CliError` on `stderr` |
+| `SerializationError` for invalid input JSON | `1` | structured JSON `CliError` on `stderr` |
+| CLI usage error | `2` | structured JSON `CliError` on `stderr` |
+| output write failure | `3` | structured JSON `CliError` on `stderr` |
+| unexpected system error | `4` | structured JSON `CliError` on `stderr` |
+
+Feature diagnostics explain degraded extraction. They are not a substitute for fatal exceptions.
+
+Fatal failures:
+
+- invalid input schema;
+- invalid config;
+- invalid paging config;
+- invalid `WordRef` generated by core;
+- duplicate feature IDs after deterministic generation;
+- output serialization failure;
+- output write failure;
+- internal exception outside feature-group boundary.
+
+Recoverable failures:
+
+- ambiguous POS;
+- ambiguous clause boundary;
+- ambiguous participle;
+- missing optional morphology;
+- unsupported feature pattern;
+- unavailable optional external oracle;
+- malformed optional `feats` value.
+
+Recoverable failures produce `FeatureDiagnostic` and omit or lower confidence for the affected feature.
+
 
 ## 37. Formal Coq Specification
 
@@ -2072,7 +2753,8 @@ The module is ready when:
 - no partial result is emitted on error;
 - debug mode does not change result payload;
 - expected errors map to exit code `1`;
-- system errors map to exit code `2+`;
+- output write failures map to exit code `3`;
+- unexpected runtime/system errors map to exit code `4`;
 - Coq specification compiles in CI;
 - Coq theorem ↔ Python function mapping is maintained;
 - implementation tests check all documented invariants.
@@ -2415,16 +3097,12 @@ Every such change requires architecture update, rule catalog schema update, matc
 
 ## 44. Production output-dir mode for grammar_extractor integration
 
-The existing single-page CLI mode remains valid. For integration with `grammar_extractor` and `grammar_rule_detector`, the module SHOULD also support a production `--output-dir` mode that writes all `GrammarFeaturePage` files plus a manifest.
+The existing single-page CLI mode remains valid. Production `--output-dir` mode is normative for integration with `grammar_extractor` and `grammar_rule_detector`.
 
-Recommended command:
+Command:
 
 ```text
-grammar-feature-extractor \
-  --input filtered_annotated_document.json \
-  --output-dir grammar_features \
-  --page-size 300 \
-  --debug
+grammar-feature-extractor   --input filtered_annotated_document.json   --output-dir grammar_features   --page-size 300   --debug
 ```
 
 Output layout:
@@ -2437,39 +3115,114 @@ grammar_features/
   ...
 ```
 
-Manifest schema:
-
-```typescript
-interface GrammarFeatureManifest {
-  schema_version: "grammar_feature_extractor.v3";
-  kind: "grammar_feature_manifest";
-  page_size: number;
-  page_count: number;
-  total_sentences: number;
-  pages: GrammarFeatureManifestPage[];
-  diagnostics: FeatureDiagnostic[];
-}
-
-interface GrammarFeatureManifestPage {
-  page_number: number;
-  file_name: string;
-  sentence_start: number;
-  sentence_end_exclusive: number;
-  sha256: string;
-}
-```
+Manifest schema is `schema/grammar_feature_manifest.v3.schema.json`.
 
 Rules:
 
 - page numbers are 1-based;
 - page filenames use zero padding width at least 5;
-- lexical filename sorting must equal page order;
-- pages are written atomically;
-- manifest is written last;
-- page ranges must be gap-free and non-overlapping;
+- lexical filename sorting MUST equal page order;
+- page ranges MUST be gap-free and non-overlapping;
 - `page_size` default remains `300`;
-- an empty input document must produce exactly one valid empty page;
-- `--output-dir` is mutually exclusive with single-page `--output` unless explicitly documented otherwise;
-- debug mode must not alter page contents or manifest hashes.
+- empty input document MUST produce exactly one valid empty page and manifest;
+- `--output-dir` is mutually exclusive with single-page `--output`;
+- debug mode MUST NOT alter page contents or manifest hashes.
 
-This addition lets `grammar_rule_detector` consume feature pages directly and lets `grammar_extractor` avoid reimplementing page materialization when using the CLI dependency mode.
+### 44.1 Output-dir atomicity
+
+- `--output-dir` MUST be created if missing;
+- if `--output-dir` exists, it MUST be empty unless `--overwrite` is provided;
+- symlink output targets MUST be rejected by default;
+- page files MUST be written before manifest;
+- every page file MUST be written to a temporary file in the same directory;
+- every page file MUST be atomically renamed after successful write and hash verification;
+- manifest MUST be written last using the same temp-file-and-rename policy;
+- if any page write fails, manifest MUST NOT be written;
+- on failure, temporary files SHOULD be removed;
+- `sha256` is computed over canonical UTF-8 JSON bytes of the final page file.
+
+## 45. Limits
+
+| Limit | Default | Unit | Inclusive | Configurable | On exceed |
+|---|---:|---|---|---|---|
+| `max_input_bytes` | `104857600` | bytes | inclusive | yes | `InputValidationError` |
+| `max_sentences` | `200000` | sentences | inclusive | yes | `InputValidationError` |
+| `max_words_per_sentence` | `512` | words | inclusive | yes | `InputValidationError` |
+| `max_total_words` | `5000000` | words | inclusive | yes | `InputValidationError` |
+| `max_page_size` | `5000` | sentences | inclusive | yes | `ConfigurationError` |
+| `max_output_page_bytes` | `104857600` | bytes | inclusive | yes | `SerializationError` |
+| `max_output_pages` | `100000` | pages | inclusive | yes | `ConfigurationError` |
+| `max_diagnostics_per_sentence` | `100` | diagnostics | inclusive | yes | diagnostic truncation + warning |
+
+All limits MUST be checked deterministically before or during extraction.
+
+Exactly equal to the limit succeeds. Greater than the limit fails or truncates according to the `On exceed` column.
+
+## 46. Filesystem security
+
+CLI filesystem behavior:
+
+- `--input` MUST be a regular file or `stdin`;
+- `--output` MUST NOT be a directory;
+- output symlink targets MUST be rejected by default;
+- parent directories are not created for `--output` unless explicitly documented in a future version;
+- `--output-dir` is created if missing;
+- existing non-empty `--output-dir` is invalid unless `--overwrite` is provided;
+- temporary files MUST be created in the same directory as final output;
+- logs MUST NOT include full input payloads;
+- network access is forbidden;
+- `core` MUST NOT perform filesystem IO.
+
+## 47. External and closed-list resources
+
+Any closed list, lexicon, phonology adapter, whitelist, registry, or heuristic table used by extraction MUST be declared in `ExtractorRuntimeMetadata.resources`.
+
+```typescript
+interface RuntimeResource {
+  name: string;
+  kind: "closed_list" | "lexicon" | "phonology" | "heuristic_table" | "registry" | "schema";
+  version: string;
+  sha256?: string | null;
+  required: boolean;
+}
+```
+
+If a required resource is missing, extraction MUST raise `ConfigurationError`.
+
+If an optional resource is missing, extraction MUST degrade gracefully and emit the corresponding diagnostic when diagnostics are enabled.
+
+## 48. Registry-backed identifiers
+
+Proof-relevant string identifiers MUST be closed enums or registry-backed identifiers.
+
+Registry-backed fields:
+
+| Field | Registry |
+|---|---|
+| `ConstructionFeature.signature` | `schema/construction_signature_registry.v3.json` |
+| `PredicateFeature.form_signature` | `schema/predicate_form_signature_registry.v3.json` |
+| `TAVMFeature.form_signature` | `schema/predicate_form_signature_registry.v3.json` |
+| `FeatureDiagnostic.code` | `schema/diagnostic_registry.v3.json` |
+| matcher feature paths | `schema/feature_path_registry.v3.json` |
+
+Free surface text MUST be separated from proof identifiers. Examples:
+
+- `NegationFeature.negator_kind` is enum; `surface` stores observed token text;
+- `TimeMarkerFeature.marker_kind` is enum; `surface` stores observed marker text;
+- `DiscourseMarkerFeature.marker_kind` is enum; `surface` stores observed marker text.
+
+## 49. Canonical fixtures required before implementation freeze
+
+Before final production code generation, the repository SHOULD include adjacent fixtures:
+
+- one valid minimal input document;
+- one valid full `GrammarFeaturePage`;
+- one compact `--no-evidence` page;
+- one valid empty document page and manifest;
+- one invalid input example for each fatal validation family;
+- one invalid output example for missing provenance;
+- one invalid diagnostic code example;
+- one invalid construction signature example;
+- one CLI error example for each exit code family.
+
+All fixtures MUST validate or fail against committed schemas exactly as named.

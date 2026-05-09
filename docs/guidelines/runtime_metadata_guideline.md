@@ -1,4 +1,4 @@
-x`# Runtime Metadata Guideline for Pipeline Modules
+# Runtime Metadata Guideline for Pipeline Modules
 
 ## Purpose
 

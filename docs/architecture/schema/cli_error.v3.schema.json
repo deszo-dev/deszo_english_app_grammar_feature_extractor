@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deszo.local/schemas/grammar_feature_extractor/cli_error.v3.schema.json",
+  "title": "CLI error object v3",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "grammar_feature_extractor.v3"
+    },
+    "kind": {
+      "const": "cli_error"
+    },
+    "error_code": {
+      "type": "string",
+      "enum": [
+        "input_validation_error",
+        "configuration_error",
+        "input_json_serialization_error",
+        "output_serialization_error",
+        "output_write_error",
+        "cli_usage_error",
+        "unexpected_system_error"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "details": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "integer",
+          "boolean",
+          "null"
+        ]
+      },
+      "description": "Machine-readable scalar details. For semantic validation failures, details.validation_code MUST be one of semantic_validation_registry.v3.json codes."
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "error_code",
+    "message"
+  ],
+  "additionalProperties": false
+}

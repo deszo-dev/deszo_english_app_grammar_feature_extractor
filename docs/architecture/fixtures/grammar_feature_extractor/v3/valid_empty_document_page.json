@@ -1,0 +1,22 @@
+{
+  "schema_version": "grammar_feature_extractor.v3",
+  "kind": "grammar_feature_page",
+  "runtime_metadata": {
+    "schema_version": "grammar_feature_extractor.v3",
+    "extractor_version": "0.0.0-contract-fixture",
+    "resources": []
+  },
+  "output_completeness": {
+    "matcher_complete": true,
+    "omitted_feature_groups": []
+  },
+  "page": {
+    "page_number": 1,
+    "page_size": 300,
+    "total_sentences": 0,
+    "sentence_start": 0,
+    "sentence_end_exclusive": 0,
+    "has_next_page": false
+  },
+  "features": []
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": "grammar_feature_extractor.v3",
+  "kind": "cli_error",
+  "error_code": "cli_usage_error",
+  "message": "Unknown CLI option: --config",
+  "details": {
+    "argument": "--config"
+  }
+}
