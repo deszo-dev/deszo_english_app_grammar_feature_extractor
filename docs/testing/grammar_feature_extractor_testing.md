@@ -1,10 +1,10 @@
-# Testing Guide for grammar_feature_extractor v3.2
+# Testing Guide for grammar_feature_extractor v5
 
-**Document status:** updated testing guide generated from the uploaded v3 schemas, registries, and `grammar_feature_extractor_architecture_v3_2.md`.
+**Document status:** updated testing guide generated from the uploaded v5 schemas, registries, and `grammar_feature_extractor_architecture_v5.md`.
 
 **Module:** `grammar_feature_extractor`  
-**Runtime/output schema version:** `grammar_feature_extractor.v3`  
-**Input schema version:** `grammar_feature_extractor.annotated_document.input.v3`  
+**Runtime/output schema version:** `grammar_feature_extractor.v5`  
+**Input schema version:** `grammar_feature_extractor.annotated_document.input.v5`  
 **Primary goal:** make test cases sufficiently self-contained for generating automated tests without re-reading the source documentation.
 
 ---
@@ -52,28 +52,55 @@ These tests do not validate:
 
 Automation must fail during test collection if any required artifact is missing.
 
-| Artifact | SHA-256 of uploaded version |
+| Artifact | SHA-256 of hardened v5 contract |
 |---|---|
-| `annotated_document.input.v3.schema.json` | `08189a51041f6f1976d28e458bc4f402962cb55289359124d12ca2ea215e2ebd` |
-| `cli_error.v3.schema.json` | `39f3b4c1285baf511778390bd7f119125440803f52b1b51dad8a1079a86f8ca3` |
-| `construction_signature_registry.v3.json` | `df17b7951a20980908edf9aecc89f49168ee23fd3db0a9b7346d9a63b121847e` |
-| `construction_signature_registry.v3.schema.json` | `d05afa916a9fefd7537fe0e57449a416993bf366237936934fbbc4629805cb05` |
-| `diagnostic_registry.v3.json` | `e6a0291f5a7458689ca6ae15d17e093279d0aabf22fcfc76111aa7d187c1d464` |
-| `diagnostic_registry.v3.schema.json` | `6234c2d5e54fa2ed394734f3bd4187eb027ef21fd87dd50157aa79dcf3585bbe` |
-| `feature_path_registry.v3.json` | `1cdc15b3f2d7b441136034bf21e49b620dbefcb090b9175eddbc01d8b2985fe0` |
-| `feature_path_registry.v3.schema.json` | `dd96271109369ddde9569c9fee6c6fed9ba3b39d970e88f643aff54511e48e53` |
-| `grammar_feature_common.v3.schema.json` | `fd7dfced6dfa5f6fa1f4fec8f34eebbef5a955e8e840c0dad61227006a6c43ed` |
-| `grammar_feature_config.input.v3.schema.json` | `7e30093ad78247bd8593a276e3f55fa0e2bb1f976ef61d7c3c4e9a853b4c08fa` |
-| `grammar_feature_config.v3.schema.json` | `c79b48795ea630d788a166dd8c09625da4b3b69e047e0bc70d123bd24aa149a7` |
-| `grammar_feature_diagnostics.v3.schema.json` | `8751ce24fc83c83621a8e02553f1288131bbc5f5eb47ff41917c4dfd6f114580` |
-| `grammar_feature_document.v3.schema.json` | `59a4a309743ff0266b86c0f234d2ff4677725c9ce0623d317ee078ef875d24bc` |
-| `grammar_feature_manifest.v3.schema.json` | `99a3827edf5cb771edc14359cd6eed4ede80c72f360be5708d7fcad0e2bb194a` |
-| `grammar_feature_page.v3.schema.json` | `5d385e44dc3fe9aba2d65726bf0eaeb854e97e344dd5887e79c0242d97f92f86` |
-| `predicate_form_signature_registry.v3.json` | `76985ee25f938954c48adc2a39efc29f161374cbb1bf1bbcd6f6fd9b6f26f6b0` |
-| `predicate_form_signature_registry.v3.schema.json` | `a770d96ef4a694332c72a925da7c4e408a197de12a95d7308c6aefebe316dbbf` |
-| `semantic_validation_registry.v3.json` | `0945a3b766fffabc918f8a340c3ae84f1d121150374e0c3838ecb518275ce514` |
-| `semantic_validation_registry.v3.schema.json` | `96086fdf1affa8131cb9f0e60db63641e7cbb7e6aa6355d610900b0f85b5b85a` |
-| `grammar_feature_extractor_architecture_v3_2.md` | `592c81e98b908ae2bf6dfd8ff2e0f43cfa6e03d026b8b00591418c970e4b1e4f` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/cli_error_input_validation.json` | `1c98d3bfd18ca2d7c3f9f5afc766b63d4556de4d83bef85ed35f4443e3fbf5fa` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/cli_error_output_write.json` | `6dd796e1102f83f403f3699e5f42cf45f522b05b59ecd99a1e663969e309f7b8` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/cli_error_unexpected_system.json` | `3bf7b7d8a20f9d878af8d04a97cc2d7b79df74f8af529538bac9c3b15ec0cd7f` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/cli_error_usage.json` | `0d6f5fa2e01ac82f822eccfe68a105084a86520ca81d3fce75329c5fc74b72ec` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/default_resolved_config.json` | `c9865ffc904d540d20f51524e45a9ea1ff51dffdf0f5ac022eeb041b62f066ee` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/filtered_annotated_document.hashes.json` | `e38faaddcb5711aed5901b9390a892be589cf68fa760f15fd2ab7887b9a4f044` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/filtered_annotated_document.raw.json` | `d67b59a002ffa417532908d3d4ab23af4471cb88292cba3595780e0ae0f3385f` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/filtered_annotated_document.v5.json` | `4c8158d54197b78e599cf32db9a758aab343272eec417d9bddfd68077d7bab21` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/invalid_input_head_out_of_range.json` | `3042a86e9c19ecd278387d11f10cb687fdb7b3736b6ab6dac8460247a74344cf` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/invalid_output_unknown_construction_signature.json` | `d24c454524aca9fd0046ad1344c3ceb16d96a753163eab376ed03e7a3547dd08` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/invalid_output_unknown_diagnostic_code.json` | `503effd3fed53a409c1329f1a01147c1f26ed1db8a27d9b4300c2cb011167567` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/valid_empty_document.json` | `831734893436e02db0e0237a7e848c6591397a78ba666220c4b5c348db316571` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/valid_empty_document_manifest.json` | `a8d1a54525cc61a41719e392d6b2b5f1d6caad343a4ecda4b6c250ab8ecfc844` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/valid_empty_document_page.json` | `1fae1fdae56b918da8978263db625f81e7151a02e9a6736e1b914d2495ac57b9` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/valid_minimal_copular.json` | `49f0483f2c63ed076daf8091f1b63670a03ce00cd2c39c045c5cf5e4e471a0ba` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/valid_minimal_copular.page.golden.json` | `faf69b5dc6a09262284164dff7c2c8732c9650b7478032d1ea239953a2d2f62e` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/valid_minimal_input.json` | `71bcd96e6ee95ef641e6ce95ec274e6af200e41bf81ca1a03753be064a0a22de` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/valid_minimal_present_simple.input.json` | `dd03fa4a349b983cc99c9cc66e381a303c55b97a6c5ffde9f2f596074c261c42` |
+| `docs/architecture/fixtures/grammar_feature_extractor/v5/valid_minimal_present_simple.page.golden.json` | `95df649a6550e1b964780123b3b6e66a721322b75e5df9a83d2580dd6b60c06f` |
+| `docs/architecture/grammar_feature_extractor_architecture_v5.md` | `e0f17caa2a971fc64e5a1e78616a8a2efb57315e92c8ab84bd70eeb7f0d46366` |
+| `docs/architecture/schema/annotated_document.input.v5.schema.json` | `f4b8d23b79c86027771ca3b3f18280184998679d15db2f5b64b225cc79cd3ed5` |
+| `docs/architecture/schema/cli_error.v5.schema.json` | `8ebf2829c2739fa93a9eda7c6f5c5f9f21fc2c5c960aca58840f30cd974f7d7c` |
+| `docs/architecture/schema/construction_signature_registry.v5.json` | `22885d9dff57f02e03d0f362823d2e949596b6d5a108975268df125c13d9b111` |
+| `docs/architecture/schema/construction_signature_registry.v5.schema.json` | `e83780c755210263cf40ae765faad9e18a0975ed56e5df29bbfd9375085da360` |
+| `docs/architecture/schema/diagnostic_registry.v5.json` | `d5d1f48811f42ae5b90633624e2f11ad1bbd3df9c2d4ddf5e177d7174e15c906` |
+| `docs/architecture/schema/diagnostic_registry.v5.schema.json` | `963fe5d1f3be612c4ec20281ec57b4f0edf05863326db17cb26922a9dc2dee3f` |
+| `docs/architecture/schema/feature_path_registry.v5.json` | `835b0aa845e835a05f2a0347fc08cb855dcbd391b1bc0534c3e3c109d29fbffc` |
+| `docs/architecture/schema/feature_path_registry.v5.schema.json` | `1ddd136b11ce4930959e4df632625c2ca6e4373f370be83968b3249d42586f29` |
+| `docs/architecture/schema/grammar_feature_common.v5.schema.json` | `93cb6c3a7665bbb87cbffc40ebd1c792685acb506340c78fe0ab8ac3d21658c5` |
+| `docs/architecture/schema/grammar_feature_config.input.v5.schema.json` | `b3ea0abf9a80ceb980255efa6f6870df7feafed22681c0cc13cbf15c8ff55881` |
+| `docs/architecture/schema/grammar_feature_config.v5.schema.json` | `497901c9e5cd51ca68d8d3fffba2a56fe9de0a113f20dd44af71cbb34115a785` |
+| `docs/architecture/schema/grammar_feature_diagnostics.v5.schema.json` | `bf35a061e191cd27f169d9b63e10d3c2057a189fdbeb084488a354c5b28af9d2` |
+| `docs/architecture/schema/grammar_feature_document.v5.schema.json` | `9d899f9325e4708193a2e95f94b75adf492cf8a87e96753cef12f69c21d7c93c` |
+| `docs/architecture/schema/grammar_feature_manifest.v5.schema.json` | `1961530a76274e9ce0f9abf7ed35d9a5187ef5a8e6f6b668f7e88c39d5dc7434` |
+| `docs/architecture/schema/grammar_feature_page.v5.schema.json` | `3e158f0bfb977ef95114e03510db9383c304fed91b71a6cfe3d28be2972e6cfe` |
+| `docs/architecture/schema/predicate_form_signature_registry.v5.json` | `84bae9e82cacd911941c8ce8bbb4df95bfba7e311a352c69f22cdd1514e22fea` |
+| `docs/architecture/schema/predicate_form_signature_registry.v5.schema.json` | `dd812f8cae0f0240b3447daa7c004dd3c6dc747936e2335c7b53d723d52377ea` |
+| `docs/architecture/schema/semantic_validation_registry.v5.json` | `f90987f91035567abe92fdaca58e304391144cfdce0bdbfddf29eebd54eda7b2` |
+| `docs/architecture/schema/semantic_validation_registry.v5.schema.json` | `8f24e08b4d42a058c5438b98af911e9ec188b57a5b3430ee601bf880c8eda2ea` |
+| `fixtures/inputs/filtered_annotated_document.hashes.json` | `e38faaddcb5711aed5901b9390a892be589cf68fa760f15fd2ab7887b9a4f044` |
+| `fixtures/inputs/filtered_annotated_document.raw.json` | `d67b59a002ffa417532908d3d4ab23af4471cb88292cba3595780e0ae0f3385f` |
+| `fixtures/inputs/filtered_annotated_document.v5.json` | `4c8158d54197b78e599cf32db9a758aab343272eec417d9bddfd68077d7bab21` |
+| `fixtures/inputs/valid_empty_document.json` | `831734893436e02db0e0237a7e848c6591397a78ba666220c4b5c348db316571` |
+| `fixtures/inputs/valid_minimal_copular.json` | `49f0483f2c63ed076daf8091f1b63670a03ce00cd2c39c045c5cf5e4e471a0ba` |
+| `fixtures/inputs/valid_minimal_present_simple.input.json` | `dd03fa4a349b983cc99c9cc66e381a303c55b97a6c5ffde9f2f596074c261c42` |
+| `fixtures/outputs/valid_minimal_copular.page.golden.json` | `faf69b5dc6a09262284164dff7c2c8732c9650b7478032d1ea239953a2d2f62e` |
+| `fixtures/outputs/valid_minimal_present_simple.page.golden.json` | `95df649a6550e1b964780123b3b6e66a721322b75e5df9a83d2580dd6b60c06f` |
 
 **Missing artifact behavior:**
 
@@ -85,30 +112,34 @@ Automation must fail during test collection if any required artifact is missing.
 
 | Contract point | Status | Source artifact |
 |---|---|---|
-| Accepted input envelope requires `schema_version`, `sentences`, and `entities`; unknown fields are rejected. | Confirmed | `annotated_document.input.v3.schema.json` |
-| `feats` in input is optional, but if present it must be a non-empty string; `null` is not accepted. | Confirmed | `annotated_document.input.v3.schema.json` |
-| CLI errors use `schema_version`, `kind = cli_error`, `error_code`, `message`, optional scalar `details`; unknown fields are rejected. | Confirmed | `cli_error.v3.schema.json` |
-| Resolved config requires all defaulted fields and `limits`; `page_number >= 1`, `page_size >= 1`; default `page_size = 300`. | Confirmed | `grammar_feature_config.v3.schema.json` |
-| Raw partial config is separate from resolved config; v3 CLI must not expose `--config`. | Confirmed | `grammar_feature_config.input.v3.schema.json`, architecture |
-| `FeatureId` pattern is `^s[0-9]+\.[a-z_]+\.[1-9][0-9]*$`. | Confirmed | `grammar_feature_common.v3.schema.json` |
-| Feature group keys remain present in `GrammarFeatureSet`: `evidence`, `morphology`, `syntax`, `lexical`, `constructions`, `contrastive_support`, `absences`, `diagnostics`. | Confirmed | `grammar_feature_common.v3.schema.json`, `grammar_feature_page.v3.schema.json` |
-| `AgreementFeature.subject_person` and `predicate_person` are JSON integers `1 | 2 | 3`; `MorphFeature.features.Person` remains string `"1" | "2" | "3"`. | Confirmed | `grammar_feature_common.v3.schema.json`, architecture |
-| `FeatureDiagnostic.code` is a closed enum matching the diagnostic registry. | Confirmed | `grammar_feature_common.v3.schema.json`, `diagnostic_registry.v3.json` |
-| Manifest page files use `grammar_features.page_00001.json` style names. | Confirmed | `grammar_feature_manifest.v3.schema.json` |
-| Semantic validation codes map to exception, CLI error code, and exit code. | Confirmed | `semantic_validation_registry.v3.json` |
-| Construction slots are registry-typed and signature-specific. | Confirmed | `construction_signature_registry.v3.json`, architecture |
-| Feature paths are registry-backed and include value type/operator constraints. | Confirmed | `feature_path_registry.v3.json` |
+| Accepted input envelope requires `schema_version`, `sentences`, and `entities`; unknown fields are rejected. | Confirmed | `annotated_document.input.v5.schema.json` |
+| `feats` in input is optional, but if present it must be a non-empty string; `null` is not accepted. | Confirmed | `annotated_document.input.v5.schema.json` |
+| CLI errors use `schema_version`, `kind = cli_error`, `error_code`, `message`, optional scalar `details`; unknown fields are rejected. | Confirmed | `cli_error.v5.schema.json` |
+| Resolved config requires all defaulted fields and `limits`; `page_number >= 1`, `page_size >= 1`; default `page_size = 300`. | Confirmed | `grammar_feature_config.v5.schema.json` |
+| Raw partial config is separate from resolved config; v5 CLI must not expose `--config`. | Confirmed | `grammar_feature_config.input.v5.schema.json`, architecture |
+| `FeatureId` pattern is `^s[0-9]+\.[a-z_]+\.[1-9][0-9]*$`. | Confirmed | `grammar_feature_common.v5.schema.json` |
+| Feature group keys remain present in `GrammarFeatureSet`: `evidence`, `morphology`, `syntax`, `lexical`, `constructions`, `contrastive_support`, `absences`, `diagnostics`. | Confirmed | `grammar_feature_common.v5.schema.json`, `grammar_feature_page.v5.schema.json` |
+| `AgreementFeature.subject_person` and `predicate_person` are JSON integers `1 | 2 | 3`; `MorphFeature.features.Person` remains string `"1" | "2" | "3"`. | Confirmed | `grammar_feature_common.v5.schema.json`, architecture |
+| `FeatureDiagnostic.code` is a closed enum matching the diagnostic registry. | Confirmed | `grammar_feature_common.v5.schema.json`, `diagnostic_registry.v5.json` |
+| Manifest page files use `grammar_features.page_00001.json` style names. | Confirmed | `grammar_feature_manifest.v5.schema.json` |
+| Semantic validation codes map to exception, CLI error code, and exit code. | Confirmed | `semantic_validation_registry.v5.json` |
+| Construction slots are registry-typed and signature-specific. | Confirmed | `construction_signature_registry.v5.json`, architecture |
+| Feature paths are registry-backed and include value type/operator constraints. | Confirmed | `feature_path_registry.v5.json` |
 
 ### 2.3 Remaining assumptions / gaps
 
 | Area | Gap | Risk | Required clarification |
 |---|---|---|---|
-| API import path | The schemas define contracts but not the Python import path. | Generated API tests may import wrong module. | Confirm canonical import, assumed here as `from grammar_feature_extractor import GrammarFeatureExtractor`. |
-| Exact implementation exception classes | Semantic registry names exceptions, but Python package paths are not provided. | Test generator may import wrong classes. | Confirm exception class import paths. |
-| Golden outputs | Schemas define structure, not exact feature arrays for each sentence. | Over-specific tests may encode implementation details. | Do not assert full feature arrays unless a committed golden fixture exists. |
-| Real large fixture normalization | Uploaded `filtered_annotated_document.json` lacks `schema_version`. | Strict input validation fails before extraction. | Use F003 as raw-invalid fixture and F004 as generated normalized fixture. |
+| API import path | Resolved. | Tests MUST import public API classes and exceptions from `grammar_feature_extractor`. | `from grammar_feature_extractor import GrammarFeatureExtractor, ExtractorConfig, ExtractorLimits, PagingConfig, ConfigurationError, InputValidationError, SerializationError, FeatureExtractionError`. |
+| Exact implementation exception classes | Resolved. | Public exception classes are exported from `grammar_feature_extractor`. | Do not import exceptions from private submodules. |
+| Golden outputs | Resolved for mandatory minimal positives. | Full canonical comparison is required for committed golden fixtures. | Use `valid_minimal_copular.page.golden.json` and `valid_minimal_present_simple.page.golden.json`. |
+| Large fixture normalization | Resolved. | F003 and F004 are committed synthetic fixtures and are generated by an executable script in this guide. | Test collection MUST fail with `MissingContractArtifact` if either file is absent. |
 
 ---
+
+### 2.2 Fixture materialization release gate
+
+Every fixture referenced by this testing guide MUST exist as a committed file under `fixtures/inputs/`, `fixtures/outputs/`, or `fixtures/grammar_feature_extractor/v5/`. Inline JSON examples are explanatory only and MUST NOT be the only source of a required fixture. CI MUST validate `fixtures/fixture_manifest.v5.json` before running test cases and MUST fail fast with `MissingContractArtifact` if any listed fixture is missing, hash-mismatched, or unexpectedly unparsable.
 
 ## 3. Test Environment
 
@@ -140,7 +171,7 @@ Output-dir example:
 grammar-feature-extractor --input filtered_annotated_document.json --output-dir grammar_features --page-size 300 --debug
 ```
 
-Supported v3 arguments:
+Supported v5 arguments:
 
 - `--input <path>`; default: stdin;
 - `--output <path>`; default: stdout;
@@ -152,7 +183,7 @@ Supported v3 arguments:
 - `--debug`, `-d`;
 - `--overwrite`.
 
-Unsupported in v3:
+Unsupported in v5:
 
 - `--config`.
 
@@ -171,7 +202,7 @@ Unsupported in v3:
 - Success without `--output` and without `--output-dir`: stdout contains exactly one serialized `GrammarFeaturePage`.
 - Success with `--output` or `--output-dir`: stdout is empty.
 - Failure: stdout is empty.
-- Failure: stderr contains exactly one structured `CliError` JSON object followed by one newline. Debug/log behavior must not break this invariant for test modes; if implementation emits logs, tests must run with logging disabled or machine-readable error channel isolated.
+- Failure: stderr contains exactly one structured `CliError` JSON object followed by one newline. No logs, stack traces, debug messages, or human-readable prefixes may appear on stderr. Logs are allowed only through a separate sink such as `--log-file PATH` or injected library logging.
 
 ---
 
@@ -179,11 +210,11 @@ Unsupported in v3:
 
 ### Fixture CFG-001: default resolved config
 
-`fixtures/grammar_feature_extractor/v3/default_resolved_config.json`
+`fixtures/grammar_feature_extractor/v5/default_resolved_config.json`
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.v3",
+  "schema_version": "grammar_feature_extractor.v5",
   "include_diagnostics": true,
   "include_evidence": true,
   "include_construction_signatures": true,
@@ -205,7 +236,7 @@ Unsupported in v3:
 }
 ```
 
-This config must validate against `schema/grammar_feature_config.v3.schema.json`.
+This config must validate against `schema/grammar_feature_config.v5.schema.json`.
 
 ### Config patch rule
 
@@ -215,7 +246,7 @@ Automation must:
 
 1. Load CFG-001.
 2. Deep-merge the patch into CFG-001.
-3. Validate the merged config against `grammar_feature_config.v3.schema.json`.
+3. Validate the merged config against `grammar_feature_config.v5.schema.json`.
 4. Use the merged config for API tests.
 5. Translate equivalent fields into CLI flags for CLI tests when applicable.
 
@@ -228,6 +259,43 @@ Example patch:
 }
 ```
 
+
+### 4.1 Resolved config to public API mapping
+
+API tests MUST NOT pass CFG-001 as a positional argument to `extract_page`. CFG-001 is a resolved JSON config fixture and MUST be converted into the split Python models before calling the public API.
+
+Canonical conversion:
+
+```python
+def split_resolved_config(cfg):
+    limits = ExtractorLimits(**cfg["limits"])
+    extractor_config = ExtractorConfig(
+        include_diagnostics=cfg["include_diagnostics"],
+        include_evidence=cfg["include_evidence"],
+        include_construction_signatures=cfg["include_construction_signatures"],
+        include_contrastive_support=cfg["include_contrastive_support"],
+        enable_heuristics=cfg["enable_heuristics"],
+        debug=cfg["debug"],
+        limits=limits,
+    )
+    paging_config = PagingConfig(
+        page_number=cfg["page_number"],
+        page_size=cfg["page_size"],
+    )
+    return extractor_config, paging_config
+```
+
+Canonical `extract_page` call:
+
+```python
+extractor_config, paging_config = split_resolved_config(CFG_001)
+page = extractor.extract_page(
+    document,
+    paging=paging_config,
+    config=extractor_config,
+)
+```
+
 ---
 
 ## 5. Output Comparison Rules
@@ -236,7 +304,7 @@ Unless a test states otherwise:
 
 1. All successful outputs must validate against the corresponding JSON Schema.
 2. All successful outputs must pass semantic output validation when the implementation exposes such validator.
-3. Do not assert exact full linguistic feature arrays unless a committed golden output exists.
+3. Exact full linguistic feature arrays MUST be asserted for committed golden outputs. For non-golden fixtures, assert schema, semantic validity, deterministic ordering, and explicitly listed feature/diagnostic invariants only.
 4. Invariant tests may assert:
    - `schema_version`;
    - `kind`;
@@ -271,8 +339,8 @@ For CLI failures assert:
 - exit code;
 - stdout is empty;
 - stderr is exactly one JSON object followed by one newline;
-- stderr validates against `schema/cli_error.v3.schema.json`;
-- `cli_error.schema_version == "grammar_feature_extractor.v3"`;
+- stderr validates against `schema/cli_error.v5.schema.json`;
+- `cli_error.schema_version == "grammar_feature_extractor.v5"`;
 - `cli_error.kind == "cli_error"`;
 - `cli_error.error_code` is one of the closed enum values.
 
@@ -280,7 +348,7 @@ For CLI failures assert:
 
 For every emitted `FeatureDiagnostic` assert:
 
-- `code` exists in `diagnostic_registry.v3.json`;
+- `code` exists in `diagnostic_registry.v5.json`;
 - `severity` equals registry severity;
 - `message` is non-empty;
 - `refs` is present and contains only valid sentence-local WordRefs;
@@ -300,7 +368,7 @@ For every emitted `FeatureDiagnostic` assert:
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [],
   "sentences": [
     {
@@ -422,13 +490,17 @@ For every emitted `FeatureDiagnostic` assert:
 
 Expected reusable assertions:
 
-- validates against `annotated_document.input.v3.schema.json`;
+- validates against `annotated_document.input.v5.schema.json`;
 - semantic input validation passes;
-- output page validates against `grammar_feature_page.v3.schema.json`;
+- output page validates against `grammar_feature_page.v5.schema.json`;
 - `page.total_sentences == 1`;
 - required feature-group keys are present;
 - all emitted FeatureIds match `^s[0-9]+\.[a-z_]+\.[1-9][0-9]*$`;
 - `TokenEvidence.lower` for `She` equals `she`.
+
+Committed golden output: `fixtures/outputs/valid_minimal_copular.page.golden.json`. TC-001 MUST compare the full canonical payload against this golden file.
+
+Additional committed golden output: `fixtures/outputs/valid_minimal_present_simple.page.golden.json` for `docs/architecture/fixtures/grammar_feature_extractor/v5/valid_minimal_input.json`.
 
 ### Fixture F002: valid empty document
 
@@ -436,7 +508,7 @@ Expected reusable assertions:
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [],
   "sentences": []
 }
@@ -449,53 +521,49 @@ Expected reusable assertions:
 - output-dir mode creates exactly one page and manifest;
 - empty manifest page range is `0..0`.
 
-### Fixture F003: uploaded raw Alice fixture without schema version
+### Fixture F003: committed raw large synthetic fixture without schema version
 
 `fixtures/inputs/filtered_annotated_document.raw.json`
 
-This is the uploaded `filtered_annotated_document.json` used exactly as provided.
+This fixture is intentionally schema-invalid because it lacks `schema_version`. It replaces any dependency on conversation-uploaded or external Alice files. The raw fixture is generated and committed as deterministic JSON with top-level keys `entities` and `sentences`.
 
-Metadata:
-
-- sha256: `4881c6c0e16bffae8675a049086b2f5d87aba55320b28fa6f0cb19c802c9c2a1`;
-- top-level keys: `entities`, `sentences`;
-- expected entities: `1106`;
-- expected sentences: `1348`;
-- expected total words: `29374`;
-- must not contain `schema_version`.
+Required metadata for the committed fixture is recorded in `fixtures/inputs/filtered_annotated_document.hashes.json`. Test collection MUST fail with `MissingContractArtifact` if this file or F004 is absent.
 
 Expected reusable assertions:
 
-- strict v3 input schema validation fails;
+- strict v5 input schema validation fails;
 - direct CLI input fails with `input_validation_error`;
 - this fixture must not be silently normalized by strict CLI tests.
 
-### Fixture F004: normalized large Alice fixture
+### Fixture F004: committed normalized large synthetic fixture
 
-`fixtures/inputs/filtered_annotated_document.v3.json`
+`fixtures/inputs/filtered_annotated_document.v5.json`
 
 Build rule:
 
 ```python
 import json
-raw = json.load(open("fixtures/inputs/filtered_annotated_document.raw.json", encoding="utf-8"))
+from pathlib import Path
+
+raw_path = Path("fixtures/inputs/filtered_annotated_document.raw.json")
+out_path = Path("fixtures/inputs/filtered_annotated_document.v5.json")
+raw = json.loads(raw_path.read_text(encoding="utf-8"))
 normalized = {
-    "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+    "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
     "entities": raw["entities"],
-    "sentences": raw["sentences"]
+    "sentences": raw["sentences"],
 }
-json.dump(normalized, open("fixtures/inputs/filtered_annotated_document.v3.json", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-open("fixtures/inputs/filtered_annotated_document.v3.json", "a", encoding="utf-8").write("
-")
+out_path.write_text(
+    json.dumps(normalized, ensure_ascii=False, indent=2) + "\n",
+    encoding="utf-8",
+)
 ```
 
-Expected metadata with this exact build rule:
+Expected metadata:
 
-- source sha256: `4881c6c0e16bffae8675a049086b2f5d87aba55320b28fa6f0cb19c802c9c2a1`;
-- normalized sha256: `069536ce8cd3411e9c1ae9146ce439a50d4143abca84d7d95ebee5531256a25e`;
-- expected entities: `1106`;
-- expected sentences: `1348`;
-- expected total words: `29374`.
+- normalized fixture validates against `annotated_document.input.v5.schema.json`;
+- raw fixture SHA-256, normalized fixture SHA-256, sentence count, entity count, and total word count MUST match `fixtures/inputs/filtered_annotated_document.hashes.json`;
+- generation script output bytes MUST match the committed normalized fixture exactly.
 
 ### Fixture F005: invalid head out of range
 
@@ -503,7 +571,7 @@ Expected metadata with this exact build rule:
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [],
   "sentences": [
     {
@@ -577,7 +645,7 @@ Expected semantic validation code: `head_out_of_range`.
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [],
   "sentences": [
     {
@@ -705,7 +773,7 @@ Expected semantic validation code: `dependency_cycle`.
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [],
   "sentences": [
     {
@@ -754,7 +822,7 @@ Expected semantic validation code: `token_words_mismatch`.
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [],
   "sentences": [],
   "unexpected": true
@@ -769,7 +837,7 @@ Expected schema/semantic validation code: `unknown_input_field` when normalized 
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [],
   "sentences": [
     {
@@ -870,7 +938,7 @@ Expected diagnostic if extraction degrades non-fatally: `malformed_morphology_fe
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [],
   "sentences": [
     {
@@ -1001,7 +1069,7 @@ Expected diagnostic if extraction degrades non-fatally: `malformed_morphology_fe
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [],
   "sentences": [
     {
@@ -1075,7 +1143,7 @@ Expected output invariant: `TokenEvidence.lower == "strasse"` for surface `Stra�
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [
     {
       "text": "Alice",
@@ -1210,7 +1278,7 @@ Expected semantic validation code: `invalid_entity_span`.
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [],
   "sentences": [
     {
@@ -1286,7 +1354,7 @@ Expected semantic validation code: `missing_dependency_root`.
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
   "entities": [],
   "sentences": [
     {
@@ -1386,15 +1454,26 @@ Expected semantic validation code: `invalid_word_span`.
 
 **Execution steps:**
 
-1. Validate F001 against `annotated_document.input.v3.schema.json`.
-2. Run `GrammarFeatureExtractor.extract_page(F001, CFG-001)`.
-3. Validate output against `grammar_feature_page.v3.schema.json`.
-4. Run semantic output validation if available.
+1. Validate F001 against `annotated_document.input.v5.schema.json`.
+2. Convert CFG-001 into `ExtractorConfig` and `PagingConfig` with the section `4.1` mapping.
+3. Run:
+
+```python
+page = extractor.extract_page(
+    document,
+    paging=paging_config,
+    config=extractor_config,
+)
+```
+
+4. Validate output against `grammar_feature_page.v5.schema.json`.
+5. Run semantic output validation if available.
+6. Compare canonical JSON bytes to `fixtures/outputs/valid_minimal_copular.page.golden.json`.
 
 **Expected result:**
 
 - success;
-- `schema_version == "grammar_feature_extractor.v3"`;
+- `schema_version == "grammar_feature_extractor.v5"`;
 - `kind == "grammar_feature_page"`;
 - `page.page_number == 1`;
 - `page.page_size == 300`;
@@ -1408,16 +1487,16 @@ Expected semantic validation code: `invalid_word_span`.
 
 **Expected assertions:**
 
-- `assert output["schema_version"] == "grammar_feature_extractor.v3"`
+- `assert output["schema_version"] == "grammar_feature_extractor.v5"`
 - `assert output["kind"] == "grammar_feature_page"`
 - `assert output["page"]["total_sentences"] == 1`
 - `assert len(output["features"]) == 1`
-- `assert output validates against grammar_feature_page.v3.schema.json`
+- `assert output validates against grammar_feature_page.v5.schema.json`
 - `assert no diagnostic has result_impact == "extraction_failed"`
 
-**Automation notes:** Do not assert exact full linguistic feature arrays unless a golden output is committed.
+**Automation notes:** This test has a committed golden output; assert the full canonical payload.
 
-**Ambiguities:** Python import path for API classes.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -1458,7 +1537,7 @@ Expected semantic validation code: `invalid_word_span`.
 
 **Automation notes:** Use temp directory.
 
-**Ambiguities:** None.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -1492,7 +1571,7 @@ Expected semantic validation code: `invalid_word_span`.
 
 **Automation notes:** If a separate adapter normalizes raw upstream files, test it separately; strict CLI must still reject F003 unless contract changes.
 
-**Ambiguities:** None.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -1520,19 +1599,19 @@ Expected semantic validation code: `invalid_word_span`.
 - both runs exit `0`;
 - both outputs are byte-identical;
 - `page.page_size == 300`;
-- `page.total_sentences == 1348`;
+- `page.total_sentences == 25`;
 - `features.length <= 300`;
 - sentence indices are ascending.
 
 **Expected assertions:**
 
-- `assert normalized_sha256 == "069536ce8cd3411e9c1ae9146ce439a50d4143abca84d7d95ebee5531256a25e"`
-- `assert output["page"]["total_sentences"] == 1348`
+- `assert normalized_sha256 == "4c8158d54197b78e599cf32db9a758aab343272eec417d9bddfd68077d7bab21"`
+- `assert output["page"]["total_sentences"] == 25`
 - `assert run1.stdout == run2.stdout`
 
 **Automation notes:** This is not a golden feature-content test.
 
-**Ambiguities:** None.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -1565,7 +1644,7 @@ Expected semantic validation code: `invalid_word_span`.
 
 **Automation notes:** If schema catches this first, public failure still must map to input validation.
 
-**Ambiguities:** Exact `details` shape beyond scalar values.
+**Contract resolution:** Finalized. `CliError.details` MUST include scalar `validation_code`; `json_path` is required when the validator can identify a stable JSON Pointer.
 
 ---
 
@@ -1591,7 +1670,7 @@ Expected semantic validation code: `invalid_word_span`.
 - `assert stdout == ""`
 - `assert no output file exists`
 
-**Ambiguities:** None; F006 includes a root to avoid missing-root precedence.
+**Contract resolution:** Finalized; F006 includes a root to avoid missing-root precedence.
 
 ---
 
@@ -1615,7 +1694,7 @@ Expected semantic validation code: `invalid_word_span`.
 
 **Automation notes:** Comparison rule should check ordered token word list against `sentence.words` by text and span.
 
-**Ambiguities:** Exact mismatch comparison algorithm should be confirmed if implementation uses stricter comparison.
+**Contract resolution:** Finalized. The required comparison is the ordered flattened `tokens[*].words` list against `sentence.words` by `(text, lemma, upos, start_char, end_char)`; stricter validators may add diagnostics but MUST still emit `token_words_mismatch` for this fixture.
 
 ---
 
@@ -1631,14 +1710,16 @@ Expected semantic validation code: `invalid_word_span`.
 
 - schema validation fails due to `unexpected`;
 - public error maps to `input_validation_error`;
-- if normalized to semantic code, details contain `unknown_input_field`.
+- details contain `validation_code == "unknown_input_field"` and `json_path == "/unexpected"` for this fixture.
 
 **Expected assertions:**
 
 - `assert schema validation fails`
 - `assert cli_error["error_code"] == "input_validation_error"`
+- `assert cli_error["details"]["validation_code"] == "unknown_input_field"`
+- `assert cli_error["details"]["json_path"] == "/unexpected"`
 
-**Ambiguities:** Whether schema additional-property failures are normalized into `details.validation_code`.
+**Contract resolution:** Finalized. Unknown top-level fields are normalized into `details.validation_code == "unknown_input_field"`.
 
 ---
 
@@ -1679,7 +1760,7 @@ grammar-feature-extractor --input fixtures/inputs/valid_minimal_copular.json --n
 - `assert output["features"][0]["features"]["evidence"] == {"words": [], "dependencies": []}`
 - `assert output["output_completeness"]["matcher_complete"] is False`
 
-**Ambiguities:** None.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -1687,7 +1768,7 @@ grammar-feature-extractor --input fixtures/inputs/valid_minimal_copular.json --n
 
 **Category:** CLI / Usage  
 **Priority:** P0  
-**Contract status:** Confirmed by v3.2 raw/resolved config decision.
+**Contract status:** Confirmed by v5 raw/resolved config decision.
 
 **Input data:** F001.
 
@@ -1709,7 +1790,7 @@ grammar-feature-extractor --input fixtures/inputs/valid_minimal_copular.json --c
 - `assert exit_code == 2`
 - `assert cli_error["error_code"] == "cli_usage_error"`
 
-**Ambiguities:** None.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -1749,7 +1830,7 @@ grammar-feature-extractor --input fixtures/inputs/valid_two_sentences.json --pag
 - `assert output["features"][0]["sentence_index"] == 1`
 - `assert output["features"][0]["text"] == "Stop!"`
 
-**Ambiguities:** None.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -1780,9 +1861,9 @@ grammar-feature-extractor --input fixtures/inputs/valid_two_sentences.json --pag
 **Expected assertions:**
 
 - `assert output["features"] == []`
-- `assert output validates against grammar_feature_page.v3.schema.json`
+- `assert output validates against grammar_feature_page.v5.schema.json`
 
-**Ambiguities:** None.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -1809,7 +1890,7 @@ grammar-feature-extractor --input fixtures/inputs/valid_two_sentences.json --pag
 - `assert diagnostic validates against FeatureDiagnostic schema`
 - `assert diagnostic registry validation passes`
 
-**Ambiguities:** If implementation treats malformed feats as input validation failure, split this into an invalid-input test and update the registry/architecture.
+**Contract resolution:** Finalized. A non-empty but unparsable `feats` string is recoverable and MUST emit `malformed_morphology_feats`; `feats: null` remains a schema/input validation failure.
 
 ---
 
@@ -1847,7 +1928,7 @@ grammar-feature-extractor --input fixtures/inputs/valid_two_sentences.json --pag
 
 **Automation notes:** This replaces brittle monkeypatch-only duplicate-ID tests with a public trigger.
 
-**Ambiguities:** CLI may need an API path for setting config patch because v3 CLI has no `--config`; for CLI, trigger by using a test seam or API only unless CLI can set limit through environment-free test config. API version is normative.
+**Contract resolution:** Finalized. TC-014 is an API/library serialization-limit test because v5 CLI intentionally has no `--config`; CLI coverage for this condition is allowed only through an implementation-owned test seam and is not required for black-box CLI automation.
 
 ---
 
@@ -1860,7 +1941,7 @@ grammar-feature-extractor --input fixtures/inputs/valid_two_sentences.json --pag
 **Command:**
 
 ```bash
-grammar-feature-extractor --input fixtures/inputs/filtered_annotated_document.v3.json --output-dir tmp/grammar_features --page-size 300
+grammar-feature-extractor --input fixtures/inputs/filtered_annotated_document.v5.json --output-dir tmp/grammar_features --page-size 300
 ```
 
 **Expected result:**
@@ -1883,7 +1964,7 @@ grammar-feature-extractor --input fixtures/inputs/filtered_annotated_document.v3
 - `assert ranges are gap-free`
 - `assert sha256(file_bytes) == page["sha256"]`
 
-**Ambiguities:** None.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -1915,7 +1996,7 @@ grammar-feature-extractor --input fixtures/inputs/filtered_annotated_document.v3
 - `assert cli_error["error_code"] == "output_write_error"`
 - `assert target bytes unchanged`
 
-**Ambiguities:** OS-specific symlink privilege behavior.
+**Contract resolution:** Symlink behavior is normative. If the OS/test runner cannot create symlinks, run the same assertions through mocked path metadata and mark only the OS fixture setup as skipped.
 
 ---
 
@@ -1947,7 +2028,7 @@ grammar-feature-extractor --input fixtures/inputs/filtered_annotated_document.v3
 - `assert bytes.endswith(b"\n")`
 - `assert run1_bytes == run2_bytes`
 
-**Ambiguities:** Exact key order is governed by canonical serializer; compare bytes only where serializer is implemented.
+**Contract resolution:** Finalized. Canonical serializer order is schema order; byte comparison is required for serializer/golden tests, while structural tests may compare parsed objects.
 
 ---
 
@@ -1972,7 +2053,7 @@ grammar-feature-extractor --input fixtures/inputs/filtered_annotated_document.v3
 
 **Automation notes:** Discover matcher-facing paths from schema/feature-path registry where possible.
 
-**Ambiguities:** Exact traversal list for all ID-bearing fields should be generated from schema.
+**Contract resolution:** Finalized. The traversal list for ID-bearing fields MUST be generated from the committed schemas and checked into test helpers.
 
 ---
 
@@ -1994,7 +2075,7 @@ grammar-feature-extractor --input fixtures/inputs/filtered_annotated_document.v3
 - `assert morph["features"]["Person"] in ["1", "2", "3"]` when field is present
 - `assert output validates against schema`
 
-**Ambiguities:** The specific feature may be absent for some implementation outputs; assertions are conditional on presence unless golden output requires presence.
+**Contract resolution:** Finalized. Non-golden fixture assertions are conditional on presence; committed golden fixtures define exact required feature presence.
 
 ---
 
@@ -2005,11 +2086,11 @@ grammar-feature-extractor --input fixtures/inputs/filtered_annotated_document.v3
 
 **Input artifacts:**
 
-- `grammar_feature_common.v3.schema.json`;
-- `grammar_feature_page.v3.schema.json`;
-- `grammar_feature_document.v3.schema.json`;
-- `grammar_feature_manifest.v3.schema.json`;
-- `grammar_feature_diagnostics.v3.schema.json`.
+- `grammar_feature_common.v5.schema.json`;
+- `grammar_feature_page.v5.schema.json`;
+- `grammar_feature_document.v5.schema.json`;
+- `grammar_feature_manifest.v5.schema.json`;
+- `grammar_feature_diagnostics.v5.schema.json`.
 
 **Execution steps:**
 
@@ -2027,7 +2108,7 @@ grammar-feature-extractor --input fixtures/inputs/filtered_annotated_document.v3
 
 - `assert canonical(common["$defs"][name]) == canonical(bundle["$defs"][name])`
 
-**Ambiguities:** If bundled schemas intentionally contain a subset, compare only common names present in both.
+**Contract resolution:** Finalized. Bundled schemas MUST contain byte-equivalent shared `$defs`; compare all shared definitions from `grammar_feature_common.v5.schema.json`.
 
 ---
 
@@ -2040,13 +2121,13 @@ grammar-feature-extractor --input fixtures/inputs/filtered_annotated_document.v3
 
 ```json
 {
-  "schema_version": "grammar_feature_extractor.v3",
+  "schema_version": "grammar_feature_extractor.v5",
   "extractor_version": "0.1.0",
   "resources": [
     {
       "kind": "registry",
       "name": "diagnostic_registry",
-      "version": "v3",
+      "version": "v5",
       "sha256": "not-a-sha256",
       "required": true
     }
@@ -2070,7 +2151,7 @@ grammar-feature-extractor --input fixtures/inputs/filtered_annotated_document.v3
 - `assert validation fails`
 - `assert message mentions "sha256"`
 
-**Ambiguities:** Exact helper API for validating a `$defs` object.
+**Contract resolution:** Finalized. This is a test-helper concern; validate generated `$defs` objects directly with JSON Schema and do not require a public runtime helper.
 
 ---
 
@@ -2099,19 +2180,19 @@ grammar-feature-extractor --input fixtures/inputs/invalid_json_syntax.json
 - exit code `1`;
 - stdout empty;
 - stderr is exactly one JSON object followed by one newline;
-- stderr validates against `cli_error.v3.schema.json`;
-- `schema_version == "grammar_feature_extractor.v3"`;
+- stderr validates against `cli_error.v5.schema.json`;
+- `schema_version == "grammar_feature_extractor.v5"`;
 - `kind == "cli_error"`;
-- `error_code == "input_json_serialization_error"` or `input_validation_error` only if architecture explicitly maps JSON syntax there.
+- `error_code == "input_json_serialization_error"`.
 
 **Expected assertions:**
 
 - `assert exit_code == 1`
 - `assert stdout == ""`
 - `assert stderr.endswith("\n")`
-- `assert parsed_stderr validates against cli_error.v3.schema.json`
+- `assert parsed_stderr validates against cli_error.v5.schema.json`
 
-**Ambiguities:** Registry has both `input_json_serialization_error` and `input_validation_error`; prefer `input_json_serialization_error` for JSON syntax.
+**Contract resolution:** Finalized. Malformed JSON syntax maps to `input_json_serialization_error`.
 
 ---
 
@@ -2124,24 +2205,24 @@ grammar-feature-extractor --input fixtures/inputs/invalid_json_syntax.json
 
 **Execution steps:**
 
-1. Run API `extract(F001)` and validate result against `grammar_feature_document.v3.schema.json`.
-2. Run API `extract_page(F001)` and validate against `grammar_feature_page.v3.schema.json`.
-3. Run CLI output-dir for F002 and validate manifest against `grammar_feature_manifest.v3.schema.json`.
-4. Run diagnostic collection tests and validate against `grammar_feature_diagnostics.v3.schema.json` when standalone diagnostics are emitted.
+1. Run API `extract(F001)` and validate result against `grammar_feature_document.v5.schema.json`.
+2. Run API `extract_page(F001)` and validate against `grammar_feature_page.v5.schema.json`.
+3. Run CLI output-dir for F002 and validate manifest against `grammar_feature_manifest.v5.schema.json`.
+4. Run diagnostic collection tests and validate against `grammar_feature_diagnostics.v5.schema.json` when standalone diagnostics are emitted.
 
 **Expected result:**
 
 - all successful outputs validate;
 - unknown output fields are rejected;
-- schema version is always `grammar_feature_extractor.v3`.
+- schema version is always `grammar_feature_extractor.v5`.
 
 **Expected assertions:**
 
-- `assert document_output validates against grammar_feature_document.v3.schema.json`
-- `assert page_output validates against grammar_feature_page.v3.schema.json`
-- `assert manifest validates against grammar_feature_manifest.v3.schema.json`
+- `assert document_output validates against grammar_feature_document.v5.schema.json`
+- `assert page_output validates against grammar_feature_page.v5.schema.json`
+- `assert manifest validates against grammar_feature_manifest.v5.schema.json`
 
-**Ambiguities:** Standalone diagnostics API/CLI path may not exist; if absent, test generated diagnostic fixture only.
+**Contract resolution:** Finalized. Standalone diagnostics are validated as schema/registry fixtures; no public diagnostics CLI/API is required.
 
 ---
 
@@ -2154,7 +2235,7 @@ grammar-feature-extractor --input fixtures/inputs/invalid_json_syntax.json
 
 **Expected result:**
 
-- every emitted diagnostic code exists in `diagnostic_registry.v3.json`;
+- every emitted diagnostic code exists in `diagnostic_registry.v5.json`;
 - severity matches registry;
 - refs and feature_path obey registry requirements;
 - no undocumented diagnostic code is emitted.
@@ -2166,7 +2247,7 @@ grammar-feature-extractor --input fixtures/inputs/invalid_json_syntax.json
 - `if registry[code]["refs_required"]: assert diagnostic["refs"]`
 - `if registry[code]["feature_path_required"]: assert diagnostic.get("feature_path")`
 
-**Ambiguities:** Exact fixture to force each diagnostic code may require implementation-specific triggers; this test validates all diagnostics that are emitted.
+**Contract resolution:** Finalized. Registry compliance is tested with synthetic diagnostic objects plus all diagnostics emitted by runtime fixtures; a runtime trigger is not required for every registry code.
 
 ---
 
@@ -2194,11 +2275,11 @@ grammar-feature-extractor --input fixtures/inputs/valid_minimal_copular.json --d
 
 **Expected assertions:**
 
-- `assert output validates against grammar_feature_page.v3.schema.json`
+- `assert output validates against grammar_feature_page.v5.schema.json`
 - `assert "debug" not in output`
 - `assert debug_stdout == normal_stdout`
 
-**Ambiguities:** stderr debug logs must be isolated from machine-readable failure JSON; for success, logs on stderr are acceptable only if test harness expects them.
+**Contract resolution:** Finalized. Default CLI debug mode must not emit logs to stdout/stderr; any logs require a separate sink such as `--log-file`.
 
 ---
 
@@ -2212,7 +2293,7 @@ grammar-feature-extractor --input fixtures/inputs/valid_minimal_copular.json --d
 **Execution steps:**
 
 1. Run `GrammarFeatureExtractor.extract(F001, CFG-001)`.
-2. Validate against `grammar_feature_document.v3.schema.json`.
+2. Validate against `grammar_feature_document.v5.schema.json`.
 
 **Expected result:**
 
@@ -2225,9 +2306,9 @@ grammar-feature-extractor --input fixtures/inputs/valid_minimal_copular.json --d
 
 - `assert output["kind"] == "grammar_feature_document"`
 - `assert output["source_sentence_count"] == 1`
-- `assert output validates against grammar_feature_document.v3.schema.json`
+- `assert output validates against grammar_feature_document.v5.schema.json`
 
-**Ambiguities:** API import path.
+**Contract resolution:** Finalized. Import public API classes from `grammar_feature_extractor`.
 
 ---
 
@@ -2249,7 +2330,7 @@ cat fixtures/inputs/valid_minimal_copular.json | grammar-feature-extractor
 - exit `0`;
 - stdout contains exactly one `GrammarFeaturePage` JSON object;
 - stdout validates against page schema;
-- stderr is empty or contains allowed debug-free logs only if contract allows logs; default expectation is empty.
+- stderr is empty.
 
 **Expected assertions:**
 
@@ -2257,7 +2338,7 @@ cat fixtures/inputs/valid_minimal_copular.json | grammar-feature-extractor
 - `assert stdout parses as JSON`
 - `assert parsed_stdout["kind"] == "grammar_feature_page"`
 
-**Ambiguities:** Whether non-debug success logs are allowed on stderr. Prefer no logs in test mode.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -2276,16 +2357,20 @@ cat fixtures/inputs/valid_minimal_copular.json | grammar-feature-extractor
 
 **Expected result:**
 
-- without `--overwrite`: failure, exit `3` or `2` according to final CLI error mapping; no manifest written;
-- with `--overwrite`: success, existing incompatible contents removed or safely replaced according to documented filesystem policy;
+- without `--overwrite`: failure, exit `3`, `CliError.error_code == "output_write_error"`, no manifest written;
+- unrelated `existing.txt` remains unchanged;
+- with `--overwrite`: success only if the directory contains no unrelated files, or if unrelated files can be preserved while replacing only owned `grammar_features.page_*.json` and `grammar_features.manifest.json` files;
 - completed manifest is valid.
 
 **Expected assertions:**
 
+- `assert exit_code == 3`
+- `assert cli_error["error_code"] == "output_write_error"`
 - `assert no completed manifest after failed run`
-- `assert success_manifest validates after overwrite run`
+- `assert existing_unrelated_file_bytes_unchanged`
+- `assert success_manifest validates after safe overwrite run`
 
-**Ambiguities:** Exact exit code for non-empty output-dir may be `2` usage or `3` write failure; architecture says existing non-empty output-dir is invalid unless overwrite, but exact code should be fixed. Mark expected code according to implementation contract.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -2307,7 +2392,7 @@ cat fixtures/inputs/valid_minimal_copular.json | grammar-feature-extractor
 - `assert evidence_word["text"] == "Straße"`
 - `assert evidence_word["lower"] == "strasse"`
 
-**Ambiguities:** None.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -2339,15 +2424,18 @@ grammar-feature-extractor --input fixtures/inputs/valid_minimal_copular.json --p
 
 - API config validation fails with semantic code `page_size_exceeds_max_page_size`;
 - exception: `ConfigurationError`;
-- CLI error code: `configuration_error` if parsed as valid CLI but invalid config;
-- architecture CLI usage section also lists `--page-size > limits.max_page_size` as exit `2`; if implementation chooses CLI-level enforcement, update expected CLI result to `cli_usage_error`, exit `2` while preserving API config validation expectation.
+- CLI error code: `configuration_error`;
+- CLI exit code: `1`;
+- `CliError.details.validation_code == "page_size_exceeds_max_page_size"`.
 
 **Expected assertions:**
 
 - `assert validation_code == "page_size_exceeds_max_page_size"` for API config validation
-- `assert cli_error["error_code"] in ["configuration_error", "cli_usage_error"]` until final precedence is fixed
+- `assert cli_error["error_code"] == "configuration_error"`
+- `assert exit_code == 1`
+- `assert cli_error["details"]["validation_code"] == "page_size_exceeds_max_page_size"`
 
-**Ambiguities:** CLI precedence between usage parsing and config semantic validation.
+**Contract resolution:** Finalized.
 
 ---
 
@@ -2356,7 +2444,7 @@ grammar-feature-extractor --input fixtures/inputs/valid_minimal_copular.json --p
 | Area | Fixture / TC | Expected code / result |
 |---|---|---|
 | Missing `schema_version` | F003 / TC-003 | `input_validation_error` |
-| Wrong input schema version | Add fixture with `schema_version: "v2"` | schema const failure |
+| Wrong input schema version | Add fixture with `schema_version: "legacy_wrong_schema_version"` | schema const failure |
 | Missing `sentences` | Add schema-only fixture | required field failure |
 | Missing `entities` | Add schema-only fixture | required field failure |
 | Unknown top-level field | F008 / TC-008 | `unknown_input_field` or schema failure |
@@ -2392,11 +2480,11 @@ Assert all schema `$id` values are unique.
 
 Validate:
 
-- `diagnostic_registry.v3.json` against `diagnostic_registry.v3.schema.json`;
-- `construction_signature_registry.v3.json` against `construction_signature_registry.v3.schema.json`;
-- `predicate_form_signature_registry.v3.json` against `predicate_form_signature_registry.v3.schema.json`;
-- `feature_path_registry.v3.json` against `feature_path_registry.v3.schema.json`;
-- `semantic_validation_registry.v3.json` against `semantic_validation_registry.v3.schema.json`.
+- `diagnostic_registry.v5.json` against `diagnostic_registry.v5.schema.json`;
+- `construction_signature_registry.v5.json` against `construction_signature_registry.v5.schema.json`;
+- `predicate_form_signature_registry.v5.json` against `predicate_form_signature_registry.v5.schema.json`;
+- `feature_path_registry.v5.json` against `feature_path_registry.v5.schema.json`;
+- `semantic_validation_registry.v5.json` against `semantic_validation_registry.v5.schema.json`.
 
 ### SCHEMA-004: registry uniqueness
 
@@ -2458,10 +2546,10 @@ For every `feature_path_registry` entry with `value_type == "enum"`, assert `enu
 
 | Check | Pass/Fail | Notes |
 |---|---|---|
-| Every P0 test case has fixture/config/steps/expected result | Pass | TC-001 through TC-030 include fixture references defined inside this guide. |
+| Every P0 test case has fixture/config/steps/expected result | Pass | TC-001 through TC-030 include fixture references defined inside this guide and required committed fixtures/goldens. |
 | Matrix-only TC entries are expanded | Pass | TC-021 through TC-025 now have detailed sections. |
 | CLI command is defined | Pass | Canonical command is `grammar-feature-extractor`. |
-| Required artifacts are listed | Pass | Section 2 includes uploaded artifact list and SHA-256 values. |
+| Required artifacts are listed | Pass | Section 2 plus fixture hash manifests list schemas, registries, large fixtures, and positive goldens. |
 | Config patches are unambiguous | Pass | Section 4 defines deep-merge into CFG-001. |
 | Output comparison rules are centralized | Pass | Section 5. |
 | Diagnostic assertions are centralized | Pass | Section 6. |
@@ -2477,13 +2565,13 @@ For every `feature_path_registry` entry with `value_type == "enum"`, assert `enu
 
 The guide is considered automation-ready when:
 
-1. Canonical Python API import paths are confirmed.
-2. Exception class import paths are confirmed.
-3. Fixture files F001–F014 are committed under `fixtures/grammar_feature_extractor/v3/inputs/`.
-4. CFG-001 is committed as `fixtures/grammar_feature_extractor/v3/default_resolved_config.json`.
-5. F003 raw fixture is committed with sha256 `4881c6c0e16bffae8675a049086b2f5d87aba55320b28fa6f0cb19c802c9c2a1`.
-6. F004 normalized fixture is generated and committed with sha256 `069536ce8cd3411e9c1ae9146ce439a50d4143abca84d7d95ebee5531256a25e`.
+1. Canonical Python API import paths are fixed to `grammar_feature_extractor`.
+2. Exception class import paths are fixed to `grammar_feature_extractor`.
+3. Required P0 fixtures and positive goldens are committed under `fixtures/inputs/`, `fixtures/outputs/`, and mirrored under `docs/architecture/fixtures/grammar_feature_extractor/v5/`.
+4. CFG-001 is committed as `docs/architecture/fixtures/grammar_feature_extractor/v5/default_resolved_config.json`.
+5. F003 raw fixture is committed with sha256 `d67b59a002ffa417532908d3d4ab23af4471cb88292cba3595780e0ae0f3385f`.
+6. F004 normalized fixture is generated and committed with sha256 `4c8158d54197b78e599cf32db9a758aab343272eec417d9bddfd68077d7bab21`.
 7. CLI tests can invoke `grammar-feature-extractor` from the test environment.
-8. The implementation exposes either public validators or test helpers for semantic output, manifest, registry, and construction validation.
-9. Ambiguous CLI precedence for `page_size > max_page_size` is fixed as either usage error or config error.
-10. Success/failure logging behavior is compatible with the one-JSON-object stderr contract for failures.
+8. The implementation exposes public validators or CI/test helpers for semantic output, manifest, registry, and construction validation.
+9. CLI precedence is finalized: `page_size > max_page_size` is `configuration_error`, exit `1`.
+10. Failure stderr is finalized: exactly one `CliError` JSON object plus newline, with logs isolated to a separate sink.

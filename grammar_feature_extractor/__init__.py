@@ -8,32 +8,32 @@ from grammar_feature_extractor._internal.errors import (
 )
 from grammar_feature_extractor._internal.models import (
     AnnotatedDocument,
+    AnnotatedSentence,
+    Entity,
     ExtractorConfig,
     GrammarFeatureDocument,
+    GrammarFeatureManifest,
     GrammarFeaturePage,
     PagingConfig,
+    Token,
+    Word,
 )
 from grammar_feature_extractor._internal.pipeline import GrammarFeatureExtractor
-from grammar_feature_extractor._internal.runtime_metadata import (
-    PipelineRuntimeMetadata,
-    RuntimeAsset,
-    RuntimeDependency,
-    StageRuntimeMetadata,
-)
 
 __all__ = [
     "AnnotatedDocument",
+    "AnnotatedSentence",
     "ConfigurationError",
+    "Entity",
     "ExtractorConfig",
     "FeatureExtractionError",
     "GrammarFeatureDocument",
     "GrammarFeatureExtractor",
+    "GrammarFeatureManifest",
     "GrammarFeaturePage",
     "InputValidationError",
-    "PipelineRuntimeMetadata",
     "PagingConfig",
-    "RuntimeAsset",
-    "RuntimeDependency",
     "SerializationError",
-    "StageRuntimeMetadata",
+    "Token",
+    "Word",
 ]

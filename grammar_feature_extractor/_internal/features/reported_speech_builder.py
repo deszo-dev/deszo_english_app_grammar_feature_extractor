@@ -99,7 +99,7 @@ def _classify_marker(
     feats = ctx.morph_by_ref[clause.head].features
     if feats.get("VerbForm") == "Inf":
         return None, "reported_command"
-    if head_word.text.startswith(('"', '“', "'", "‘")):
+    if head_word.text.startswith(('"', "“", "'", "‘")):
         return None, "direct_quote"
     return None, "that_clause"
 

@@ -17,6 +17,7 @@ def _extract():
 
 def test_pronouns_emitted_for_known_pronoun() -> None:
     payload = {
+        "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
         "sentences": [
             {
                 "text": "She reads books.",
@@ -102,7 +103,7 @@ def test_output_dir_writes_pages_and_manifest(tmp_path: Path) -> None:
     assert page_path.exists()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert manifest["kind"] == "grammar_feature_manifest"
-    assert manifest["schema_version"] == "grammar_feature_extractor.v4"
+    assert manifest["schema_version"] == "grammar_feature_extractor.v3"
     assert manifest["page_count"] == 1
     assert manifest["total_sentences"] == 1
     assert len(manifest["pages"]) == 1
@@ -141,6 +142,4 @@ def test_output_dir_is_deterministic_under_debug(tmp_path: Path) -> None:
     debug_manifest = json.loads(
         (debug_dir / "grammar_features.manifest.json").read_text(encoding="utf-8")
     )
-    assert (
-        plain_manifest["pages"][0]["sha256"] == debug_manifest["pages"][0]["sha256"]
-    )
+    assert plain_manifest["pages"][0]["sha256"] == debug_manifest["pages"][0]["sha256"]

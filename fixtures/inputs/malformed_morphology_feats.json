@@ -1,0 +1,38 @@
+{
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "entities": [],
+  "sentences": [
+    {
+      "text": "Broken feats.",
+      "tokens": [
+        {
+          "text": "Broken",
+          "words": [
+            {
+              "text": "Broken",
+              "lemma": "broken",
+              "upos": "ADJ",
+              "feats": "Degree=Pos|Broken",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 0,
+              "end_char": 6
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "Broken",
+          "lemma": "broken",
+          "upos": "ADJ",
+          "feats": "Degree=Pos|Broken",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 0,
+          "end_char": 6
+        }
+      ]
+    }
+  ]
+}

@@ -29,15 +29,14 @@ def test_rejects_bool_as_int_head() -> None:
         parse_annotated_document(raw)
 
 
-def test_allows_null_feats_as_missing_morphology() -> None:
+def test_rejects_null_feats() -> None:
     raw = sample_document()
     sentence = raw["sentences"][0]  # type: ignore[index]
     sentence["words"][3]["feats"] = None  # type: ignore[index]
     sentence["tokens"][3]["words"][0]["feats"] = None  # type: ignore[index]
 
-    document = parse_annotated_document(raw)
-
-    assert document.sentences[0].words[3].feats is None
+    with pytest.raises(InputValidationError):
+        parse_annotated_document(raw)
 
 
 def test_rejects_token_words_that_do_not_match_sentence_words() -> None:

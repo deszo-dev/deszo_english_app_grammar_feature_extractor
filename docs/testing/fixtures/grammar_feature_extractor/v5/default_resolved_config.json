@@ -1,0 +1,21 @@
+{
+  "schema_version": "grammar_feature_extractor.v5",
+  "include_diagnostics": true,
+  "include_evidence": true,
+  "include_construction_signatures": true,
+  "include_contrastive_support": true,
+  "enable_heuristics": true,
+  "debug": false,
+  "page_number": 1,
+  "page_size": 300,
+  "limits": {
+    "max_input_bytes": 104857600,
+    "max_sentences": 200000,
+    "max_words_per_sentence": 512,
+    "max_total_words": 5000000,
+    "max_page_size": 5000,
+    "max_output_page_bytes": 104857600,
+    "max_output_pages": 100000,
+    "max_diagnostics_per_sentence": 100
+  }
+}

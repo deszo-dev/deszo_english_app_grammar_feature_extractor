@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deszo.local/schemas/grammar_feature_extractor/construction_signature_registry.v5.schema.json",
+  "title": "Construction signature registry v5 meta-schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "grammar_feature_extractor.v5"
+    },
+    "kind": {
+      "const": "construction_signature_registry"
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "signature": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "article_np",
+              "comparison",
+              "copular",
+              "demonstrative_np",
+              "existential",
+              "gerund_infinitive",
+              "modal",
+              "passive",
+              "question",
+              "tense_aspect"
+            ]
+          },
+          "family_hint": {
+            "type": "string",
+            "minLength": 1
+          },
+          "slots": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "value_type": {
+                  "type": "string",
+                  "enum": [
+                    "word_ref",
+                    "word_ref_array",
+                    "string",
+                    "boolean",
+                    "number"
+                  ]
+                },
+                "allowed_values": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                }
+              },
+              "required": [
+                "name",
+                "required",
+                "value_type"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "allowed_provenance_tiers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "structural",
+                "deterministic",
+                "heuristic",
+                "external_oracle"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "confidence_rules": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "stable_since": {
+            "type": "string",
+            "minLength": 1
+          },
+          "deprecated_since": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          }
+        },
+        "required": [
+          "signature",
+          "type",
+          "family_hint",
+          "slots",
+          "allowed_provenance_tiers",
+          "confidence_rules",
+          "examples",
+          "stable_since"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "signatures"
+  ],
+  "additionalProperties": false
+}

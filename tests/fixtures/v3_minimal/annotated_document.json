@@ -1,4 +1,5 @@
 {
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
   "sentences": [
     {
       "text": "She reads books.",

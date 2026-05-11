@@ -33,7 +33,7 @@ def test_no_object_np_makes_predicate_negative() -> None:
     assert features.lexical.negation[0].negation_type == "negative_determiner"
 
 
-def test_rule_like_constructions_are_not_emitted_by_default() -> None:
+def test_rule_like_constructions_are_emitted_by_contract_default() -> None:
     page = _extract(
         "Alice slept.",
         [
@@ -52,7 +52,7 @@ def test_rule_like_constructions_are_not_emitted_by_default() -> None:
         ],
     )
 
-    assert page.features[0].features.constructions == ()
+    assert page.features[0].features.constructions
 
 
 def test_pronoun_and_proper_noun_article_slots_are_not_applicable() -> None:
@@ -121,6 +121,7 @@ def _extract(
     document = loads_document(
         json.dumps(
             {
+                "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
                 "sentences": [
                     {
                         "text": text,

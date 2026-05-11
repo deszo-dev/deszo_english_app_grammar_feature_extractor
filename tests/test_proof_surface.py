@@ -24,11 +24,15 @@ from tests.conftest import sample_document
 def test_provenance_serializes_in_stable_key_order() -> None:
     document = loads_document(json.dumps(sample_document()))
     page = GrammarFeatureExtractor().extract_page(document)
-    predicate = page_to_dict(page)["features"][0]["syntax"]["predicates"][0]  # type: ignore[index]
+    predicate = page_to_dict(page)["features"][0]["features"]["syntax"]["predicates"][0]  # type: ignore[index]
 
-    assert "provenance" not in predicate
+    assert predicate["provenance"] == {
+        "tier": "deterministic",
+        "source": "dependency",
+        "evidence_refs": [2, 3, 4, 5],
+        "confidence": "high",
+    }
     assert predicate["evidence_refs"]  # type: ignore[index]
-    assert predicate["source"] == "parser"  # type: ignore[index]
     assert predicate["confidence"] == "high"  # type: ignore[index]
 
 
@@ -75,7 +79,7 @@ def test_matcher_facing_features_expose_provenance() -> None:
     assert features.syntax.predicates[0].provenance.evidence_refs
     assert features.syntax.complements[0].provenance.evidence_refs
     assert features.syntax.clauses[0].provenance.evidence_refs
-    assert features.constructions == ()
+    assert features.constructions
 
 
 def test_arbitrary_unknown_enum_value_is_rejected() -> None:

@@ -154,6 +154,28 @@ def metadata_to_dict(metadata: PipelineRuntimeMetadata) -> dict[str, object]:
     return cast(dict[str, object], _to_jsonable(metadata))
 
 
+def contract_runtime_metadata() -> dict[str, object]:
+    resources: list[dict[str, object]] = []
+    schema_root = repository_root() / "docs" / "architecture" / "schema"
+    for path in sorted(schema_root.glob("*.json")):
+        kind = "registry" if "registry" in path.name else "schema"
+        version = "v3" if ".v3." in path.name else "unknown"
+        resources.append(
+            {
+                "name": path.name,
+                "kind": kind,
+                "version": version,
+                "sha256": sha256_file(path),
+                "required": True,
+            }
+        )
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "extractor_version": get_module_version(PACKAGE_DISTRIBUTION_NAME),
+        "resources": resources,
+    }
+
+
 def directory_source_fingerprint(root: Path) -> str:
     relevant_suffixes = {
         ".py",

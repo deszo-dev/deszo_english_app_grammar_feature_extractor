@@ -11,30 +11,28 @@ from grammar_feature_extractor._internal.serialization import (
 from tests.conftest import sample_document
 
 
-def test_v4_output_references_external_construction_registry() -> None:
+def test_v3_output_has_kind_and_no_registry_version_field() -> None:
     page = GrammarFeatureExtractor().extract_page(
         loads_document(json.dumps(sample_document()))
     )
     payload = page_to_dict(page)
 
-    assert payload["construction_signature_registry_version"] == (
-        "construction_signature_registry.v1"
-    )
+    assert payload["kind"] == "grammar_feature_page"
+    assert "construction_signature_registry_version" not in payload
 
 
-def test_construction_registry_contains_neutral_signatures_only() -> None:
+def test_construction_registry_v3_exists_and_has_signatures() -> None:
     root = Path(__file__).resolve().parents[3]
     registry_path = (
         root
+        / "docs"
+        / "architecture"
         / "schema"
-        / "grammar_feature_extractor.v4"
-        / "construction_signature_registry.json"
+        / "construction_signature_registry.v3.json"
     )
     registry = json.loads(registry_path.read_text(encoding="utf-8"))
     signatures = {item["signature"] for item in registry["signatures"]}
 
-    assert registry["schema_version"] == "grammar_feature_extractor.v4"
-    assert "existential_there_be" in signatures
-    assert "article_marked_np" in signatures
-    assert not any(signature.startswith("articles_") for signature in signatures)
-    assert "present_simple_be_i_am_affirmative" not in signatures
+    assert registry["schema_version"] == "grammar_feature_extractor.v3"
+    assert "there_be_np" in signatures
+    assert len(signatures) >= 20

@@ -116,9 +116,7 @@ def attach_future_marking(
                         else "unknown"
                     ),
                     source=(
-                        "heuristic"
-                        if be_going_to and future_time_ids
-                        else "morphology"
+                        "heuristic" if be_going_to and future_time_ids else "morphology"
                     ),
                     confidence="high" if be_going_to or will_shall_refs else "medium",
                     evidence_refs=evidence_refs,

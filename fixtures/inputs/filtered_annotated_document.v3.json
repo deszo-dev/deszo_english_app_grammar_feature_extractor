@@ -1,0 +1,119 @@
+{
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "entities": [],
+  "sentences": [
+    {
+      "text": "She is happy.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Gender=Fem|Number=Sing|Person=3|PronType=Prs",
+              "head": 3,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "is",
+          "words": [
+            {
+              "text": "is",
+              "lemma": "be",
+              "upos": "AUX",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 3,
+              "deprel": "cop",
+              "start_char": 4,
+              "end_char": 6
+            }
+          ]
+        },
+        {
+          "text": "happy",
+          "words": [
+            {
+              "text": "happy",
+              "lemma": "happy",
+              "upos": "ADJ",
+              "xpos": "JJ",
+              "feats": "Degree=Pos",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 7,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 3,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Gender=Fem|Number=Sing|Person=3|PronType=Prs",
+          "head": 3,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "is",
+          "lemma": "be",
+          "upos": "AUX",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 3,
+          "deprel": "cop",
+          "start_char": 4,
+          "end_char": 6
+        },
+        {
+          "text": "happy",
+          "lemma": "happy",
+          "upos": "ADJ",
+          "xpos": "JJ",
+          "feats": "Degree=Pos",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 7,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 3,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    }
+  ]
+}

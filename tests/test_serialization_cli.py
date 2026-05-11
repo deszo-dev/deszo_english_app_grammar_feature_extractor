@@ -16,13 +16,15 @@ def test_stable_json_omits_none_fields() -> None:
 
     assert payload.endswith("\n")
     assert '"next_page"' not in payload
-    assert payload.startswith('{"schema_version":"grammar_feature_extractor.v4"')
-    assert '"tokens"' in payload
-    assert '"provenance"' not in payload
+    assert payload.startswith('{"schema_version":"grammar_feature_extractor.v3"')
+    assert '"runtime_metadata"' in payload
+    assert '"output_completeness"' in payload
+    assert '"evidence"' in payload
+    assert '"provenance"' in payload
     assert '"predicate_groups"' not in payload
 
 
-def test_cli_stdout_contains_json_and_stderr_contains_logs() -> None:
+def test_cli_stdout_contains_json_and_stderr_is_empty_on_success() -> None:
     result = subprocess.run(
         [sys.executable, "-m", "grammar_feature_extractor"],
         input=json.dumps(sample_document()),
@@ -32,8 +34,8 @@ def test_cli_stdout_contains_json_and_stderr_contains_logs() -> None:
     )
 
     assert result.returncode == 0
-    assert json.loads(result.stdout)["schema_version"] == "grammar_feature_extractor.v4"
-    assert "pipeline start" in result.stderr
+    assert json.loads(result.stdout)["schema_version"] == "grammar_feature_extractor.v3"
+    assert result.stderr == ""
 
 
 def test_cli_no_evidence_keeps_empty_evidence_object() -> None:
@@ -46,10 +48,13 @@ def test_cli_no_evidence_keeps_empty_evidence_object() -> None:
     )
 
     payload = json.loads(result.stdout)
-    sentence = payload["features"][0]
+    sentence = payload["features"][0]["features"]
     assert result.returncode == 0
-    assert sentence["tokens"] == []
-    assert sentence["diagnostics"][0]["code"] == "evidence_omitted_by_config"
+    assert sentence["evidence"]["words"] == []
+    assert sentence["diagnostics"][0]["code"] == "disabled_feature_group"
+    assert (
+        sentence["diagnostics"][0]["feature_path"] == "features.evidence.words[*].ref"
+    )
 
 
 def test_cli_rejects_raw_text_with_no_stdout() -> None:

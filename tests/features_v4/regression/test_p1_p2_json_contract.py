@@ -1,13 +1,9 @@
 from __future__ import annotations
 
 import json
-from typing import Any
 
 from grammar_feature_extractor import GrammarFeatureExtractor
-from grammar_feature_extractor._internal.serialization import (
-    loads_document,
-    page_to_dict,
-)
+from grammar_feature_extractor._internal.serialization import loads_document
 
 
 def _word(
@@ -34,8 +30,9 @@ def _word(
     return item
 
 
-def _sentence(text: str, words: list[dict[str, object]]) -> dict[str, Any]:
+def _sentence(text: str, words: list[dict[str, object]]):
     payload = {
+        "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
         "sentences": [
             {
                 "text": text,
@@ -46,11 +43,11 @@ def _sentence(text: str, words: list[dict[str, object]]) -> dict[str, Any]:
         "entities": [],
     }
     document = loads_document(json.dumps(payload))
-    return page_to_dict(GrammarFeatureExtractor().extract_page(document))["features"][0]
+    return GrammarFeatureExtractor().extract(document).sentences[0].features
 
 
 def test_quote_segmentation_splits_quote_and_speaker_tag() -> None:
-    sentence = _sentence(
+    features = _sentence(
         '"You are wrong," she said.',
         [
             _word('"You', "you", "PRON", 3, "nsubj", 0, 4),
@@ -61,16 +58,16 @@ def test_quote_segmentation_splits_quote_and_speaker_tag() -> None:
         ],
     )
 
-    quote = sentence["discourse"]["direct_speech_segments"][0]
-    narr = sentence["discourse"]["narration_segments"][0]
-    assert quote["token_refs"] == [1, 2, 3]
-    assert quote["speaker_tag_predicate_id"] == "pred-5"
-    assert quote["speaker_np_id"] == "np-4"
-    assert narr["token_refs"] == [4, 5]
+    quote = features.discourse.direct_speech_segments[0]
+    narr = features.discourse.narration_segments[0]
+    assert quote.token_refs == (1, 2, 3)
+    assert quote.speaker_tag_predicate_id == "pred-5"
+    assert quote.speaker_np_id == "np-4"
+    assert narr.token_refs == (4, 5)
 
 
 def test_question_classification_handles_discourse_marker_wh_question() -> None:
-    sentence = _sentence(
+    features = _sentence(
         "Pray, what is the reason of that?",
         [
             _word("Pray", "pray", "INTJ", 4, "discourse", 0, 4),
@@ -80,13 +77,13 @@ def test_question_classification_handles_discourse_marker_wh_question() -> None:
         ],
     )
 
-    assert sentence["sentence"]["sentence_type"] == "wh_question"
-    assert sentence["sentence"]["question_type"] == "wh"
-    assert sentence["sentence"]["terminal_question_mark"] is True
+    assert features.lexical.sentence.sentence_type == "wh_question"
+    assert features.lexical.sentence.question_type == "wh"
+    assert features.lexical.sentence.terminal_question_mark is True
 
 
 def test_relative_clause_object_gap_is_conservative_and_explicit() -> None:
-    sentence = _sentence(
+    features = _sentence(
         "The book I read was old.",
         [
             _word("The", "the", "DET", 2, "det", 0, 3),
@@ -98,12 +95,12 @@ def test_relative_clause_object_gap_is_conservative_and_explicit() -> None:
         ],
     )
 
-    relcl = sentence["syntax"]["relative_clauses"][0]
-    assert relcl["antecedent_np_id"] == "np-2"
-    assert relcl["relative_marker_ref"] is None
-    assert relcl["relative_role"] == "object"
-    assert relcl["object_gap"] is True
-    assert relcl["is_omitted_relative_pronoun"] is True
+    relcl = features.syntax.relative_clauses[0]
+    assert relcl.antecedent_np_id == "np-2"
+    assert relcl.relative_marker is None
+    assert relcl.relative_role == "object"
+    assert relcl.object_gap is True
+    assert relcl.is_omitted_relative_pronoun is True
 
 
 def test_multiword_cues_require_exact_span_and_scope_caps_confidence() -> None:
@@ -125,15 +122,15 @@ def test_multiword_cues_require_exact_span_and_scope_caps_confidence() -> None:
         ],
     )
 
-    cue = have_to["lexical"]["multiword_cues"][0]
-    assert cue["cue_key"] == "have_to"
-    assert cue["scope_owner_id"] == "pred-2"
-    assert cue["confidence"] == "high"
-    assert infinitive["lexical"]["multiword_cues"] == []
+    cue = have_to.lexical.multiword_cues[0]
+    assert cue.cue_key == "have_to"
+    assert cue.scope_owner_id == "pred-2"
+    assert cue.confidence == "high"
+    assert infinitive.lexical.multiword_cues == ()
 
 
 def test_future_time_orientation_and_time_expressions_are_curated() -> None:
-    sentence = _sentence(
+    features = _sentence(
         "She is going to leave tomorrow.",
         [
             _word("She", "she", "PRON", 3, "nsubj", 0, 3),
@@ -145,11 +142,12 @@ def test_future_time_orientation_and_time_expressions_are_curated() -> None:
         ],
     )
 
-    assert sentence["time_expressions"][0]["time_kind"] == "future_specific"
-    future = sentence["syntax"]["predicates"][0]["future_marking"]
-    assert future["be_going_to"] is True
-    assert future["future_time_expression_ids"] == ["time-1"]
-    assert future["future_orientation"] == "explicit_future"
+    assert features.time_expressions[0].time_kind == "future_specific"
+    future = features.syntax.predicates[0].future_marking
+    assert future is not None
+    assert future.be_going_to is True
+    assert future.future_time_expression_ids == ("time-1",)
+    assert future.future_orientation == "explicit_future"
 
 
 def test_existential_there_expanded_shape_and_negative_case() -> None:
@@ -172,16 +170,14 @@ def test_existential_there_expanded_shape_and_negative_case() -> None:
         ],
     )
 
-    pred = existential["syntax"]["predicates"][0]
-    assert pred["predicate_type"] == "existential_there"
-    assert pred["expletive_subject_ref"] == 2
-    assert pred["postverbal_np_id"] == "np-3"
-    assert pred["has_subject_aux_inversion"] is True
-    assert ordinary["syntax"]["predicates"][0]["predicate_type"] == "copular_adjectival"
+    pred = existential.syntax.predicates[0]
+    assert pred.predicate_type == "existential_there"
+    assert pred.expletive_subject == 2
+    assert ordinary.syntax.predicates[0].predicate_type == "copular_adjectival"
 
 
-def test_feature_diagnostics_support_and_registry_version_are_serialized() -> None:
-    sentence = _sentence(
+def test_feature_support_is_exposed_on_api_model() -> None:
+    features = _sentence(
         "She left.",
         [
             _word("She", "she", "PRON", 2, "nsubj", 0, 3),
@@ -189,7 +185,6 @@ def test_feature_diagnostics_support_and_registry_version_are_serialized() -> No
         ],
     )
 
-    assert "feature_diagnostics" in sentence
-    assert sentence["feature_support"]["document_structure"]["status"] == (
+    assert features.feature_support["document_structure"].status == (
         "not_supported_in_v4_scope"
     )

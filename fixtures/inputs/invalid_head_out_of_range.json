@@ -1,0 +1,65 @@
+{
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "entities": [],
+  "sentences": [
+    {
+      "text": "Run.",
+      "tokens": [
+        {
+          "text": "Run",
+          "words": [
+            {
+              "text": "Run",
+              "lemma": "run",
+              "upos": "VERB",
+              "xpos": "VB",
+              "feats": "Mood=Imp|VerbForm=Fin",
+              "head": 99,
+              "deprel": "root",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 1,
+              "deprel": "punct",
+              "start_char": 3,
+              "end_char": 4
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "Run",
+          "lemma": "run",
+          "upos": "VERB",
+          "xpos": "VB",
+          "feats": "Mood=Imp|VerbForm=Fin",
+          "head": 99,
+          "deprel": "root",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 1,
+          "deprel": "punct",
+          "start_char": 3,
+          "end_char": 4
+        }
+      ]
+    }
+  ]
+}

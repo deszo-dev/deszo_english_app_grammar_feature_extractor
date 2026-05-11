@@ -18,11 +18,21 @@ from grammar_feature_extractor._internal.models import (
     PagingConfig,
     WordRef,
 )
+from grammar_feature_extractor._internal.semantic_validation import (
+    validate_annotated_document_semantics,
+    validate_resolved_config_semantics,
+)
 
 
 def parse_annotated_document(value: object) -> AnnotatedDocument:
     if not isinstance(value, Mapping):
         raise InputValidationError("Input must be an AnnotatedDocument object.")
+    _assert_allowed_keys(value, ("schema_version", "sentences", "entities"), "root")
+    schema_version = _string(_required(value, "schema_version"), "schema_version")
+    if schema_version != "grammar_feature_extractor.annotated_document.input.v3":
+        raise InputValidationError(
+            "schema_version must be grammar_feature_extractor.annotated_document.input.v3."
+        )
 
     sentences_value = _required(value, "sentences")
     entities_value = _required(value, "entities")
@@ -36,7 +46,9 @@ def parse_annotated_document(value: object) -> AnnotatedDocument:
     parsed_entities = tuple(
         _parse_entity(item, f"entities[{index}]") for index, item in enumerate(entities)
     )
-    return AnnotatedDocument(sentences=parsed_sentences, entities=parsed_entities)
+    document = AnnotatedDocument(sentences=parsed_sentences, entities=parsed_entities)
+    validate_annotated_document_semantics(document)
+    return document
 
 
 def validate_paging_config(paging: PagingConfig) -> None:
@@ -46,6 +58,7 @@ def validate_paging_config(paging: PagingConfig) -> None:
         raise ConfigurationError("page_size must be an integer >= 1.")
     if paging.page_size > MAX_PAGE_SIZE:
         raise ConfigurationError(f"page_size must be <= {MAX_PAGE_SIZE}.")
+    validate_resolved_config_semantics(paging.page_size, MAX_PAGE_SIZE)
 
 
 def validate_extractor_config(config: ExtractorConfig) -> None:
@@ -212,6 +225,7 @@ def assert_valid_feature_refs(
 
 def _parse_sentence(value: object, path: str) -> AnnotatedSentence:
     mapping = _mapping(value, path)
+    _assert_allowed_keys(mapping, ("text", "tokens", "words"), path)
     text = _string(_required(mapping, "text"), f"{path}.text")
     if text == "":
         raise InputValidationError(f"{path}.text must be non-empty.")
@@ -240,6 +254,7 @@ def _parse_sentence(value: object, path: str) -> AnnotatedSentence:
 
 def _parse_token(value: object, path: str, sentence_len: int) -> AnnotatedToken:
     mapping = _mapping(value, path)
+    _assert_allowed_keys(mapping, ("text", "words"), path)
     text = _string(_required(mapping, "text"), f"{path}.text")
     if text == "":
         raise InputValidationError(f"{path}.text must be non-empty.")
@@ -255,11 +270,26 @@ def _parse_token(value: object, path: str, sentence_len: int) -> AnnotatedToken:
 
 def _parse_word(value: object, path: str, sentence_len: int) -> AnnotatedWord:
     mapping = _mapping(value, path)
+    _assert_allowed_keys(
+        mapping,
+        (
+            "text",
+            "lemma",
+            "upos",
+            "xpos",
+            "feats",
+            "head",
+            "deprel",
+            "start_char",
+            "end_char",
+        ),
+        path,
+    )
     text = _string(_required(mapping, "text"), f"{path}.text")
     lemma = _string(_required(mapping, "lemma"), f"{path}.lemma")
     upos = _string(_required(mapping, "upos"), f"{path}.upos")
     xpos = _optional_string(mapping, "xpos", f"{path}.xpos")
-    feats = _optional_nullable_string(mapping, "feats", f"{path}.feats")
+    feats = _optional_string(mapping, "feats", f"{path}.feats")
     head = _int(_required(mapping, "head"), f"{path}.head")
     deprel = _string(_required(mapping, "deprel"), f"{path}.deprel")
     start_char = _int(_required(mapping, "start_char"), f"{path}.start_char")
@@ -267,10 +297,14 @@ def _parse_word(value: object, path: str, sentence_len: int) -> AnnotatedWord:
 
     if text == "":
         raise InputValidationError(f"{path}.text must be non-empty.")
+    if lemma == "":
+        raise InputValidationError(f"{path}.lemma must be non-empty.")
     if upos == "":
         raise InputValidationError(f"{path}.upos must be non-empty.")
     if deprel == "":
         raise InputValidationError(f"{path}.deprel must be non-empty.")
+    if feats == "":
+        raise InputValidationError(f"{path}.feats must be non-empty when present.")
     if head < 0 or head > sentence_len:
         raise InputValidationError(f"{path}.head must be in range 0..{sentence_len}.")
     if start_char > end_char:
@@ -291,6 +325,7 @@ def _parse_word(value: object, path: str, sentence_len: int) -> AnnotatedWord:
 
 def _parse_entity(value: object, path: str) -> Entity:
     mapping = _mapping(value, path)
+    _assert_allowed_keys(mapping, ("text", "type", "start_char", "end_char"), path)
     start_char = _int(_required(mapping, "start_char"), f"{path}.start_char")
     end_char = _int(_required(mapping, "end_char"), f"{path}.end_char")
     if start_char > end_char:
@@ -340,20 +375,20 @@ def _optional_string(
     return _string(value, path)
 
 
-def _optional_nullable_string(
-    mapping: Mapping[object, object],
-    key: str,
-    path: str,
-) -> str | None:
-    if key not in mapping:
-        return None
-    value = mapping[key]
-    if value is None:
-        return None
-    return _string(value, path)
-
-
 def _int(value: object, path: str) -> int:
     if isinstance(value, bool) or not isinstance(value, int):
         raise InputValidationError(f"{path} must be an integer.")
     return value
+
+
+def _assert_allowed_keys(
+    mapping: Mapping[object, object],
+    allowed_keys: tuple[str, ...],
+    path: str,
+) -> None:
+    allowed = set(allowed_keys)
+    for key in mapping:
+        if not isinstance(key, str):
+            raise InputValidationError(f"{path} contains a non-string field name.")
+        if key not in allowed:
+            raise InputValidationError(f"{path} contains unknown field: {key}.")

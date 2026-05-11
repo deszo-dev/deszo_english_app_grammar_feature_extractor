@@ -1,0 +1,2830 @@
+{
+  "entities": [],
+  "sentences": [
+    {
+      "text": "She works 0.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "0",
+          "words": [
+            {
+              "text": "0",
+              "lemma": "0",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 11
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 11,
+              "end_char": 12
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "0",
+          "lemma": "0",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 11
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 11,
+          "end_char": 12
+        }
+      ]
+    },
+    {
+      "text": "She works 1.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "1",
+          "words": [
+            {
+              "text": "1",
+              "lemma": "1",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 11
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 11,
+              "end_char": 12
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "1",
+          "lemma": "1",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 11
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 11,
+          "end_char": 12
+        }
+      ]
+    },
+    {
+      "text": "She works 2.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "2",
+          "words": [
+            {
+              "text": "2",
+              "lemma": "2",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 11
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 11,
+              "end_char": 12
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "2",
+          "lemma": "2",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 11
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 11,
+          "end_char": 12
+        }
+      ]
+    },
+    {
+      "text": "She works 3.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "3",
+          "words": [
+            {
+              "text": "3",
+              "lemma": "3",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 11
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 11,
+              "end_char": 12
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "3",
+          "lemma": "3",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 11
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 11,
+          "end_char": 12
+        }
+      ]
+    },
+    {
+      "text": "She works 4.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "4",
+          "words": [
+            {
+              "text": "4",
+              "lemma": "4",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 11
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 11,
+              "end_char": 12
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "4",
+          "lemma": "4",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 11
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 11,
+          "end_char": 12
+        }
+      ]
+    },
+    {
+      "text": "She works 5.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "5",
+          "words": [
+            {
+              "text": "5",
+              "lemma": "5",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 11
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 11,
+              "end_char": 12
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "5",
+          "lemma": "5",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 11
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 11,
+          "end_char": 12
+        }
+      ]
+    },
+    {
+      "text": "She works 6.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "6",
+          "words": [
+            {
+              "text": "6",
+              "lemma": "6",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 11
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 11,
+              "end_char": 12
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "6",
+          "lemma": "6",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 11
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 11,
+          "end_char": 12
+        }
+      ]
+    },
+    {
+      "text": "She works 7.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "7",
+          "words": [
+            {
+              "text": "7",
+              "lemma": "7",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 11
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 11,
+              "end_char": 12
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "7",
+          "lemma": "7",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 11
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 11,
+          "end_char": 12
+        }
+      ]
+    },
+    {
+      "text": "She works 8.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "8",
+          "words": [
+            {
+              "text": "8",
+              "lemma": "8",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 11
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 11,
+              "end_char": 12
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "8",
+          "lemma": "8",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 11
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 11,
+          "end_char": 12
+        }
+      ]
+    },
+    {
+      "text": "She works 9.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "9",
+          "words": [
+            {
+              "text": "9",
+              "lemma": "9",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 11
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 11,
+              "end_char": 12
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "9",
+          "lemma": "9",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 11
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 11,
+          "end_char": 12
+        }
+      ]
+    },
+    {
+      "text": "She works 10.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "10",
+          "words": [
+            {
+              "text": "10",
+              "lemma": "10",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "10",
+          "lemma": "10",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 11.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "11",
+          "words": [
+            {
+              "text": "11",
+              "lemma": "11",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "11",
+          "lemma": "11",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 12.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "12",
+          "words": [
+            {
+              "text": "12",
+              "lemma": "12",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "12",
+          "lemma": "12",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 13.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "13",
+          "words": [
+            {
+              "text": "13",
+              "lemma": "13",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "13",
+          "lemma": "13",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 14.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "14",
+          "words": [
+            {
+              "text": "14",
+              "lemma": "14",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "14",
+          "lemma": "14",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 15.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "15",
+          "words": [
+            {
+              "text": "15",
+              "lemma": "15",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "15",
+          "lemma": "15",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 16.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "16",
+          "words": [
+            {
+              "text": "16",
+              "lemma": "16",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "16",
+          "lemma": "16",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 17.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "17",
+          "words": [
+            {
+              "text": "17",
+              "lemma": "17",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "17",
+          "lemma": "17",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 18.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "18",
+          "words": [
+            {
+              "text": "18",
+              "lemma": "18",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "18",
+          "lemma": "18",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 19.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "19",
+          "words": [
+            {
+              "text": "19",
+              "lemma": "19",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "19",
+          "lemma": "19",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 20.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "20",
+          "words": [
+            {
+              "text": "20",
+              "lemma": "20",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "20",
+          "lemma": "20",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 21.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "21",
+          "words": [
+            {
+              "text": "21",
+              "lemma": "21",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "21",
+          "lemma": "21",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 22.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "22",
+          "words": [
+            {
+              "text": "22",
+              "lemma": "22",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "22",
+          "lemma": "22",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 23.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "23",
+          "words": [
+            {
+              "text": "23",
+              "lemma": "23",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "23",
+          "lemma": "23",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "She works 24.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "works",
+          "words": [
+            {
+              "text": "works",
+              "lemma": "work",
+              "upos": "VERB",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 4,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "24",
+          "words": [
+            {
+              "text": "24",
+              "lemma": "24",
+              "upos": "NUM",
+              "xpos": "CD",
+              "feats": "NumType=Card",
+              "head": 2,
+              "deprel": "obl",
+              "start_char": 10,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Number=Sing|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "works",
+          "lemma": "work",
+          "upos": "VERB",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 4,
+          "end_char": 9
+        },
+        {
+          "text": "24",
+          "lemma": "24",
+          "upos": "NUM",
+          "xpos": "CD",
+          "feats": "NumType=Card",
+          "head": 2,
+          "deprel": "obl",
+          "start_char": 10,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    }
+  ]
+}

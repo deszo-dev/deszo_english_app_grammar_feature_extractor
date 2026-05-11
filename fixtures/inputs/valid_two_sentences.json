@@ -1,0 +1,224 @@
+{
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "entities": [],
+  "sentences": [
+    {
+      "text": "She is happy.",
+      "tokens": [
+        {
+          "text": "She",
+          "words": [
+            {
+              "text": "She",
+              "lemma": "she",
+              "upos": "PRON",
+              "xpos": "PRP",
+              "feats": "Case=Nom|Gender=Fem|Number=Sing|Person=3|PronType=Prs",
+              "head": 3,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 3
+            }
+          ]
+        },
+        {
+          "text": "is",
+          "words": [
+            {
+              "text": "is",
+              "lemma": "be",
+              "upos": "AUX",
+              "xpos": "VBZ",
+              "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+              "head": 3,
+              "deprel": "cop",
+              "start_char": 4,
+              "end_char": 6
+            }
+          ]
+        },
+        {
+          "text": "happy",
+          "words": [
+            {
+              "text": "happy",
+              "lemma": "happy",
+              "upos": "ADJ",
+              "xpos": "JJ",
+              "feats": "Degree=Pos",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 7,
+              "end_char": 12
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "xpos": ".",
+              "head": 3,
+              "deprel": "punct",
+              "start_char": 12,
+              "end_char": 13
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "She",
+          "lemma": "she",
+          "upos": "PRON",
+          "xpos": "PRP",
+          "feats": "Case=Nom|Gender=Fem|Number=Sing|Person=3|PronType=Prs",
+          "head": 3,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 3
+        },
+        {
+          "text": "is",
+          "lemma": "be",
+          "upos": "AUX",
+          "xpos": "VBZ",
+          "feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+          "head": 3,
+          "deprel": "cop",
+          "start_char": 4,
+          "end_char": 6
+        },
+        {
+          "text": "happy",
+          "lemma": "happy",
+          "upos": "ADJ",
+          "xpos": "JJ",
+          "feats": "Degree=Pos",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 7,
+          "end_char": 12
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "xpos": ".",
+          "head": 3,
+          "deprel": "punct",
+          "start_char": 12,
+          "end_char": 13
+        }
+      ]
+    },
+    {
+      "text": "They read books.",
+      "tokens": [
+        {
+          "text": "They",
+          "words": [
+            {
+              "text": "They",
+              "lemma": "they",
+              "upos": "PRON",
+              "feats": "Number=Plur|Person=3|PronType=Prs",
+              "head": 2,
+              "deprel": "nsubj",
+              "start_char": 0,
+              "end_char": 4
+            }
+          ]
+        },
+        {
+          "text": "read",
+          "words": [
+            {
+              "text": "read",
+              "lemma": "read",
+              "upos": "VERB",
+              "feats": "Tense=Pres|VerbForm=Fin",
+              "head": 0,
+              "deprel": "root",
+              "start_char": 5,
+              "end_char": 9
+            }
+          ]
+        },
+        {
+          "text": "books",
+          "words": [
+            {
+              "text": "books",
+              "lemma": "book",
+              "upos": "NOUN",
+              "feats": "Number=Plur",
+              "head": 2,
+              "deprel": "obj",
+              "start_char": 10,
+              "end_char": 15
+            }
+          ]
+        },
+        {
+          "text": ".",
+          "words": [
+            {
+              "text": ".",
+              "lemma": ".",
+              "upos": "PUNCT",
+              "head": 2,
+              "deprel": "punct",
+              "start_char": 15,
+              "end_char": 16
+            }
+          ]
+        }
+      ],
+      "words": [
+        {
+          "text": "They",
+          "lemma": "they",
+          "upos": "PRON",
+          "feats": "Number=Plur|Person=3|PronType=Prs",
+          "head": 2,
+          "deprel": "nsubj",
+          "start_char": 0,
+          "end_char": 4
+        },
+        {
+          "text": "read",
+          "lemma": "read",
+          "upos": "VERB",
+          "feats": "Tense=Pres|VerbForm=Fin",
+          "head": 0,
+          "deprel": "root",
+          "start_char": 5,
+          "end_char": 9
+        },
+        {
+          "text": "books",
+          "lemma": "book",
+          "upos": "NOUN",
+          "feats": "Number=Plur",
+          "head": 2,
+          "deprel": "obj",
+          "start_char": 10,
+          "end_char": 15
+        },
+        {
+          "text": ".",
+          "lemma": ".",
+          "upos": "PUNCT",
+          "head": 2,
+          "deprel": "punct",
+          "start_char": 15,
+          "end_char": 16
+        }
+      ]
+    }
+  ]
+}

@@ -59,9 +59,7 @@ def _has_passive_signal(
         subj_word = ctx.word_by_ref[predicate.subject]
         if subj_word.deprel == "nsubj:pass":
             return True
-    return any(
-        aux.role == "passive_aux" for aux in predicate.auxiliaries
-    )
+    return any(aux.role == "passive_aux" for aux in predicate.auxiliaries)
 
 
 def _passive_type(

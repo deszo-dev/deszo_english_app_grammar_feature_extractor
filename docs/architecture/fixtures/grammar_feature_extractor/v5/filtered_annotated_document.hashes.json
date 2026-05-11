@@ -1,0 +1,8 @@
+{
+  "raw_sha256": "d67b59a002ffa417532908d3d4ab23af4471cb88292cba3595780e0ae0f3385f",
+  "normalized_sha256": "4c8158d54197b78e599cf32db9a758aab343272eec417d9bddfd68077d7bab21",
+  "entity_count": 0,
+  "sentence_count": 25,
+  "total_words": 100,
+  "generator": "create_fixtures.py deterministic synthetic v5 large fixture"
+}

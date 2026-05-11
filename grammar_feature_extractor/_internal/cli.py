@@ -3,12 +3,12 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import logging
 import math
 import os
 import sys
 import tempfile
 from pathlib import Path
+from typing import NoReturn
 
 from grammar_feature_extractor._internal.errors import (
     ConfigurationError,
@@ -24,20 +24,28 @@ from grammar_feature_extractor._internal.models import (
     PagingConfig,
 )
 from grammar_feature_extractor._internal.pipeline import GrammarFeatureExtractor
-from grammar_feature_extractor._internal.runtime_metadata import metadata_to_dict
+from grammar_feature_extractor._internal.runtime_metadata import (
+    contract_runtime_metadata,
+)
+from grammar_feature_extractor._internal.semantic_validation import (
+    validate_manifest_semantics,
+)
 from grammar_feature_extractor._internal.serialization import dumps_page, loads_document
+
+
+class _CliUsageError(Exception):
+    pass
+
+
+class _ArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> NoReturn:
+        raise _CliUsageError(message)
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
-    args = parser.parse_args(argv)
-    logging.basicConfig(
-        level=logging.DEBUG if args.debug else logging.INFO,
-        stream=sys.stderr,
-        format="%(levelname)s:%(message)s",
-    )
-    logger = logging.getLogger("grammar_feature_extractor")
     try:
+        args = parser.parse_args(argv)
         if args.output and args.output_dir:
             raise ConfigurationError(
                 "--output and --output-dir are mutually exclusive."
@@ -51,56 +59,50 @@ def main(argv: list[str] | None = None) -> int:
             enable_heuristics=not args.no_heuristics,
             debug=args.debug,
         )
-        logger.info("pipeline start")
-        logger.info("input read start")
         payload = _read_input(args.input)
-        logger.info("input read end")
-        logger.info("input validation start")
         document = loads_document(payload)
-        logger.info("input validation end")
         if args.output_dir:
-            logger.info("output-dir mode start")
             _write_output_dir(
                 document,
                 page_size,
                 config,
                 args.output_dir,
                 hashlib.sha256(payload.encode("utf-8")).hexdigest(),
-                logger,
+                args.overwrite,
             )
-            logger.info("output-dir mode end")
         else:
-            logger.info("extraction start")
             page = GrammarFeatureExtractor().extract_page(document, paging, config)
-            logger.info("extraction end")
-            logger.info("serialization start")
             output = dumps_page(page)
-            logger.info("serialization end")
-            logger.info("output write start")
             _write_output(args.output, output)
-            logger.info("output write end")
-        logger.info("pipeline end")
         return 0
-    except (InputValidationError, ConfigurationError, SerializationError) as exc:
-        logger.error("%s", exc)
+    except _CliUsageError as exc:
+        _emit_cli_error("cli_usage_error", str(exc))
+        return 2
+    except SerializationError as exc:
+        _emit_cli_error("input_json_serialization_error", str(exc))
+        return 1
+    except InputValidationError as exc:
+        _emit_cli_error("input_validation_error", str(exc))
+        return 1
+    except ConfigurationError as exc:
+        _emit_cli_error("configuration_error", str(exc))
+        return 1
+    except ValueError as exc:
+        _emit_cli_error("input_json_serialization_error", str(exc))
         return 1
     except FeatureExtractionError as exc:
-        logger.error("%s", exc)
+        _emit_cli_error("input_validation_error", str(exc))
         return 2
     except OSError as exc:
-        logger.error("System error while reading or writing files.")
-        if args.debug:
-            logger.debug("System exception detail", exc_info=exc)
-        return 2
+        _emit_cli_error("output_write_error", str(exc))
+        return 3
     except Exception as exc:  # noqa: BLE001
-        logger.error("Unexpected system error.")
-        if args.debug:
-            logger.debug("Unexpected exception detail", exc_info=exc)
-        return 2
+        _emit_cli_error("unexpected_system_error", str(exc))
+        return 4
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="grammar-feature-extractor")
+    parser = _ArgumentParser(prog="grammar-feature-extractor", add_help=True)
     parser.add_argument(
         "--input",
         default=None,
@@ -136,13 +138,21 @@ def _build_parser() -> argparse.ArgumentParser:
             "manifest into this directory. Mutually exclusive with --output."
         ),
     )
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Allow writing into a non-empty --output-dir.",
+    )
     return parser
 
 
 def _read_input(path: str | None) -> str:
     if path is None:
         return sys.stdin.read()
-    return Path(path).read_text(encoding="utf-8")
+    input_path = Path(path)
+    if input_path.is_symlink() or not input_path.is_file():
+        raise OSError("--input must be a regular file.")
+    return input_path.read_text(encoding="utf-8")
 
 
 def _write_output(path: str | None, payload: str) -> None:
@@ -151,6 +161,10 @@ def _write_output(path: str | None, payload: str) -> None:
         sys.stdout.flush()
         return
     output_path = Path(path)
+    if output_path.is_symlink():
+        raise OSError("Symlink output targets are rejected.")
+    if output_path.exists() and output_path.is_dir():
+        raise OSError("--output must not be a directory.")
     parent = output_path.parent if output_path.parent != Path("") else Path(".")
     with tempfile.NamedTemporaryFile(
         "w",
@@ -177,10 +191,16 @@ def _write_output_dir(
     config: ExtractorConfig,
     output_dir: str,
     input_sha256: str,
-    logger: logging.Logger,
+    overwrite: bool,
 ) -> None:
     out_path = Path(output_dir)
+    if out_path.is_symlink():
+        raise OSError("Symlink output targets are rejected.")
+    if out_path.exists() and not out_path.is_dir():
+        raise OSError("--output-dir must be a directory path.")
     out_path.mkdir(parents=True, exist_ok=True)
+    if not overwrite and any(out_path.iterdir()):
+        raise OSError("--output-dir must be empty unless --overwrite is set.")
     extractor = GrammarFeatureExtractor()
     total_sentences = len(document.sentences)
     page_count = (
@@ -190,7 +210,6 @@ def _write_output_dir(
     diagnostics_collected: list[dict[str, object]] = []
     for page_number in range(1, page_count + 1):
         paging = PagingConfig(page_number=page_number, page_size=page_size)
-        logger.info("page %d extraction start", page_number)
         page = extractor.extract_page(document, paging, config)
         payload = dumps_page(page)
         file_name = f"grammar_features.page_{page_number:05d}.json"
@@ -208,27 +227,21 @@ def _write_output_dir(
         )
         for diagnostic in _diagnostics_in_page(page):
             diagnostics_collected.append(diagnostic)
-        logger.info("page %d extraction end", page_number)
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "kind": "grammar_feature_manifest",
+        "runtime_metadata": contract_runtime_metadata(),
         "page_size": page_size,
         "page_count": page_count,
         "total_sentences": total_sentences,
         "pages": pages_manifest,
         "diagnostics": diagnostics_collected,
-        "runtime_metadata": metadata_to_dict(extractor.runtime_metadata()),
-        "stage_fingerprints": {
-            "grammar_feature_extraction": extractor.stage_fingerprint(
-                config,
-                input_artifact_hashes=(input_sha256,),
-            )
-        },
     }
     manifest_payload = (
         json.dumps(manifest, ensure_ascii=False, separators=(",", ":")) + "\n"
     )
     _atomic_write_text(out_path / "grammar_features.manifest.json", manifest_payload)
+    validate_manifest_semantics(manifest, out_path)
 
 
 def _diagnostics_in_page(page: GrammarFeaturePage) -> list[dict[str, object]]:
@@ -249,6 +262,8 @@ def _diagnostics_in_page(page: GrammarFeaturePage) -> list[dict[str, object]]:
 
 
 def _atomic_write_text(target: Path, payload: str) -> None:
+    if target.is_symlink():
+        raise OSError("Symlink output targets are rejected.")
     parent = target.parent if target.parent != Path("") else Path(".")
     parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(
@@ -278,3 +293,15 @@ def _positive_int(value: str, name: str) -> int:
     if parsed < 1:
         raise ConfigurationError(f"{name} must be an integer >= 1.")
     return parsed
+
+
+def _emit_cli_error(error_code: str, message: str) -> None:
+    payload = {
+        "schema_version": SCHEMA_VERSION,
+        "kind": "cli_error",
+        "error_code": error_code,
+        "message": message,
+    }
+    sys.stderr.write(
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n"
+    )

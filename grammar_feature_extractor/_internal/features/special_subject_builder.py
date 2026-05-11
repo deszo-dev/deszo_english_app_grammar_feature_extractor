@@ -109,9 +109,7 @@ def _find_notional_subject(
     return None
 
 
-def _is_weather_complement(
-    ctx: SentenceContext, predicate: PredicateFeature
-) -> bool:
+def _is_weather_complement(ctx: SentenceContext, predicate: PredicateFeature) -> bool:
     if predicate.copula is None:
         return False
     main_word = ctx.word_by_ref[predicate.main]

@@ -53,6 +53,7 @@ def sample_document() -> dict[str, object]:
         },
     ]
     return {
+        "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
         "sentences": [
             {
                 "text": "The students will read books.",

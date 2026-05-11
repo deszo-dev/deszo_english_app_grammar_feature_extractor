@@ -324,8 +324,8 @@ It SHOULD report something equivalent to:
 class ExampleStage:
     stage_name = "example_stage"
     stage_contract_version = "1"
-    output_schema_version = "example-output.v1"
-    config_contract_version = "example-config.v1"
+    output_schema_version = "example-output.v5"
+    config_contract_version = "example-config.v5"
 
     def runtime_metadata(self) -> StageRuntimeMetadata:
         return StageRuntimeMetadata(
@@ -720,8 +720,8 @@ Good:
 {
   "stage_name": "example_stage",
   "stage_contract_version": "1",
-  "output_schema_version": "example-output.v1",
-  "config_contract_version": "example-config.v1",
+  "output_schema_version": "example-output.v5",
+  "config_contract_version": "example-config.v5",
   "module_version": "0.1.0",
   "source_fingerprint": "tree-sha256:abc...",
   "dependencies": [],

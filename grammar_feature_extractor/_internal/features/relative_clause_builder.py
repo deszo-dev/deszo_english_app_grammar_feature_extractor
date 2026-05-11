@@ -98,8 +98,7 @@ def _relative_type(
     if marker_text == "where":
         return "place_relative"
     if marker_text == "whose" or (
-        marker_ref is not None
-        and ctx.word_by_ref[marker_ref].deprel == "nmod:poss"
+        marker_ref is not None and ctx.word_by_ref[marker_ref].deprel == "nmod:poss"
     ):
         return "possessive_relative"
     if marker_ref is not None:

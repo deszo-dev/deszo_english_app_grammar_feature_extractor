@@ -1,0 +1,956 @@
+{
+  "schema_version": "grammar_feature_extractor.v5",
+  "kind": "construction_signature_registry",
+  "signatures": [
+    {
+      "signature": "subject_be_present_complement",
+      "type": "copular",
+      "family_hint": "be_copula",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when subject, copula, and complement refs are dependency-backed"
+      ],
+      "examples": [
+        "She is happy."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "subject",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "copula",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "complement",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "negator",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "subject_be_present_not_complement",
+      "type": "copular",
+      "family_hint": "be_copula_negative",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when negator is dependency-backed"
+      ],
+      "examples": [
+        "She is not happy."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "subject",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "copula",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "negator",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "complement",
+          "required": true,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "be_subject_complement_question",
+      "type": "question",
+      "family_hint": "be_question",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when inversion is surface/order-backed"
+      ],
+      "examples": [
+        "Is she happy?"
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "copula",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "subject",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "complement",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "question_mark",
+          "required": false,
+          "value_type": "boolean"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "there_be_np",
+      "type": "existential",
+      "family_hint": "existential_there",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when there is expletive nsubj and be predicate"
+      ],
+      "examples": [
+        "There is a book."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "there",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "be",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "np",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "notional_subject",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "there_be_not_any_np",
+      "type": "existential",
+      "family_hint": "existential_negative_any",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "medium/high based on quantifier dependency and negation evidence"
+      ],
+      "examples": [
+        "There are not any books."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "there",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "be",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "negator",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "quantifier",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "np",
+          "required": true,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "present_simple_lexical_affirmative",
+      "type": "tense_aspect",
+      "family_hint": "present_simple",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when finite present lexical predicate is dependency-backed"
+      ],
+      "examples": [
+        "She works."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "subject",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "predicate",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "object",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "present_simple_do_negative",
+      "type": "tense_aspect",
+      "family_hint": "present_simple_negative",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when do-support and negation are explicit"
+      ],
+      "examples": [
+        "She does not work."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "subject",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "do_aux",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "negator",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "predicate",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "object",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "present_simple_do_question",
+      "type": "question",
+      "family_hint": "present_simple_question",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when aux-subject inversion is explicit"
+      ],
+      "examples": [
+        "Does she work?"
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "do_aux",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "subject",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "predicate",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "object",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "present_progressive_affirmative",
+      "type": "tense_aspect",
+      "family_hint": "present_progressive",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when be + V-ing is morphology-backed"
+      ],
+      "examples": [
+        "She is working."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "subject",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "be_aux",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "present_participle",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "object",
+          "required": false,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "time_marker",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "present_perfect_have_participle",
+      "type": "tense_aspect",
+      "family_hint": "present_perfect",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when have + participle is morphology-backed"
+      ],
+      "examples": [
+        "She has worked."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "subject",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "have_aux",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "past_participle",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "object",
+          "required": false,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "time_marker",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "present_perfect_ever_question",
+      "type": "question",
+      "family_hint": "present_perfect_question",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when have-subject inversion and ever marker are explicit"
+      ],
+      "examples": [
+        "Have you ever been there?"
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "have_aux",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "subject",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "past_participle",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "ever_marker",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "object",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "past_simple_regular",
+      "type": "tense_aspect",
+      "family_hint": "past_simple",
+      "allowed_provenance_tiers": [
+        "deterministic",
+        "heuristic"
+      ],
+      "confidence_rules": [
+        "high if morphology tense=Past, medium if suffix heuristic only"
+      ],
+      "examples": [
+        "She worked yesterday."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "subject",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "predicate",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "object",
+          "required": false,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "time_marker",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "modal_must_base",
+      "type": "modal",
+      "family_hint": "modality_obligation",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when modal and base verb are explicit"
+      ],
+      "examples": [
+        "You must go."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "modal",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "base_verb",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "subject",
+          "required": false,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "object",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "semi_modal_be_able_to",
+      "type": "modal",
+      "family_hint": "ability",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "medium/high for exact multi-token evidence"
+      ],
+      "examples": [
+        "She is able to swim."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "be",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "able",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "to",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "base_verb",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "subject",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "passive_be_participle",
+      "type": "passive",
+      "family_hint": "be_passive",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when be + participle and passive dependency evidence align"
+      ],
+      "examples": [
+        "The book was written by her."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "be_aux",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "past_participle",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "subject",
+          "required": false,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "agent_by_phrase",
+          "required": false,
+          "value_type": "word_ref_array"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "to_infinitive_after_adjective",
+      "type": "gerund_infinitive",
+      "family_hint": "adjective_to_infinitive",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when xcomp/mark evidence is explicit"
+      ],
+      "examples": [
+        "It is easy to read."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "adjective",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "to",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "infinitive",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "subject",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "gerund_after_preposition",
+      "type": "gerund_infinitive",
+      "family_hint": "preposition_gerund",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when case/preposition and gerund morphology are explicit"
+      ],
+      "examples": [
+        "After eating, we left."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "preposition",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "gerund",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "object",
+          "required": false,
+          "value_type": "word_ref"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "comparative_more_than",
+      "type": "comparison",
+      "family_hint": "comparative",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when markers are explicit"
+      ],
+      "examples": [
+        "She is more careful than him."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "more",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "adjective_or_adverb",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "than",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "standard",
+          "required": false,
+          "value_type": "word_ref_array"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "comparison_as_as",
+      "type": "comparison",
+      "family_hint": "equality",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when both as markers are explicit"
+      ],
+      "examples": [
+        "She is as tall as him."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "as_left",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "adjective_or_adverb",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "as_right",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "standard",
+          "required": false,
+          "value_type": "word_ref_array"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "demonstrative_this_singular_np",
+      "type": "demonstrative_np",
+      "family_hint": "demonstratives",
+      "allowed_provenance_tiers": [
+        "deterministic"
+      ],
+      "confidence_rules": [
+        "high when determiner and singular noun morphology align"
+      ],
+      "examples": [
+        "this book"
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "demonstrative",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "np_head",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "modifiers",
+          "required": false,
+          "value_type": "word_ref_array"
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "article_indefinite_a_np",
+      "type": "article_np",
+      "family_hint": "articles",
+      "allowed_provenance_tiers": [
+        "deterministic",
+        "external_oracle"
+      ],
+      "confidence_rules": [
+        "high only with trusted sound class or unambiguous consonant sound list"
+      ],
+      "examples": [
+        "a book"
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "article",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "np_head",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "following_sound_class",
+          "required": false,
+          "value_type": "string",
+          "allowed_values": [
+            "vowel_sound",
+            "consonant_sound",
+            "unknown"
+          ]
+        },
+        {
+          "name": "following_spelling_class",
+          "required": false,
+          "value_type": "string",
+          "allowed_values": [
+            "vowel_letter",
+            "consonant_letter",
+            "unknown"
+          ]
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "article_indefinite_an_np",
+      "type": "article_np",
+      "family_hint": "articles",
+      "allowed_provenance_tiers": [
+        "deterministic",
+        "external_oracle"
+      ],
+      "confidence_rules": [
+        "high only with trusted sound class or unambiguous vowel sound list"
+      ],
+      "examples": [
+        "an apple"
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "article",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "np_head",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "following_sound_class",
+          "required": false,
+          "value_type": "string",
+          "allowed_values": [
+            "vowel_sound",
+            "consonant_sound",
+            "unknown"
+          ]
+        },
+        {
+          "name": "following_spelling_class",
+          "required": false,
+          "value_type": "string",
+          "allowed_values": [
+            "vowel_letter",
+            "consonant_letter",
+            "unknown"
+          ]
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "article_definite_the_np",
+      "type": "article_np",
+      "family_hint": "articles",
+      "allowed_provenance_tiers": [
+        "deterministic",
+        "heuristic"
+      ],
+      "confidence_rules": [
+        "high for form presence; reference status remains heuristic"
+      ],
+      "examples": [
+        "the book"
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "article",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "np_head",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "reference_status",
+          "required": false,
+          "value_type": "string",
+          "allowed_values": [
+            "first_mention_candidate",
+            "previously_mentioned_candidate",
+            "unique_world_knowledge_candidate",
+            "situationally_identifiable_candidate",
+            "generic_class_reference_candidate",
+            "specific_reference_candidate",
+            "unknown"
+          ]
+        }
+      ],
+      "deprecated_since": null
+    },
+    {
+      "signature": "zero_article_plural_generic_candidate",
+      "type": "article_np",
+      "family_hint": "zero_article",
+      "allowed_provenance_tiers": [
+        "heuristic"
+      ],
+      "confidence_rules": [
+        "low/medium; requires discourse context for final interpretation"
+      ],
+      "examples": [
+        "Books are useful."
+      ],
+      "stable_since": "grammar_feature_extractor.v5",
+      "slots": [
+        {
+          "name": "np_head",
+          "required": true,
+          "value_type": "word_ref"
+        },
+        {
+          "name": "subject_role",
+          "required": false,
+          "value_type": "boolean"
+        },
+        {
+          "name": "generic_candidate",
+          "required": false,
+          "value_type": "boolean"
+        }
+      ],
+      "deprecated_since": null
+    }
+  ]
+}

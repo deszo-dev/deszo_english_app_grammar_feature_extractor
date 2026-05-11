@@ -1,0 +1,12 @@
+{
+  "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+  "entities": [
+    {
+      "text": "bad",
+      "type": "MISC",
+      "start_char": 10,
+      "end_char": 5
+    }
+  ],
+  "sentences": []
+}

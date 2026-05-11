@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import shutil
 from pathlib import Path
@@ -72,7 +71,7 @@ def test_source_fingerprint_changes_when_relevant_source_changes(
     assert before != after
 
 
-def test_manifest_includes_runtime_metadata_and_stage_fingerprint(
+def test_manifest_includes_contract_runtime_metadata(
     tmp_path: Path,
 ) -> None:
     payload_path = tmp_path / "input.json"
@@ -93,18 +92,9 @@ def test_manifest_includes_runtime_metadata_and_stage_fingerprint(
         (out_dir / "grammar_features.manifest.json").read_text(encoding="utf-8")
     )
     runtime_metadata = manifest["runtime_metadata"]
-    assert runtime_metadata["pipeline_name"] == "grammar_feature_extractor"
-    assert "grammar_feature_extraction" in runtime_metadata["stages"]
-    assert (
-        manifest["stage_fingerprints"]["grammar_feature_extraction"]
-        == GrammarFeatureExtractor().stage_fingerprint(
-            input_artifact_hashes=(
-                hashlib.sha256(
-                    payload_path.read_text(encoding="utf-8").encode("utf-8")
-                ).hexdigest(),
-            )
-        )
-    )
+    assert runtime_metadata["schema_version"] == "grammar_feature_extractor.v3"
+    assert runtime_metadata["extractor_version"]
+    assert runtime_metadata["resources"]
 
 
 def test_source_fingerprint_ignores_ignored_directories(tmp_path: Path) -> None:

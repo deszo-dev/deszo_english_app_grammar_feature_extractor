@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal, TypeAlias
 
-SCHEMA_VERSION = "grammar_feature_extractor.v4"
+SCHEMA_VERSION = "grammar_feature_extractor.v3"
 DEFAULT_PAGE_SIZE = 300
 DEFAULT_PAGE_NUMBER = 1
 MAX_PAGE_SIZE = 5000
@@ -216,9 +216,7 @@ ArticleForm: TypeAlias = Literal["a", "an", "the", "zero"]
 ArticlePresence: TypeAlias = Literal[
     "overt", "zero", "absent_not_applicable", "unknown"
 ]
-PhonologySource: TypeAlias = Literal[
-    "exception_list", "spelling_heuristic", "unknown"
-]
+PhonologySource: TypeAlias = Literal["exception_list", "spelling_heuristic", "unknown"]
 SpellingClass: TypeAlias = Literal["vowel_letter", "consonant_letter", "unknown"]
 SoundClass: TypeAlias = Literal["vowel_sound", "consonant_sound", "unknown"]
 Definiteness: TypeAlias = Literal["definite", "indefinite", "generic", "unknown"]
@@ -385,9 +383,7 @@ TimeKind: TypeAlias = Literal[
     "duration",
     "unknown",
 ]
-FutureOrientation: TypeAlias = Literal[
-    "explicit_future", "inferred_future", "unknown"
-]
+FutureOrientation: TypeAlias = Literal["explicit_future", "inferred_future", "unknown"]
 QuoteSegmentationStatus: TypeAlias = Literal["complete", "partial", "unknown"]
 QuoteType: TypeAlias = Literal["direct_speech", "thought", "quoted_text"]
 FeatureSupportStatus: TypeAlias = Literal[
@@ -659,8 +655,8 @@ class AnnotatedDocument:
 class ExtractorConfig:
     include_diagnostics: bool = True
     include_evidence: bool = True
-    include_construction_signatures: bool = False
-    include_contrastive_support: bool = False
+    include_construction_signatures: bool = True
+    include_contrastive_support: bool = True
     enable_heuristics: bool = True
     debug: bool = False
 
@@ -1425,3 +1421,26 @@ class GrammarFeaturePage:
     schema_version: str
     page: PageInfo
     features: tuple[SentenceGrammarFeatures, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class ManifestPage:
+    page_number: int
+    file_name: str
+    sentence_start: int
+    sentence_end_exclusive: int
+    sha256: str
+
+
+@dataclass(frozen=True, slots=True)
+class GrammarFeatureManifest:
+    schema_version: str
+    page_size: int
+    page_count: int
+    total_sentences: int
+    pages: tuple[ManifestPage, ...]
+    diagnostics: tuple[FeatureDiagnostic, ...]
+
+
+Token = AnnotatedToken
+Word = AnnotatedWord

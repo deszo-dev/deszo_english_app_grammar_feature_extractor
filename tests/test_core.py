@@ -14,12 +14,12 @@ from grammar_feature_extractor._internal.serialization import (
 from tests.conftest import sample_document
 
 
-def test_extracts_v4_shell_evidence_and_morphology() -> None:
+def test_extracts_v3_shell_evidence_and_morphology() -> None:
     document = loads_document(json.dumps(sample_document()))
     page = GrammarFeatureExtractor().extract_page(document)
     first = page.features[0].features
 
-    assert page.schema_version == "grammar_feature_extractor.v4"
+    assert page.schema_version == "grammar_feature_extractor.v3"
     assert first.evidence.words[0].ref == 1
     assert first.evidence.words[0].lower == "the"
     assert first.evidence.words[1].children == (1,)
@@ -33,8 +33,8 @@ def test_extracts_v4_shell_evidence_and_morphology() -> None:
     assert first.morphology.normalized[1].is_plural_noun is True
     assert first.morphology.normalized[3].is_finite_verb is True
     assert first.syntax.predicates[0].main == 4
-    assert first.constructions == ()
-    assert first.contrastive_support == ()
+    assert first.constructions
+    assert first.contrastive_support
     assert first.absences
 
 
@@ -68,7 +68,7 @@ def test_diagnostics_can_be_disabled_but_field_remains() -> None:
 
     assert page.features[0].features.diagnostics[0].code == "malformed_feats"
     disabled_payload = page_to_dict(disabled)
-    assert disabled_payload["features"][0]["diagnostics"] == []  # type: ignore[index]
+    assert disabled_payload["features"][0]["features"]["diagnostics"] == []  # type: ignore[index]
 
 
 def test_debug_does_not_change_payload() -> None:
@@ -141,6 +141,7 @@ def test_suffix_only_comparative_does_not_create_normalized_comparative() -> Non
         loads_document(
             json.dumps(
                 {
+                    "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
                     "sentences": [
                         {
                             "text": "Forever flushing.",
@@ -218,6 +219,7 @@ def test_normalizes_infinitive_gerund_and_participles() -> None:
         loads_document(
             json.dumps(
                 {
+                    "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
                     "sentences": [
                         {
                             "text": "To go running written working.",
@@ -291,6 +293,7 @@ def test_fragment_gets_sentence_feature() -> None:
     document = loads_document(
         json.dumps(
             {
+                "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
                 "sentences": [
                     {
                         "text": "The beautiful place!",
