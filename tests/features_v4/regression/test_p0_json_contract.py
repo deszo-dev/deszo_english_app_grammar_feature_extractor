@@ -33,7 +33,7 @@ def _word(
 
 def _sentence(text: str, words: list[dict[str, object]]):
     payload = {
-        "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+        "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
         "sentences": [
             {
                 "text": text,

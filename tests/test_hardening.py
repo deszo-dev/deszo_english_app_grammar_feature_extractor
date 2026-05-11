@@ -121,7 +121,7 @@ def _extract(
     document = loads_document(
         json.dumps(
             {
-                "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+                "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
                 "sentences": [
                     {
                         "text": text,

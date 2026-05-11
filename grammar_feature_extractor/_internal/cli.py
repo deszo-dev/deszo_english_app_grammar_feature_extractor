@@ -91,8 +91,8 @@ def main(argv: list[str] | None = None) -> int:
         _emit_cli_error("input_json_serialization_error", str(exc))
         return 1
     except FeatureExtractionError as exc:
-        _emit_cli_error("input_validation_error", str(exc))
-        return 2
+        _emit_cli_error("unexpected_system_error", str(exc))
+        return 4
     except OSError as exc:
         _emit_cli_error("output_write_error", str(exc))
         return 3

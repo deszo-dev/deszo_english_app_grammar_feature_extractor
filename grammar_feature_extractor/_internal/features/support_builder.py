@@ -69,7 +69,7 @@ def build_feature_support() -> dict[str, FeatureSupportItem]:
             confidence="medium",
         ),
         "document_structure": FeatureSupportItem(
-            status="not_supported_in_v4_scope", source=None, confidence="none"
+            status="out_of_scope", source=None, confidence="none"
         ),
     }
 

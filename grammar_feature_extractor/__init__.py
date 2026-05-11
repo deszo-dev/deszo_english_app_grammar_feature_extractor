@@ -11,6 +11,7 @@ from grammar_feature_extractor._internal.models import (
     AnnotatedSentence,
     Entity,
     ExtractorConfig,
+    ExtractorLimits,
     GrammarFeatureDocument,
     GrammarFeatureManifest,
     GrammarFeaturePage,
@@ -19,6 +20,10 @@ from grammar_feature_extractor._internal.models import (
     Word,
 )
 from grammar_feature_extractor._internal.pipeline import GrammarFeatureExtractor
+from grammar_feature_extractor._internal.runtime_metadata import (
+    StageRuntimeAsset,
+    StageRuntimeMetadata,
+)
 
 __all__ = [
     "AnnotatedDocument",
@@ -26,6 +31,7 @@ __all__ = [
     "ConfigurationError",
     "Entity",
     "ExtractorConfig",
+    "ExtractorLimits",
     "FeatureExtractionError",
     "GrammarFeatureDocument",
     "GrammarFeatureExtractor",
@@ -34,6 +40,8 @@ __all__ = [
     "InputValidationError",
     "PagingConfig",
     "SerializationError",
+    "StageRuntimeAsset",
+    "StageRuntimeMetadata",
     "Token",
     "Word",
 ]

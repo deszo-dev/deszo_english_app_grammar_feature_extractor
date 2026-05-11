@@ -10,7 +10,7 @@ def document_from_words(text: str, words: list[dict[str, object]]):
     return loads_document(
         json.dumps(
             {
-                "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+                "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
                 "sentences": [
                     {
                         "text": text,

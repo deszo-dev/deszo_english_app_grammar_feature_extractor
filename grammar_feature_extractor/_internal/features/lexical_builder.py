@@ -452,7 +452,7 @@ def _time_markers(ctx: SentenceContext) -> list[LexicalItemFeature]:
         lower = ctx.word_by_ref[ref].text.strip(".").casefold()
         if lower in MONTH_NAMES or lower.isdigit():
             confidence: Confidence = "high" if lower in MONTH_NAMES else "medium"
-            items.append(_lexical_item(ctx, "time_marker", (ref,), confidence))
+            items.append(_lexical_item(ctx, "unknown", (ref,), confidence))
     return items
 
 
@@ -494,7 +494,7 @@ def _phrasal_verbs(ctx: SentenceContext) -> list[LexicalItemFeature]:
 
 def _discourse_markers(ctx: SentenceContext) -> list[LexicalItemFeature]:
     return [
-        _lexical_item(ctx, "discourse_marker", (ref,), "medium")
+        _lexical_item(ctx, "unknown", (ref,), "medium")
         for ref in ctx.refs
         if ctx.word_by_ref[ref].text.strip(",.").casefold() in DISCOURSE_MARKERS
     ]

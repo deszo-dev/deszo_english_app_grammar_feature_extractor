@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deszo.local/schemas/grammar_feature_extractor/semantic_validation_registry.v5.schema.json",
+  "title": "Semantic validation registry v5 meta-schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "grammar_feature_extractor.v5"
+    },
+    "kind": {
+      "const": "semantic_validation_registry"
+    },
+    "codes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "phase": {
+            "type": "string",
+            "enum": [
+              "input",
+              "config",
+              "output",
+              "diagnostic",
+              "manifest"
+            ]
+          },
+          "exception": {
+            "type": "string",
+            "enum": [
+              "InputValidationError",
+              "ConfigurationError",
+              "FeatureExtractionError",
+              "SerializationError"
+            ]
+          },
+          "cli_error_code": {
+            "type": "string",
+            "enum": [
+              "input_validation_error",
+              "configuration_error",
+              "input_json_serialization_error",
+              "output_serialization_error",
+              "output_write_error",
+              "cli_usage_error",
+              "unexpected_system_error"
+            ]
+          },
+          "exit_code": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "stable_since": {
+            "type": "string",
+            "minLength": 1
+          },
+          "deprecated_since": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "when_emitted": {
+            "type": "string",
+            "minLength": 1
+          },
+          "affected_entity": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message_template": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required_details": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*$"
+            },
+            "uniqueItems": true
+          },
+          "test_case": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "code",
+          "phase",
+          "exception",
+          "cli_error_code",
+          "exit_code",
+          "stable_since",
+          "when_emitted",
+          "affected_entity",
+          "message_template",
+          "required_details",
+          "test_case"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "codes"
+  ],
+  "additionalProperties": false
+}

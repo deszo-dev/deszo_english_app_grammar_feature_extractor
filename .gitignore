@@ -1,15 +1,22 @@
 # Python bytecode and caches
 __pycache__/
 *.py[cod]
+*.pyc.*
 *$py.class
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .hypothesis/
+.pyre/
+.nox/
+.tox/
+.cache/
 
 # Packaging and build artifacts
 build/
 dist/
+site/
+pip-wheel-metadata/
 *.egg-info/
 .eggs/
 
@@ -17,12 +24,17 @@ dist/
 .venv/
 venv/
 env/
+.env
+.env.*
+.python-version
 
 # Coverage and test output
 .coverage
 .coverage.*
 htmlcov/
 coverage.xml
+*.cover
+*.py,cover
 
 # Coq/Rocq compiled artifacts
 *.vo
@@ -35,8 +47,18 @@ coverage.xml
 # Local editor and OS files
 .idea/
 .vscode/
+.claude/
 *.swp
 *.swo
+*.tmp
+*.bak
+*.orig
+*.log
 Thumbs.db
 Desktop.ini
+*.DS_Store
 docs/OUTPUT_EXAMPLES
+
+# Local/generated outputs
+tmp_outdir/
+page_out.json

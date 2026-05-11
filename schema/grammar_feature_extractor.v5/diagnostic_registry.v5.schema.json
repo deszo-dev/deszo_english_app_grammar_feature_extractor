@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deszo.local/schemas/grammar_feature_extractor/diagnostic_registry.v5.schema.json",
+  "title": "Diagnostic registry v5 meta-schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "grammar_feature_extractor.v5"
+    },
+    "kind": {
+      "const": "diagnostic_registry"
+    },
+    "codes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "when_emitted": {
+            "type": "string",
+            "minLength": 1
+          },
+          "affected_entity": {
+            "type": "string",
+            "enum": [
+              "document",
+              "sentence",
+              "word",
+              "feature",
+              "config",
+              "output"
+            ]
+          },
+          "refs_required": {
+            "type": "boolean"
+          },
+          "feature_path_required": {
+            "type": "boolean"
+          },
+          "message_template": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result_impact": {
+            "type": "string",
+            "enum": [
+              "none",
+              "feature_omitted",
+              "confidence_lowered",
+              "group_omitted",
+              "extraction_failed"
+            ]
+          },
+          "cli_exit_code": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "exception": {
+            "type": "string",
+            "enum": [
+              "FeatureExtractionError",
+              "InputValidationError",
+              "ConfigurationError",
+              "SerializationError"
+            ]
+          },
+          "cli_error_code": {
+            "type": "string",
+            "enum": [
+              "input_validation_error",
+              "configuration_error",
+              "input_json_serialization_error",
+              "output_serialization_error",
+              "output_write_error",
+              "cli_usage_error",
+              "unexpected_system_error"
+            ]
+          },
+          "fatal_exit_code": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "stable_since": {
+            "type": "string",
+            "minLength": 1
+          },
+          "deprecated_since": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          }
+        },
+        "required": [
+          "code",
+          "severity",
+          "when_emitted",
+          "affected_entity",
+          "refs_required",
+          "feature_path_required",
+          "message_template",
+          "result_impact",
+          "cli_exit_code",
+          "stable_since"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "codes"
+  ],
+  "additionalProperties": false
+}

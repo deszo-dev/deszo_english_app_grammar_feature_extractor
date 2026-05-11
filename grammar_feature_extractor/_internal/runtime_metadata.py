@@ -16,12 +16,12 @@ CompatibilityMode: TypeAlias = Literal[
     "hash_exact",
 ]
 
-STAGE_NAME = "grammar_feature_extraction"
-STAGE_CONTRACT_VERSION = "grammar-feature-extraction.v1"
+STAGE_NAME = "grammar_feature_extractor"
+STAGE_CONTRACT_VERSION = "grammar_feature_extractor.stage.v5"
 OUTPUT_SCHEMA_VERSION = SCHEMA_VERSION
-CONFIG_CONTRACT_VERSION = "extractor-config.v1"
+CONFIG_CONTRACT_VERSION = "grammar_feature_extractor.config.v5"
 PIPELINE_NAME = "grammar_feature_extractor"
-PIPELINE_CONTRACT_VERSION = "grammar-feature-extractor-pipeline.v1"
+PIPELINE_CONTRACT_VERSION = "grammar_feature_extractor.pipeline.v5"
 PACKAGE_DISTRIBUTION_NAME = "grammar-feature-extractor"
 
 
@@ -35,11 +35,15 @@ class RuntimeDependency:
 
 
 @dataclass(frozen=True, slots=True)
-class RuntimeAsset:
+class StageRuntimeAsset:
     name: str
     kind: str
-    sha256: str
-    compatibility: CompatibilityMode = "hash_exact"
+    version: str
+    sha256: str | None
+    required: bool = True
+
+
+RuntimeAsset = StageRuntimeAsset
 
 
 @dataclass(frozen=True, slots=True)
@@ -49,9 +53,9 @@ class StageRuntimeMetadata:
     output_schema_version: str
     config_contract_version: str
     module_version: str
-    source_fingerprint: str | None = None
-    dependencies: tuple[RuntimeDependency, ...] = ()
-    assets: tuple[RuntimeAsset, ...] = ()
+    source_fingerprint: str
+    dependencies: tuple[str, ...] = ()
+    assets: tuple[StageRuntimeAsset, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,7 +67,17 @@ class PipelineRuntimeMetadata:
 
 
 def grammar_feature_extractor_runtime_metadata() -> PipelineRuntimeMetadata:
-    stage = StageRuntimeMetadata(
+    stage = build_stage_runtime_metadata()
+    return PipelineRuntimeMetadata(
+        pipeline_name=PIPELINE_NAME,
+        pipeline_version=get_module_version(PACKAGE_DISTRIBUTION_NAME),
+        pipeline_contract_version=PIPELINE_CONTRACT_VERSION,
+        stages={stage.stage_name: stage},
+    )
+
+
+def build_stage_runtime_metadata() -> StageRuntimeMetadata:
+    return StageRuntimeMetadata(
         stage_name=STAGE_NAME,
         stage_contract_version=STAGE_CONTRACT_VERSION,
         output_schema_version=OUTPUT_SCHEMA_VERSION,
@@ -73,34 +87,29 @@ def grammar_feature_extractor_runtime_metadata() -> PipelineRuntimeMetadata:
         dependencies=(),
         assets=runtime_assets(),
     )
-    return PipelineRuntimeMetadata(
-        pipeline_name=PIPELINE_NAME,
-        pipeline_version=get_module_version(PACKAGE_DISTRIBUTION_NAME),
-        pipeline_contract_version=PIPELINE_CONTRACT_VERSION,
-        stages={stage.stage_name: stage},
-    )
 
 
-def runtime_assets() -> tuple[RuntimeAsset, ...]:
+def runtime_assets() -> tuple[StageRuntimeAsset, ...]:
     root = repository_root()
-    asset_paths = (
-        root / "schema" / "catalog_feature_paths.json",
-        root / "schema" / "registered_construction_signatures.json",
-        root / "schema" / "registered_enums.json",
-        root
-        / "schema"
-        / "grammar_feature_extractor.v4"
-        / "construction_signature_registry.json",
-    )
-    return tuple(
-        RuntimeAsset(
-            name=path.relative_to(root).as_posix(),
-            kind="schema-file",
-            sha256=sha256_file(path),
+    schema_root = root / "schema" / "grammar_feature_extractor.v5"
+    if not schema_root.exists():
+        return ()
+    collected: list[StageRuntimeAsset] = []
+    for path in sorted(schema_root.glob("*.v5.*")):
+        if not path.is_file():
+            continue
+        kind = "registry" if "registry" in path.name else "schema"
+        collected.append(
+            StageRuntimeAsset(
+                name=path.relative_to(root).as_posix(),
+                kind=kind,
+                version="v5",
+                sha256=sha256_file(path),
+                required=True,
+            )
         )
-        for path in asset_paths
-        if path.exists()
-    )
+    collected.sort(key=lambda asset: (asset.kind, asset.name, asset.version))
+    return tuple(collected)
 
 
 def stage_fingerprint(
@@ -119,9 +128,7 @@ def stage_fingerprint(
         "input_artifact_hashes": sorted(input_artifact_hashes),
         "module_version": stage.module_version,
         "source_fingerprint": stage.source_fingerprint,
-        "dependencies": [
-            _canonical_dependency(dependency) for dependency in stage.dependencies
-        ],
+        "dependencies": sorted(stage.dependencies),
         "assets": [_canonical_asset(asset) for asset in stage.assets],
         "pipeline_contract_version": pipeline_contract_version,
     }
@@ -138,6 +145,16 @@ def extractor_config_to_fingerprint_payload(
         "include_contrastive_support": config.include_contrastive_support,
         "include_diagnostics": config.include_diagnostics,
         "include_evidence": config.include_evidence,
+        "limits": {
+            "max_input_bytes": config.limits.max_input_bytes,
+            "max_sentences": config.limits.max_sentences,
+            "max_words_per_sentence": config.limits.max_words_per_sentence,
+            "max_total_words": config.limits.max_total_words,
+            "max_page_size": config.limits.max_page_size,
+            "max_output_page_bytes": config.limits.max_output_page_bytes,
+            "max_output_pages": config.limits.max_output_pages,
+            "max_diagnostics_per_sentence": config.limits.max_diagnostics_per_sentence,
+        },
     }
 
 
@@ -156,24 +173,34 @@ def metadata_to_dict(metadata: PipelineRuntimeMetadata) -> dict[str, object]:
 
 def contract_runtime_metadata() -> dict[str, object]:
     resources: list[dict[str, object]] = []
-    schema_root = repository_root() / "docs" / "architecture" / "schema"
-    for path in sorted(schema_root.glob("*.json")):
-        kind = "registry" if "registry" in path.name else "schema"
-        version = "v3" if ".v3." in path.name else "unknown"
-        resources.append(
-            {
-                "name": path.name,
-                "kind": kind,
-                "version": version,
-                "sha256": sha256_file(path),
-                "required": True,
-            }
-        )
+    schema_root = repository_root() / "schema" / "grammar_feature_extractor.v5"
+    if schema_root.exists():
+        for path in sorted(schema_root.glob("*.json")):
+            kind = "registry" if "registry" in path.name else "schema"
+            version = _detect_resource_version(path.name)
+            resources.append(
+                {
+                    "name": path.name,
+                    "kind": kind,
+                    "version": version,
+                    "sha256": sha256_file(path),
+                    "required": True,
+                }
+            )
+    resources.sort(key=lambda item: (str(item["kind"]), str(item["name"]), str(item["version"])))
     return {
         "schema_version": SCHEMA_VERSION,
         "extractor_version": get_module_version(PACKAGE_DISTRIBUTION_NAME),
         "resources": resources,
     }
+
+
+def _detect_resource_version(filename: str) -> str:
+    parts = filename.split(".")
+    for token in parts:
+        if len(token) >= 2 and token[0] == "v" and token[1:].isdigit():
+            return token
+    return "unknown"
 
 
 def directory_source_fingerprint(root: Path) -> str:
@@ -256,12 +283,13 @@ def _canonical_dependency(dependency: RuntimeDependency) -> dict[str, object]:
     }
 
 
-def _canonical_asset(asset: RuntimeAsset) -> dict[str, object]:
+def _canonical_asset(asset: StageRuntimeAsset) -> dict[str, object]:
     return {
-        "compatibility": asset.compatibility,
         "kind": asset.kind,
         "name": asset.name,
+        "required": asset.required,
         "sha256": asset.sha256,
+        "version": asset.version,
     }
 
 

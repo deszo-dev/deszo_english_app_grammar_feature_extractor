@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 
 from grammar_feature_extractor._internal.construction_registry import (
-    REGISTERED_CONSTRUCTION_SIGNATURES,
+    REGISTERED_CONSTRUCTION_SIGNATURE_SET,
 )
 from grammar_feature_extractor._internal.diagnostic_registry import DIAGNOSTIC_CODE_SET
 from grammar_feature_extractor._internal.models import (
@@ -28,7 +28,6 @@ PREDICATE_TYPES = frozenset(
         "unknown",
     }
 )
-REGISTERED_CONSTRUCTION_SIGNATURE_SET = frozenset(REGISTERED_CONSTRUCTION_SIGNATURES)
 
 
 def validate_proof_surface(

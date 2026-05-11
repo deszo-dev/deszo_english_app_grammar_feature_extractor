@@ -31,11 +31,8 @@ def test_local_runtime_metadata_has_source_fingerprints() -> None:
     for stage in metadata.stages.values():
         assert stage.source_fingerprint is not None
         assert stage.source_fingerprint.startswith(("git:", "tree-sha256:", "build:"))
-
         for dependency in stage.dependencies:
-            if dependency.source in {"local-path", "editable-install"}:
-                assert dependency.source_fingerprint is not None
-                assert dependency.compatibility == "hash_exact"
+            assert isinstance(dependency, str) and dependency
 
 
 def test_runtime_metadata_is_deterministic() -> None:
@@ -92,7 +89,7 @@ def test_manifest_includes_contract_runtime_metadata(
         (out_dir / "grammar_features.manifest.json").read_text(encoding="utf-8")
     )
     runtime_metadata = manifest["runtime_metadata"]
-    assert runtime_metadata["schema_version"] == "grammar_feature_extractor.v3"
+    assert runtime_metadata["schema_version"] == "grammar_feature_extractor.v5"
     assert runtime_metadata["extractor_version"]
     assert runtime_metadata["resources"]
 

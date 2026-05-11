@@ -1,0 +1,107 @@
+{
+  "schema_version": "grammar_feature_extractor.v5",
+  "kind": "grammar_feature_page",
+  "runtime_metadata": {
+    "schema_version": "grammar_feature_extractor.v5",
+    "extractor_version": "0.0.0-contract-fixture",
+    "resources": []
+  },
+  "output_completeness": {
+    "matcher_complete": true,
+    "omitted_feature_groups": []
+  },
+  "page": {
+    "page_number": 1,
+    "page_size": 300,
+    "total_sentences": 0,
+    "sentence_start": 0,
+    "sentence_end_exclusive": 0,
+    "has_next_page": false
+  },
+  "features": [
+    {
+      "sentence_index": 0,
+      "text": "X",
+      "features": {
+        "evidence": {
+          "words": [],
+          "dependencies": []
+        },
+        "morphology": {
+          "word_morphology": [],
+          "normalized": []
+        },
+        "syntax": {
+          "phrases": [],
+          "clauses": [],
+          "predicates": [],
+          "complements": [],
+          "coordination": [],
+          "subordination": [],
+          "np_profiles": [],
+          "pronouns": [],
+          "special_subject_constructions": [],
+          "relative_clauses": [],
+          "conditionals": [],
+          "reported_speech": [],
+          "passive": []
+        },
+        "lexical": {
+          "sentence": {
+            "sentence_kind": "normal",
+            "clause_count": 0,
+            "sentence_type": "unknown",
+            "polarity": "unknown",
+            "has_subject_aux_inversion": false,
+            "has_do_support": false,
+            "has_wh_fronting": false,
+            "has_tag_question": false,
+            "has_exclamation_marker": false,
+            "provenance": {
+              "tier": "structural",
+              "source": "surface",
+              "evidence_refs": [],
+              "confidence": "low"
+            }
+          },
+          "word_order": [],
+          "negation": [],
+          "time_markers": [],
+          "lexical_classes": [],
+          "verb_patterns": [],
+          "adjective_patterns": [],
+          "comparisons": [],
+          "quantifiers": [],
+          "phrasal_verbs": [],
+          "discourse_markers": [],
+          "contractions": [],
+          "noun_inflections": []
+        },
+        "constructions": [
+          {
+            "id": "s0.construction.1",
+            "key": "bad",
+            "type": "tense_aspect",
+            "signature": "unknown_signature",
+            "slots": {},
+            "evidence_refs": [
+              1
+            ],
+            "confidence": "low",
+            "provenance": {
+              "tier": "deterministic",
+              "source": "dependency",
+              "evidence_refs": [
+                1
+              ],
+              "confidence": "low"
+            }
+          }
+        ],
+        "contrastive_support": [],
+        "absences": [],
+        "diagnostics": []
+      }
+    }
+  ]
+}

@@ -34,14 +34,14 @@ def _fixture_document(name: str):
     return loads_document(payload)
 
 
-def test_document_output_validates_against_authoritative_v3_schema() -> None:
-    validator = _validator("grammar_feature_document.v3.schema.json")
+def test_document_output_validates_against_authoritative_v5_schema() -> None:
+    validator = _validator("grammar_feature_document.v5.schema.json")
     extractor = GrammarFeatureExtractor()
 
     for fixture_name in (
         "valid_minimal_copular.json",
         "valid_empty_document.json",
-        "filtered_annotated_document.v3.json",
+        "filtered_annotated_document.v5.json",
     ):
         document = _fixture_document(fixture_name)
         payload = document_to_dict(extractor.extract(document))
@@ -52,15 +52,15 @@ def test_document_output_validates_against_authoritative_v3_schema() -> None:
         ]
 
 
-def test_page_output_validates_against_authoritative_v3_schema() -> None:
-    validator = _validator("grammar_feature_page.v3.schema.json")
+def test_page_output_validates_against_authoritative_v5_schema() -> None:
+    validator = _validator("grammar_feature_page.v5.schema.json")
     extractor = GrammarFeatureExtractor()
 
     fixtures = (
         ("valid_minimal_copular.json", PagingConfig(page_number=1, page_size=300)),
         ("valid_empty_document.json", PagingConfig(page_number=1, page_size=300)),
         (
-            "filtered_annotated_document.v3.json",
+            "filtered_annotated_document.v5.json",
             PagingConfig(page_number=1, page_size=5),
         ),
     )

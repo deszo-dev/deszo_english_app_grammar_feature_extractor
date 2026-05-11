@@ -1,5 +1,5 @@
 {
-  "schema_version": "grammar_feature_extractor.v3",
+  "schema_version": "grammar_feature_extractor.v5",
   "include_diagnostics": true,
   "include_evidence": true,
   "include_construction_signatures": true,

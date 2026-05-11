@@ -18,19 +18,19 @@ SCHEMA_DIR = ROOT / "docs" / "architecture" / "schema"
 
 def test_required_contract_artifacts_exist() -> None:
     required = [
-        "annotated_document.input.v3.schema.json",
-        "cli_error.v3.schema.json",
-        "construction_signature_registry.v3.json",
-        "diagnostic_registry.v3.json",
-        "feature_path_registry.v3.json",
-        "grammar_feature_common.v3.schema.json",
-        "grammar_feature_config.input.v3.schema.json",
-        "grammar_feature_config.v3.schema.json",
-        "grammar_feature_document.v3.schema.json",
-        "grammar_feature_manifest.v3.schema.json",
-        "grammar_feature_page.v3.schema.json",
-        "predicate_form_signature_registry.v3.json",
-        "semantic_validation_registry.v3.json",
+        "annotated_document.input.v5.schema.json",
+        "cli_error.v5.schema.json",
+        "construction_signature_registry.v5.json",
+        "diagnostic_registry.v5.json",
+        "feature_path_registry.v5.json",
+        "grammar_feature_common.v5.schema.json",
+        "grammar_feature_config.input.v5.schema.json",
+        "grammar_feature_config.v5.schema.json",
+        "grammar_feature_document.v5.schema.json",
+        "grammar_feature_manifest.v5.schema.json",
+        "grammar_feature_page.v5.schema.json",
+        "predicate_form_signature_registry.v5.json",
+        "semantic_validation_registry.v5.json",
     ]
     for name in required:
         assert (SCHEMA_DIR / name).exists(), name
@@ -38,25 +38,25 @@ def test_required_contract_artifacts_exist() -> None:
 
 def test_registry_counts_match_testing_guide() -> None:
     diagnostics = json.loads(
-        (SCHEMA_DIR / "diagnostic_registry.v3.json").read_text(encoding="utf-8")
+        (SCHEMA_DIR / "diagnostic_registry.v5.json").read_text(encoding="utf-8")
     )
     semantic = json.loads(
-        (SCHEMA_DIR / "semantic_validation_registry.v3.json").read_text(
+        (SCHEMA_DIR / "semantic_validation_registry.v5.json").read_text(
             encoding="utf-8"
         )
     )
     constructions = json.loads(
-        (SCHEMA_DIR / "construction_signature_registry.v3.json").read_text(
+        (SCHEMA_DIR / "construction_signature_registry.v5.json").read_text(
             encoding="utf-8"
         )
     )
     predicates = json.loads(
-        (SCHEMA_DIR / "predicate_form_signature_registry.v3.json").read_text(
+        (SCHEMA_DIR / "predicate_form_signature_registry.v5.json").read_text(
             encoding="utf-8"
         )
     )
     feature_paths = json.loads(
-        (SCHEMA_DIR / "feature_path_registry.v3.json").read_text(encoding="utf-8")
+        (SCHEMA_DIR / "feature_path_registry.v5.json").read_text(encoding="utf-8")
     )
     assert len(diagnostics["codes"]) == 21
     assert len(semantic["codes"]) == 21
@@ -96,7 +96,7 @@ def test_cli_invalid_json_emits_single_cli_error(
     assert captured.err.endswith("\n")
     payload = json.loads(captured.err)
     assert payload["kind"] == "cli_error"
-    assert payload["schema_version"] == "grammar_feature_extractor.v3"
+    assert payload["schema_version"] == "grammar_feature_extractor.v5"
     assert payload["error_code"] == "input_json_serialization_error"
 
 

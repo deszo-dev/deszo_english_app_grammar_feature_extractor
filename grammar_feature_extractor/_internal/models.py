@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal, TypeAlias
 
-SCHEMA_VERSION = "grammar_feature_extractor.v3"
+SCHEMA_VERSION = "grammar_feature_extractor.v5"
+INPUT_SCHEMA_VERSION = "grammar_feature_extractor.annotated_document.input.v5"
+CLI_ERROR_SCHEMA_VERSION = "grammar_feature_extractor.cli_error.v5"
 DEFAULT_PAGE_SIZE = 300
 DEFAULT_PAGE_NUMBER = 1
 MAX_PAGE_SIZE = 5000
@@ -391,7 +393,7 @@ FeatureSupportStatus: TypeAlias = Literal[
     "partial",
     "heuristic",
     "not_supported",
-    "not_supported_in_v4_scope",
+    "out_of_scope",
     "disabled",
     "unknown",
 ]
@@ -652,6 +654,18 @@ class AnnotatedDocument:
 
 
 @dataclass(frozen=True, slots=True)
+class ExtractorLimits:
+    max_input_bytes: int = 104857600
+    max_sentences: int = 200000
+    max_words_per_sentence: int = 512
+    max_total_words: int = 5000000
+    max_page_size: int = 5000
+    max_output_page_bytes: int = 104857600
+    max_output_pages: int = 100000
+    max_diagnostics_per_sentence: int = 100
+
+
+@dataclass(frozen=True, slots=True)
 class ExtractorConfig:
     include_diagnostics: bool = True
     include_evidence: bool = True
@@ -659,6 +673,7 @@ class ExtractorConfig:
     include_contrastive_support: bool = True
     enable_heuristics: bool = True
     debug: bool = False
+    limits: ExtractorLimits = field(default_factory=ExtractorLimits)
 
 
 @dataclass(frozen=True, slots=True)
@@ -1398,11 +1413,32 @@ class SentenceGrammarFeatures:
     features: GrammarFeatureSet
 
 
+OmittedFeatureGroup: TypeAlias = Literal[
+    "evidence",
+    "morphology",
+    "syntax",
+    "lexical",
+    "constructions",
+    "contrastive_support",
+    "absences",
+    "diagnostics",
+]
+
+
+@dataclass(frozen=True, slots=True)
+class OutputCompleteness:
+    matcher_complete: bool
+    omitted_feature_groups: tuple[OmittedFeatureGroup, ...] = ()
+
+
 @dataclass(frozen=True, slots=True)
 class GrammarFeatureDocument:
     schema_version: str
     source_sentence_count: int
     sentences: tuple[SentenceGrammarFeatures, ...]
+    output_completeness: OutputCompleteness = field(
+        default_factory=lambda: OutputCompleteness(matcher_complete=True)
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -1421,6 +1457,9 @@ class GrammarFeaturePage:
     schema_version: str
     page: PageInfo
     features: tuple[SentenceGrammarFeatures, ...]
+    output_completeness: OutputCompleteness = field(
+        default_factory=lambda: OutputCompleteness(matcher_complete=True)
+    )
 
 
 @dataclass(frozen=True, slots=True)

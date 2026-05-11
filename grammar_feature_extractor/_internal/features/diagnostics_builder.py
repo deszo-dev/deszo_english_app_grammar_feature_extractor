@@ -18,8 +18,8 @@ def add_baseline_diagnostics(
         if predicate.predicate_type == "unknown":
             diagnostics.append(
                 FeatureDiagnostic(
-                    severity="warning",
-                    code="unknown_predicate_type",
+                    severity="info",
+                    code="competing_rule_candidates",
                     message=(
                         "Predicate type could not be classified from local evidence."
                     ),
@@ -29,23 +29,13 @@ def add_baseline_diagnostics(
             )
     _fragment_diagnostic(ctx, predicates, diagnostics)
     for np in np_profiles:
-        if np.article_slot.requiredness == "not_applicable":
-            diagnostics.append(
-                FeatureDiagnostic(
-                    severity="info",
-                    code="article_slot_not_applicable",
-                    message="Article slot is not applicable for this NP type.",
-                    refs=(np.head,),
-                    feature_path="syntax.np_profiles.article_slot",
-                )
-            )
-        elif (
+        if (
             np.article_slot.requiredness == "unknown"
             and np.phrase_type == "common_noun_np"
         ):
             diagnostics.append(
                 FeatureDiagnostic(
-                    severity="info",
+                    severity="warning",
                     code="requires_countability_lexicon",
                     message=(
                         "Article requiredness needs countability or reference support."
@@ -62,7 +52,7 @@ def add_baseline_diagnostics(
             )
             diagnostics.append(
                 FeatureDiagnostic(
-                    severity="info",
+                    severity="warning",
                     code="requires_phonology",
                     message="A/an correctness requires phonology support.",
                     refs=refs,
@@ -79,20 +69,12 @@ def _fragment_diagnostic(
     root = next((ref for ref in ctx.refs if ctx.word_by_ref[ref].head == 0), None)
     if root is None:
         return
-    text = ctx.text.strip()
     root_word = ctx.word_by_ref[root]
     if root_word.upos not in {"VERB", "AUX", "ADJ"}:
-        code = "fragment_non_predicative_root"
-        if _looks_like_heading(text, ctx):
-            code = "heading_fragment"
-        elif _looks_like_address_or_date(ctx):
-            code = "address_or_date_fragment"
-        elif text.startswith(('"', "'")) or text.endswith(('"', "'")):
-            code = "quoted_speech_fragment"
         diagnostics.append(
             FeatureDiagnostic(
-                severity="info",
-                code=code,
+                severity="warning",
+                code="unsupported_feature",
                 message=(
                     "Sentence appears to be a non-predicative or parser-degraded "
                     "fragment."
@@ -105,48 +87,9 @@ def _fragment_diagnostic(
         diagnostics.append(
             FeatureDiagnostic(
                 severity="warning",
-                code="possible_parser_error",
+                code="ambiguous_pos",
                 message="Only low-confidence predicate evidence was available.",
                 refs=(root,),
                 feature_path="syntax.predicates",
             )
         )
-
-
-def _looks_like_heading(text: str, ctx: SentenceContext) -> bool:
-    return (
-        text.endswith(".")
-        and len(ctx.refs) <= 5
-        and not any(word.upos in {"VERB", "AUX"} for word in ctx.words)
-    )
-
-
-def _looks_like_address_or_date(ctx: SentenceContext) -> bool:
-    month_tokens = {
-        "jan",
-        "january",
-        "feb",
-        "february",
-        "mar",
-        "march",
-        "apr",
-        "april",
-        "may",
-        "jun",
-        "june",
-        "jul",
-        "july",
-        "aug",
-        "august",
-        "sep",
-        "sept",
-        "september",
-        "oct",
-        "october",
-        "nov",
-        "november",
-        "dec",
-        "december",
-    }
-    lowers = {word.text.strip(".,").casefold() for word in ctx.words}
-    return bool(lowers & month_tokens)

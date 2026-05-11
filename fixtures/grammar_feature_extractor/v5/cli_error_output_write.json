@@ -1,0 +1,9 @@
+{
+  "schema_version": "grammar_feature_extractor.v5",
+  "kind": "cli_error",
+  "error_code": "output_write_error",
+  "message": "Could not write output file.",
+  "details": {
+    "path": "features.page.json"
+  }
+}

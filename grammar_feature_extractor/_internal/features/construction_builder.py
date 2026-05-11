@@ -6,20 +6,15 @@ from grammar_feature_extractor._internal.construction_registry import (
     ARTICLE_INDEFINITE_AN_NP,
     BE_SUBJECT_COMPLEMENT_QUESTION,
     COMPARISON_AS_AS,
-    COPULAR_BE_NEGATIVE,
     MODAL_MUST_BASE,
-    MODAL_NEGATIVE_BASE,
-    PASSIVE_NEGATIVE,
-    PAST_SIMPLE_NEGATIVE,
     PAST_SIMPLE_REGULAR,
-    PERFECT_NEGATIVE,
     PRESENT_PERFECT_HAVE_PARTICIPLE,
     PRESENT_PROGRESSIVE_AFFIRMATIVE,
     PRESENT_SIMPLE_DO_NEGATIVE,
-    PRESENT_SIMPLE_DO_NEGATIVE_QUESTION,
     PRESENT_SIMPLE_DO_QUESTION,
     PRESENT_SIMPLE_LEXICAL_AFFIRMATIVE,
     SUBJECT_BE_PRESENT_COMPLEMENT,
+    SUBJECT_BE_PRESENT_NOT_COMPLEMENT,
     ZERO_ARTICLE_PLURAL_GENERIC_CANDIDATE,
 )
 from grammar_feature_extractor._internal.form_signature_registry import (
@@ -88,18 +83,8 @@ def _predicate_signature(
     if predicate.polarity != "positive":
         if predicate.form_signature == FORM_PRESENT_SIMPLE_DO_NEGATIVE:
             return PRESENT_SIMPLE_DO_NEGATIVE
-        if predicate.form_signature == FORM_PRESENT_SIMPLE_DO_QUESTION:
-            return PRESENT_SIMPLE_DO_NEGATIVE_QUESTION
-        if predicate.form_signature == PAST_SIMPLE:
-            return PAST_SIMPLE_NEGATIVE
         if predicate.form_signature == BE_PRESENT_COPULAR:
-            return COPULAR_BE_NEGATIVE
-        if predicate.form_signature == MODAL_BASE_VERB:
-            return MODAL_NEGATIVE_BASE
-        if predicate.form_signature == PRESENT_PERFECT:
-            return PERFECT_NEGATIVE
-        if predicate.form_signature == PASSIVE_BE_PARTICIPLE:
-            return PASSIVE_NEGATIVE
+            return SUBJECT_BE_PRESENT_NOT_COMPLEMENT
         return None
     if predicate.form_signature == PRESENT_SIMPLE_LEXICAL:
         return PRESENT_SIMPLE_LEXICAL_AFFIRMATIVE

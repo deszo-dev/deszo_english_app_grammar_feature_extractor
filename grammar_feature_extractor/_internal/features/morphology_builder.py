@@ -59,7 +59,7 @@ def parse_ud_feats(
         diagnostics.append(
             FeatureDiagnostic(
                 severity="warning",
-                code="malformed_feats",
+                code="malformed_morphology_feats",
                 message="Malformed morphology features were partially ignored.",
                 refs=(ref,),
                 feature_path="morphology.word_morphology",

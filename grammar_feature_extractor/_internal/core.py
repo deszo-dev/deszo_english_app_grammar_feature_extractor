@@ -74,6 +74,8 @@ from grammar_feature_extractor._internal.models import (
     GrammarFeatureSet,
     LexicalFeatures,
     MorphologyFeatures,
+    OmittedFeatureGroup,
+    OutputCompleteness,
     PageInfo,
     PagingConfig,
     SentenceGrammarFeatures,
@@ -102,6 +104,7 @@ def extract_core(
         schema_version=SCHEMA_VERSION,
         source_sentence_count=len(document.sentences),
         sentences=sentences,
+        output_completeness=_compute_output_completeness(sentences, config),
     )
 
 
@@ -131,6 +134,26 @@ def paginate(
             next_page=paging.page_number + 1 if has_next else None,
         ),
         features=features,
+        output_completeness=document.output_completeness,
+    )
+
+
+def _compute_output_completeness(
+    sentences: tuple[SentenceGrammarFeatures, ...],
+    config: ExtractorConfig,
+) -> OutputCompleteness:
+    omitted: list[OmittedFeatureGroup] = []
+    if not config.include_evidence:
+        omitted.append("evidence")
+    if not config.include_diagnostics:
+        omitted.append("diagnostics")
+    if not config.include_construction_signatures:
+        omitted.append("constructions")
+    if not config.include_contrastive_support:
+        omitted.append("contrastive_support")
+    return OutputCompleteness(
+        matcher_complete=not omitted,
+        omitted_feature_groups=tuple(omitted),
     )
 
 
@@ -153,7 +176,7 @@ def extract_sentence_features(
         diagnostics.append(
             FeatureDiagnostic(
                 severity="info",
-                code="evidence_omitted_by_config",
+                code="disabled_feature_group",
                 message=(
                     "Evidence layer was omitted from serialized output by "
                     "configuration."

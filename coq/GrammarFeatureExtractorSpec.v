@@ -10,7 +10,7 @@ Open Scope nat_scope.
 
 Module GrammarFeatureExtractorSpec.
 
-Definition schema_version : string := "grammar_feature_extractor.v3".
+Definition schema_version : string := "grammar_feature_extractor.v5".
 Definition default_page_size : nat := 300.
 Definition WordRef : Type := nat.
 

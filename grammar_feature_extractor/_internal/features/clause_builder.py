@@ -41,7 +41,7 @@ def build_clauses(
             diagnostics.append(
                 FeatureDiagnostic(
                     severity="error",
-                    code="dependency_cycle",
+                    code="internal_feature_error",
                     message=(
                         "Dependency cycle detected while collecting clause " "subtree."
                     ),

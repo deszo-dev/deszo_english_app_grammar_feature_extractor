@@ -29,9 +29,9 @@ def parse_annotated_document(value: object) -> AnnotatedDocument:
         raise InputValidationError("Input must be an AnnotatedDocument object.")
     _assert_allowed_keys(value, ("schema_version", "sentences", "entities"), "root")
     schema_version = _string(_required(value, "schema_version"), "schema_version")
-    if schema_version != "grammar_feature_extractor.annotated_document.input.v3":
+    if schema_version != "grammar_feature_extractor.annotated_document.input.v5":
         raise InputValidationError(
-            "schema_version must be grammar_feature_extractor.annotated_document.input.v3."
+            "schema_version must be grammar_feature_extractor.annotated_document.input.v5."
         )
 
     sentences_value = _required(value, "sentences")
@@ -74,6 +74,26 @@ def validate_extractor_config(config: ExtractorConfig) -> None:
         raise ConfigurationError("enable_heuristics must be a boolean.")
     if not isinstance(config.debug, bool):
         raise ConfigurationError("debug must be a boolean.")
+    _validate_limits(config.limits)
+
+
+def _validate_limits(limits: object) -> None:
+    fields = (
+        "max_input_bytes",
+        "max_sentences",
+        "max_words_per_sentence",
+        "max_total_words",
+        "max_page_size",
+        "max_output_page_bytes",
+        "max_output_pages",
+        "max_diagnostics_per_sentence",
+    )
+    for field_name in fields:
+        value = getattr(limits, field_name, None)
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise ConfigurationError(
+                f"ExtractorLimits.{field_name} must be a non-negative integer."
+            )
 
 
 def assert_valid_feature_refs(

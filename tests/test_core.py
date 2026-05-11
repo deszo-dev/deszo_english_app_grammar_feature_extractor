@@ -14,12 +14,12 @@ from grammar_feature_extractor._internal.serialization import (
 from tests.conftest import sample_document
 
 
-def test_extracts_v3_shell_evidence_and_morphology() -> None:
+def test_extracts_v5_shell_evidence_and_morphology() -> None:
     document = loads_document(json.dumps(sample_document()))
     page = GrammarFeatureExtractor().extract_page(document)
     first = page.features[0].features
 
-    assert page.schema_version == "grammar_feature_extractor.v3"
+    assert page.schema_version == "grammar_feature_extractor.v5"
     assert first.evidence.words[0].ref == 1
     assert first.evidence.words[0].lower == "the"
     assert first.evidence.words[1].children == (1,)
@@ -66,7 +66,9 @@ def test_diagnostics_can_be_disabled_but_field_remains() -> None:
         config=ExtractorConfig(include_diagnostics=False),
     )
 
-    assert page.features[0].features.diagnostics[0].code == "malformed_feats"
+    assert (
+        page.features[0].features.diagnostics[0].code == "malformed_morphology_feats"
+    )
     disabled_payload = page_to_dict(disabled)
     assert disabled_payload["features"][0]["features"]["diagnostics"] == []  # type: ignore[index]
 
@@ -93,7 +95,7 @@ def test_no_evidence_keeps_empty_evidence_field_and_internal_morphology() -> Non
     assert feature_set.evidence.words == ()
     assert feature_set.evidence.dependencies == ()
     assert feature_set.morphology.normalized[1].is_plural_noun is True
-    assert feature_set.diagnostics[0].code == "evidence_omitted_by_config"
+    assert feature_set.diagnostics[0].code == "disabled_feature_group"
 
 
 def test_evidence_ref_position_head_lower_and_missing_feats() -> None:
@@ -141,7 +143,7 @@ def test_suffix_only_comparative_does_not_create_normalized_comparative() -> Non
         loads_document(
             json.dumps(
                 {
-                    "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+                    "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
                     "sentences": [
                         {
                             "text": "Forever flushing.",
@@ -219,7 +221,7 @@ def test_normalizes_infinitive_gerund_and_participles() -> None:
         loads_document(
             json.dumps(
                 {
-                    "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+                    "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
                     "sentences": [
                         {
                             "text": "To go running written working.",
@@ -293,7 +295,7 @@ def test_fragment_gets_sentence_feature() -> None:
     document = loads_document(
         json.dumps(
             {
-                "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+                "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
                 "sentences": [
                     {
                         "text": "The beautiful place!",

@@ -32,7 +32,7 @@ def _word(
 
 def _sentence(text: str, words: list[dict[str, object]]):
     payload = {
-        "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
+        "schema_version": "grammar_feature_extractor.annotated_document.input.v5",
         "sentences": [
             {
                 "text": text,
@@ -186,5 +186,5 @@ def test_feature_support_is_exposed_on_api_model() -> None:
     )
 
     assert features.feature_support["document_structure"].status == (
-        "not_supported_in_v4_scope"
+        "out_of_scope"
     )

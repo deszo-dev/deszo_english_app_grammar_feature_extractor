@@ -45,6 +45,7 @@ from grammar_feature_extractor._internal.models import (
     NegationFeature,
     NormalizedMorph,
     NPFeature,
+    OutputCompleteness,
     PageInfo,
     PassiveFeature,
     Phrase,
@@ -101,7 +102,7 @@ def page_to_dict(page: GrammarFeaturePage) -> JsonObject:
         "schema_version": page.schema_version,
         "kind": "grammar_feature_page",
         "runtime_metadata": _coerce_json_object(contract_runtime_metadata()),
-        "output_completeness": _output_completeness_from_sentences(page.features),
+        "output_completeness": _output_completeness_to_dict(page.output_completeness),
         "page": _page_info_to_dict(page.page),
         "features": [_sentence_to_dict(sentence) for sentence in page.features],
     }
@@ -112,7 +113,9 @@ def document_to_dict(document: GrammarFeatureDocument) -> JsonObject:
         "schema_version": document.schema_version,
         "kind": "grammar_feature_document",
         "runtime_metadata": _coerce_json_object(contract_runtime_metadata()),
-        "output_completeness": _output_completeness_from_sentences(document.sentences),
+        "output_completeness": _output_completeness_to_dict(
+            document.output_completeness
+        ),
         "source_sentence_count": document.source_sentence_count,
         "sentences": [_sentence_to_dict(sentence) for sentence in document.sentences],
     }
@@ -1276,62 +1279,29 @@ def _diagnostic_to_dict(item: FeatureDiagnostic) -> JsonObject | None:
     return result
 
 
+_DIAGNOSTIC_FEATURE_PATH_MAP: dict[str, str] = {
+    "evidence": "features.evidence.words[*].ref",
+    "syntax.predicates": "features.syntax.predicates[*].tavm.form_signature",
+    "syntax.clauses": "features.syntax.clauses[*].type",
+    "syntax.np_profiles.article_slot": (
+        "features.syntax.np_profiles[*].article_slot.requiredness"
+    ),
+    "morphology.word_morphology": (
+        "features.morphology.normalized[*].is_finite_verb"
+    ),
+}
+
+
 def _normalized_diagnostic(item: FeatureDiagnostic) -> FeatureDiagnostic | None:
-    feature_path_map = {
-        "evidence": "features.evidence.words[*].ref",
-        "syntax.predicates": "features.syntax.predicates[*].tavm.form_signature",
-        "syntax.clauses": "features.syntax.clauses[*].type",
-        "syntax.np_profiles.article_slot": (
-            "features.syntax.np_profiles[*].article_slot.requiredness"
-        ),
-    }
-    diagnostic_map: dict[str, tuple[str | None, str | None]] = {
-        "malformed_feats": (
-            "malformed_morphology_feats",
-            "features.morphology.normalized[*].is_finite_verb",
-        ),
-        "evidence_omitted_by_config": (
-            "disabled_feature_group",
-            "features.evidence.words[*].ref",
-        ),
-        "unknown_predicate_type": (
-            "internal_feature_error",
-            "features.syntax.predicates[*].tavm.form_signature",
-        ),
-        "fragment_non_predicative_root": (
-            "unsupported_feature",
-            "features.lexical.sentence.sentence_type",
-        ),
-        "quoted_speech_fragment": (
-            "unsupported_feature",
-            "features.lexical.sentence.sentence_type",
-        ),
-        "address_or_date_fragment": (
-            "unsupported_feature",
-            "features.lexical.sentence.sentence_type",
-        ),
-        "heading_fragment": (
-            "unsupported_feature",
-            "features.lexical.sentence.sentence_type",
-        ),
-        "possible_parser_error": (
-            "internal_feature_error",
-            "features.syntax.predicates[*].tavm.form_signature",
-        ),
-        "article_slot_not_applicable": (None, None),
-    }
-    mapped_code, mapped_path = diagnostic_map.get(
-        item.code,
-        (item.code, feature_path_map.get(item.feature_path or "")),
+    mapped_path = _DIAGNOSTIC_FEATURE_PATH_MAP.get(
+        item.feature_path or "", item.feature_path
     )
-    if mapped_code is None:
-        return None
     return FeatureDiagnostic(
         severity=item.severity,
-        code=mapped_code,
+        code=item.code,
         message=item.message,
         refs=item.refs,
-        feature_path=mapped_path or feature_path_map.get(item.feature_path or ""),
+        feature_path=mapped_path,
     )
 
 
@@ -1588,24 +1558,8 @@ def _find_coordinator_ref(
     return None
 
 
-def _output_completeness_from_sentences(
-    sentences: tuple[SentenceGrammarFeatures, ...],
-) -> JsonObject:
-    evidence_omitted = any(
-        any(
-            diagnostic.code == "evidence_omitted_by_config"
-            for diagnostic in sentence.features.diagnostics
-        )
-        for sentence in sentences
-    )
-    if not evidence_omitted and sentences:
-        evidence_omitted = all(
-            sentence.features.evidence.words == ()
-            and sentence.features.morphology.word_morphology != ()
-            for sentence in sentences
-        )
-    omitted: list[JsonValue] = ["evidence"] if evidence_omitted else []
+def _output_completeness_to_dict(value: OutputCompleteness) -> JsonObject:
     return {
-        "matcher_complete": not evidence_omitted,
-        "omitted_feature_groups": omitted,
+        "matcher_complete": value.matcher_complete,
+        "omitted_feature_groups": list(value.omitted_feature_groups),
     }

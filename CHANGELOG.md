@@ -2,6 +2,31 @@
 
 ## Unreleased
 
+- Aligned the package with the `grammar_feature_extractor.v5` contract.
+  - `SCHEMA_VERSION` is `grammar_feature_extractor.v5`; accepted input
+    `schema_version` is `grammar_feature_extractor.annotated_document.input.v5`.
+  - Added public `ExtractorLimits` dataclass and embedded `limits` in
+    `ExtractorConfig`.
+  - Added `GrammarFeatureExtractor.extract_pages()` as an all-pages API and
+    `GrammarFeatureExtractor.get_runtime_metadata()` returning the v5
+    `StageRuntimeMetadata`.
+  - Exposed `ExtractorLimits`, `StageRuntimeAsset`, `StageRuntimeMetadata`
+    from the public package root.
+  - `StageRuntimeMetadata` now uses the v5 shape with
+    `dependencies: tuple[str, ...]` and `assets: tuple[StageRuntimeAsset, ...]`;
+    `stage_name = "grammar_feature_extractor"`,
+    `stage_contract_version = "grammar_feature_extractor.stage.v5"`,
+    `config_contract_version = "grammar_feature_extractor.config.v5"`.
+  - CLI emits `CliError.schema_version = "grammar_feature_extractor.v5"`;
+    `FeatureExtractionError` now maps to exit code `4`
+    (`unexpected_system_error`).
+  - Replaced the `not_supported_in_v4_scope` feature-support status with
+    `out_of_scope`.
+  - Renamed `MIGRATION_V2_TO_V3.md` to `MIGRATION_V3_TO_V5.md` and rewrote its
+    content for the v3 → v5 migration.
+
+## v3
+
 - Added typed dataclasses for SyntaxFeatures placeholder fields:
   `PronounFeature`, `SpecialSubjectConstructionFeature`,
   `RelativeClauseFeature`, `ConditionalFeature`, `ReportedSpeechFeature`,

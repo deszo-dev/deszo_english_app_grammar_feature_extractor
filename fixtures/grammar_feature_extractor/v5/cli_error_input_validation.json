@@ -1,0 +1,11 @@
+{
+  "schema_version": "grammar_feature_extractor.v5",
+  "kind": "cli_error",
+  "error_code": "input_validation_error",
+  "message": "Input semantic validation failed.",
+  "details": {
+    "validation_code": "head_out_of_range",
+    "sentence_index": 0,
+    "word_index": 1
+  }
+}

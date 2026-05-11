@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deszo.local/schemas/grammar_feature_extractor/annotated_document.input.v5.schema.json",
+  "title": "Accepted AnnotatedDocument input for grammar_feature_extractor v5",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "grammar_feature_extractor.annotated_document.input.v5"
+    },
+    "sentences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "lemma": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "upos": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "xpos": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "feats": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "head": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "deprel": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "start_char": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "end_char": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "text",
+                      "lemma",
+                      "upos",
+                      "head",
+                      "deprel",
+                      "start_char",
+                      "end_char"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "text",
+                "words"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "words": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "lemma": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "upos": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "xpos": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "feats": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "head": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "deprel": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "start_char": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "end_char": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "text",
+                "lemma",
+                "upos",
+                "head",
+                "deprel",
+                "start_char",
+                "end_char"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "text",
+          "tokens",
+          "words"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "start_char": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end_char": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "text",
+          "type",
+          "start_char",
+          "end_char"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "sentences",
+    "entities"
+  ],
+  "additionalProperties": false
+}
