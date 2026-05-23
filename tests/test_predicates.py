@@ -248,7 +248,7 @@ def test_serialized_predicates_do_not_restore_predicate_groups() -> None:
     )
     payload = dumps_page(page)
 
-    assert '"predicates":[{' in payload
+    assert '"predicates": [' in payload
     assert "predicate_groups" not in payload
 
 

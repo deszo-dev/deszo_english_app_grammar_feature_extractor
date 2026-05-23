@@ -10,56 +10,60 @@ from grammar_feature_extractor._internal.cli import main as cli_main
 from grammar_feature_extractor._internal.errors import InputValidationError
 from grammar_feature_extractor._internal.serialization import dumps_page, loads_document
 from grammar_feature_extractor._internal.validation import parse_annotated_document
-from tests.conftest import sample_document
+from tests.conftest import sample_aqf_document, sample_document
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA_DIR = ROOT / "docs" / "architecture" / "schema"
+SCHEMA_DIR = ROOT.parent / "docs" / "architecture" / "schemas" / "schema"
+REGISTRY_DIR = ROOT.parent / "docs" / "architecture" / "schemas" / "registry" / "grammar_feature_extractor"
 
 
 def test_required_contract_artifacts_exist() -> None:
     required = [
-        "annotated_document.input.v3.schema.json",
-        "cli_error.v3.schema.json",
-        "construction_signature_registry.v3.json",
-        "diagnostic_registry.v3.json",
-        "feature_path_registry.v3.json",
-        "grammar_feature_common.v3.schema.json",
-        "grammar_feature_config.input.v3.schema.json",
-        "grammar_feature_config.v3.schema.json",
-        "grammar_feature_document.v3.schema.json",
-        "grammar_feature_manifest.v3.schema.json",
-        "grammar_feature_page.v3.schema.json",
-        "predicate_form_signature_registry.v3.json",
-        "semantic_validation_registry.v3.json",
+        str(SCHEMA_DIR / "annotated_document.input.v5.schema.json"),
+        str(SCHEMA_DIR / "cli_error.v5.schema.json"),
+        str(SCHEMA_DIR / "grammar_feature_common.v5.schema.json"),
+        str(SCHEMA_DIR / "grammar_feature_config.input.v5.schema.json"),
+        str(SCHEMA_DIR / "grammar_feature_config.v5.schema.json"),
+        str(SCHEMA_DIR / "grammar_feature_document.v5.schema.json"),
+        str(SCHEMA_DIR / "grammar_feature_manifest.v5.schema.json"),
+        str(SCHEMA_DIR / "grammar_feature_page.v5.schema.json"),
+        str(SCHEMA_DIR / "annotation_quality_filter.v2.0.schema.json"),
+        str(SCHEMA_DIR / "annotation_quality_filter_diagnostics.v2.0.schema.json"),
+        str(SCHEMA_DIR / "stanza_annotator.v2.0.schema.json"),
+        str(REGISTRY_DIR / "construction_signature_registry.v5.json"),
+        str(REGISTRY_DIR / "diagnostic_registry.v5.json"),
+        str(REGISTRY_DIR / "feature_path_registry.v5.json"),
+        str(REGISTRY_DIR / "predicate_form_signature_registry.v5.json"),
+        str(REGISTRY_DIR / "semantic_validation_registry.v5.json"),
     ]
     for name in required:
-        assert (SCHEMA_DIR / name).exists(), name
+        assert Path(name).exists(), name
 
 
 def test_registry_counts_match_testing_guide() -> None:
     diagnostics = json.loads(
-        (SCHEMA_DIR / "diagnostic_registry.v3.json").read_text(encoding="utf-8")
+        (REGISTRY_DIR / "diagnostic_registry.v5.json").read_text(encoding="utf-8")
     )
     semantic = json.loads(
-        (SCHEMA_DIR / "semantic_validation_registry.v3.json").read_text(
+        (REGISTRY_DIR / "semantic_validation_registry.v5.json").read_text(
             encoding="utf-8"
         )
     )
     constructions = json.loads(
-        (SCHEMA_DIR / "construction_signature_registry.v3.json").read_text(
+        (REGISTRY_DIR / "construction_signature_registry.v5.json").read_text(
             encoding="utf-8"
         )
     )
     predicates = json.loads(
-        (SCHEMA_DIR / "predicate_form_signature_registry.v3.json").read_text(
+        (REGISTRY_DIR / "predicate_form_signature_registry.v5.json").read_text(
             encoding="utf-8"
         )
     )
     feature_paths = json.loads(
-        (SCHEMA_DIR / "feature_path_registry.v3.json").read_text(encoding="utf-8")
+        (REGISTRY_DIR / "feature_path_registry.v5.json").read_text(encoding="utf-8")
     )
     assert len(diagnostics["codes"]) == 21
-    assert len(semantic["codes"]) == 21
+    assert len(semantic["codes"]) == 29
     assert len(constructions["signatures"]) == 24
     assert len(predicates["form_signatures"]) == 21
     assert len(feature_paths["paths"]) == 21
@@ -96,7 +100,7 @@ def test_cli_invalid_json_emits_single_cli_error(
     assert captured.err.endswith("\n")
     payload = json.loads(captured.err)
     assert payload["kind"] == "cli_error"
-    assert payload["schema_version"] == "grammar_feature_extractor.v3"
+    assert payload["schema_version"] == "grammar_feature_extractor.v5"
     assert payload["error_code"] == "input_json_serialization_error"
 
 
@@ -132,3 +136,9 @@ def test_canonical_output_is_stable() -> None:
     page2 = dumps_page(extractor.extract_page(document))
     assert page1.endswith("\n")
     assert page1 == page2
+
+
+def test_parse_aqf_success_envelope() -> None:
+    document = parse_annotated_document(sample_aqf_document())
+    assert len(document.sentences) == 1
+    assert document.sentences[0].text == "The students will read books."

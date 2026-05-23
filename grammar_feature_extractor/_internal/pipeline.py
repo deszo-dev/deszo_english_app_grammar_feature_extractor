@@ -13,6 +13,8 @@ from grammar_feature_extractor._internal.proof_surface_validator import (
 )
 from grammar_feature_extractor._internal.runtime_metadata import (
     PipelineRuntimeMetadata,
+    STAGE_NAME,
+    StageRuntimeMetadata,
     extractor_config_to_fingerprint_payload,
     grammar_feature_extractor_runtime_metadata,
     stage_fingerprint,
@@ -27,6 +29,10 @@ from grammar_feature_extractor._internal.validation import (
 class GrammarFeatureExtractor:
     """Extract deterministic grammar features from an AnnotatedDocument."""
 
+    def get_runtime_metadata(self) -> StageRuntimeMetadata:
+        """Return stage metadata required by the v5 documentation contract."""
+        return grammar_feature_extractor_runtime_metadata().stages[STAGE_NAME]
+
     def runtime_metadata(self) -> PipelineRuntimeMetadata:
         """Return deterministic runtime metadata for orchestration reuse checks."""
         return grammar_feature_extractor_runtime_metadata()
@@ -40,7 +46,7 @@ class GrammarFeatureExtractor:
         resolved_config = config or ExtractorConfig()
         validate_extractor_config(resolved_config)
         metadata = self.runtime_metadata()
-        stage = metadata.stages["grammar_feature_extraction"]
+        stage = metadata.stages[STAGE_NAME]
         return stage_fingerprint(
             stage,
             pipeline_contract_version=metadata.pipeline_contract_version,

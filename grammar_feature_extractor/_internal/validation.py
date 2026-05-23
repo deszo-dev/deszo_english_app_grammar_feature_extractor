@@ -7,6 +7,8 @@ from grammar_feature_extractor._internal.errors import (
     InputValidationError,
 )
 from grammar_feature_extractor._internal.models import (
+    AQF_INPUT_SCHEMA_VERSION,
+    LEGACY_INPUT_SCHEMA_VERSION,
     MAX_PAGE_SIZE,
     AnnotatedDocument,
     AnnotatedSentence,
@@ -27,13 +29,19 @@ from grammar_feature_extractor._internal.semantic_validation import (
 def parse_annotated_document(value: object) -> AnnotatedDocument:
     if not isinstance(value, Mapping):
         raise InputValidationError("Input must be an AnnotatedDocument object.")
-    _assert_allowed_keys(value, ("schema_version", "sentences", "entities"), "root")
     schema_version = _string(_required(value, "schema_version"), "schema_version")
-    if schema_version != "grammar_feature_extractor.annotated_document.input.v3":
-        raise InputValidationError(
-            "schema_version must be grammar_feature_extractor.annotated_document.input.v3."
-        )
+    if schema_version == AQF_INPUT_SCHEMA_VERSION:
+        return _parse_aqf_success_envelope(value)
+    if schema_version == LEGACY_INPUT_SCHEMA_VERSION:
+        return _parse_legacy_annotated_document(value)
+    raise InputValidationError(
+        "schema_version must be annotation_quality_filter.v2.0 or "
+        "grammar_feature_extractor.annotated_document.input.v3."
+    )
 
+
+def _parse_legacy_annotated_document(value: Mapping[object, object]) -> AnnotatedDocument:
+    _assert_allowed_keys(value, ("schema_version", "sentences", "entities"), "root")
     sentences_value = _required(value, "sentences")
     entities_value = _required(value, "entities")
     sentences = _sequence(sentences_value, "sentences")
@@ -49,6 +57,198 @@ def parse_annotated_document(value: object) -> AnnotatedDocument:
     document = AnnotatedDocument(sentences=parsed_sentences, entities=parsed_entities)
     validate_annotated_document_semantics(document)
     return document
+
+
+def _parse_aqf_success_envelope(value: Mapping[object, object]) -> AnnotatedDocument:
+    status = _string(_required(value, "status"), "status")
+    if status != "succeeded":
+        raise InputValidationError(
+            "annotation_quality_filter.v2.0 input must have status='succeeded'."
+        )
+    if "error" in value:
+        raise InputValidationError(
+            "Successful annotation_quality_filter.v2.0 input must not contain error."
+        )
+    document_value = _mapping(_required(value, "document"), "document")
+    _required(value, "quality")
+    text_units = _collect_text_unit_annotations(document_value)
+    sentences: list[AnnotatedSentence] = []
+    entities: list[Entity] = []
+    for index, text_unit in enumerate(text_units):
+        text_unit_path = f"document.text_unit_annotations[{index}]"
+        sentences.extend(_parse_stanza_text_unit_sentences(text_unit, text_unit_path))
+        entities.extend(_parse_stanza_text_unit_entities(text_unit, text_unit_path))
+    document = AnnotatedDocument(
+        sentences=tuple(sentences),
+        entities=tuple(entities),
+    )
+    validate_annotated_document_semantics(document)
+    return document
+
+
+def _collect_text_unit_annotations(root: Mapping[object, object]) -> list[Mapping[object, object]]:
+    collected: list[Mapping[object, object]] = []
+
+    def walk(value: object) -> None:
+        if isinstance(value, Mapping):
+            status = value.get("text_annotation_status")
+            annotation = value.get("text_annotation")
+            if status == "annotated" and isinstance(annotation, Mapping):
+                collected.append(annotation)
+            for nested in value.values():
+                walk(nested)
+        elif isinstance(value, Sequence) and not isinstance(value, str):
+            for nested in value:
+                walk(nested)
+
+    walk(root)
+    return collected
+
+
+def _parse_stanza_text_unit_sentences(
+    text_unit: Mapping[object, object],
+    path: str,
+) -> list[AnnotatedSentence]:
+    raw_sentences = _sequence(_required(text_unit, "sentences"), f"{path}.sentences")
+    parsed: list[AnnotatedSentence] = []
+    for index, raw_sentence in enumerate(raw_sentences):
+        parsed.append(_parse_stanza_sentence(raw_sentence, f"{path}.sentences[{index}]"))
+    return parsed
+
+
+def _parse_stanza_text_unit_entities(
+    text_unit: Mapping[object, object],
+    path: str,
+) -> list[Entity]:
+    raw_entities = _sequence(_required(text_unit, "entities"), f"{path}.entities")
+    parsed: list[Entity] = []
+    for index, raw_entity in enumerate(raw_entities):
+        parsed.append(_parse_stanza_entity(raw_entity, f"{path}.entities[{index}]"))
+    return parsed
+
+
+def _parse_stanza_sentence(value: object, path: str) -> AnnotatedSentence:
+    mapping = _mapping(value, path)
+    text = _string(_required(mapping, "text"), f"{path}.text")
+    if text == "":
+        raise InputValidationError(f"{path}.text must be non-empty.")
+
+    raw_words = _sequence(_required(mapping, "words"), f"{path}.words")
+    if len(raw_words) == 0:
+        raise InputValidationError(f"{path}.words must be non-empty.")
+    ordered_words = sorted(
+        (
+            _parse_stanza_word(raw_word, f"{path}.words[{index}]")
+            for index, raw_word in enumerate(raw_words)
+        ),
+        key=lambda item: item[0],
+    )
+    words = tuple(word for _, _, word in ordered_words)
+    words_by_id = {word_id: word for _, word_id, word in ordered_words}
+
+    raw_tokens = _sequence(_required(mapping, "tokens"), f"{path}.tokens")
+    if len(raw_tokens) == 0:
+        raise InputValidationError(f"{path}.tokens must be non-empty.")
+    ordered_tokens = sorted(
+        (
+            _parse_stanza_token(raw_token, f"{path}.tokens[{index}]", words_by_id)
+            for index, raw_token in enumerate(raw_tokens)
+        ),
+        key=lambda item: item[0],
+    )
+    tokens = tuple(token for _, token in ordered_tokens)
+    flattened = tuple(word for token in tokens for word in token.words)
+    if flattened != words:
+        raise InputValidationError(
+            f"{path}.tokens flattened words must match {path}.words."
+        )
+    return AnnotatedSentence(text=text, tokens=tokens, words=words)
+
+
+def _parse_stanza_token(
+    value: object,
+    path: str,
+    words_by_id: Mapping[str, AnnotatedWord],
+) -> tuple[int, AnnotatedToken]:
+    mapping = _mapping(value, path)
+    token_number = _int(_required(mapping, "token_number"), f"{path}.token_number")
+    text = _string(_required(mapping, "text"), f"{path}.text")
+    if text == "":
+        raise InputValidationError(f"{path}.text must be non-empty.")
+    word_ids = _sequence(_required(mapping, "word_ids"), f"{path}.word_ids")
+    if len(word_ids) == 0:
+        raise InputValidationError(f"{path}.word_ids must be non-empty.")
+    words: list[AnnotatedWord] = []
+    for index, raw_word_id in enumerate(word_ids):
+        word_id = _string(raw_word_id, f"{path}.word_ids[{index}]")
+        word = words_by_id.get(word_id)
+        if word is None:
+            raise InputValidationError(f"{path}.word_ids[{index}] references unknown word id.")
+        words.append(word)
+    return token_number, AnnotatedToken(text=text, words=tuple(words))
+
+
+def _parse_stanza_word(
+    value: object,
+    path: str,
+) -> tuple[int, str, AnnotatedWord]:
+    mapping = _mapping(value, path)
+    word_number = _int(_required(mapping, "word_number"), f"{path}.word_number")
+    word_id = _string(_required(mapping, "id"), f"{path}.id")
+    text = _string(_required(mapping, "text"), f"{path}.text")
+    lemma = _string(_required(mapping, "lemma"), f"{path}.lemma")
+    upos = _string(_required(mapping, "upos"), f"{path}.upos")
+    xpos = _optional_string(mapping, "xpos", f"{path}.xpos")
+    feats = _optional_string(mapping, "feats", f"{path}.feats")
+    head = _int(_required(mapping, "head"), f"{path}.head")
+    deprel = _string(_required(mapping, "deprel"), f"{path}.deprel")
+    start_char = _int(_required(mapping, "start_char"), f"{path}.start_char")
+    end_char = _int(_required(mapping, "end_char"), f"{path}.end_char")
+
+    if text == "":
+        raise InputValidationError(f"{path}.text must be non-empty.")
+    if lemma == "":
+        raise InputValidationError(f"{path}.lemma must be non-empty.")
+    if upos == "":
+        raise InputValidationError(f"{path}.upos must be non-empty.")
+    if deprel == "":
+        raise InputValidationError(f"{path}.deprel must be non-empty.")
+    if feats == "":
+        raise InputValidationError(f"{path}.feats must be non-empty when present.")
+    if head < 0:
+        raise InputValidationError(f"{path}.head must be >= 0.")
+    if start_char > end_char:
+        raise InputValidationError(f"{path}.start_char must be <= end_char.")
+
+    return (
+        word_number,
+        word_id,
+        AnnotatedWord(
+            text=text,
+            lemma=lemma,
+            upos=upos,
+            xpos=xpos,
+            feats=feats,
+            head=head,
+            deprel=deprel,
+            start_char=start_char,
+            end_char=end_char,
+        ),
+    )
+
+
+def _parse_stanza_entity(value: object, path: str) -> Entity:
+    mapping = _mapping(value, path)
+    start_char = _int(_required(mapping, "start_char"), f"{path}.start_char")
+    end_char = _int(_required(mapping, "end_char"), f"{path}.end_char")
+    if start_char > end_char:
+        raise InputValidationError(f"{path}.start_char must be <= end_char.")
+    return Entity(
+        text=_string(_required(mapping, "text"), f"{path}.text"),
+        type=_string(_required(mapping, "type"), f"{path}.type"),
+        start_char=start_char,
+        end_char=end_char,
+    )
 
 
 def validate_paging_config(paging: PagingConfig) -> None:

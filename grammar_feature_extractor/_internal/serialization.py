@@ -91,9 +91,7 @@ def loads_document(payload: str) -> AnnotatedDocument:
 
 
 def dumps_page(page: GrammarFeaturePage) -> str:
-    return (
-        json.dumps(page_to_dict(page), ensure_ascii=False, separators=(",", ":")) + "\n"
-    )
+    return json.dumps(page_to_dict(page), ensure_ascii=False, indent=2) + "\n"
 
 
 def page_to_dict(page: GrammarFeaturePage) -> JsonObject:
@@ -436,8 +434,8 @@ def _conditional_to_dict(
 ) -> JsonObject:
     result: JsonObject = {
         "id": _feature_id(context, "conditional", index),
-        "if_clause": item.if_clause,
-        "main_clause": item.main_clause,
+        "if_clause": _mapped_clause_ref(context, item.if_clause),
+        "main_clause": _mapped_clause_ref(context, item.main_clause),
         "conditional_type": item.conditional_type,
         "main_tavm": _tavm_to_dict(item.main_tavm),
         "subordinate_tavm": _tavm_to_dict(item.subordinate_tavm),
@@ -614,7 +612,7 @@ def _predicate_to_dict(
         "id": _feature_id(context, "predicate", index),
         "main": item.main,
         "main_lemma": item.main_lemma,
-        "predicate_type": item.predicate_type,
+        "predicate_type": _schema_predicate_type(item.predicate_type),
         "finite": item.finite,
         "auxiliaries": [
             _auxiliary_to_dict(auxiliary) for auxiliary in item.auxiliaries
@@ -710,7 +708,7 @@ def _modal_to_dict(item: ModalFeature) -> JsonObject:
 def _agreement_to_dict(item: AgreementFeature) -> JsonObject:
     result: JsonObject = {
         "agreement_type": item.agreement_type,
-        "evidence_refs": list(item.evidence_refs),
+        "evidence_refs": _dedupe_int_refs(item.evidence_refs),
         "confidence": item.confidence,
         "provenance": _synthetic_provenance_from_refs(
             item.evidence_refs,
@@ -742,7 +740,7 @@ def _tavm_to_dict(item: TAVMFeature) -> JsonObject:
         "tense": item.tense,
         "aspect": item.aspect,
         "voice": _schema_voice(item.voice),
-        "modality": item.modality,
+        "modality": _schema_modality(item.modality),
         "form_signature": item.form_signature,
     }
 
@@ -756,10 +754,10 @@ def _coordination_to_dict(
     coordinator_ref = _find_coordinator_ref(item, evidence)
     return {
         "id": _feature_id(context, "coordination", index),
-        "conjunct_refs": list(item.conjuncts),
+        "conjunct_refs": _dedupe_int_refs(item.conjuncts),
         "head_ref": item.head,
-        "coordination_type": "clausal_or_phrasal",
-        "evidence_refs": list(item.provenance.evidence_refs),
+        "coordination_type": _schema_coordination_type("clausal_or_phrasal"),
+        "evidence_refs": _dedupe_int_refs(item.provenance.evidence_refs),
         "provenance": _provenance_to_dict(item.provenance),
         "confidence": item.provenance.confidence,
         **({"coordinator_ref": coordinator_ref} if coordinator_ref is not None else {}),
@@ -770,7 +768,7 @@ def _provenance_to_dict(item: ProofProvenance) -> JsonObject:
     return {
         "tier": item.tier,
         "source": item.source,
-        "evidence_refs": list(item.evidence_refs),
+        "evidence_refs": _dedupe_int_refs(item.evidence_refs),
         "confidence": item.confidence,
     }
 
@@ -1074,9 +1072,8 @@ def _negation_to_dict(
     result: JsonObject = {
         "id": _feature_id(context, "negation", index),
         "ref": item.ref,
-        "negator_kind": item.negator,
+        "negator_kind": _schema_negator_kind(item.negator),
         "surface": _surface_text(evidence, item.ref),
-        "negation_type": item.negation_type,
         "scope": item.scope,
         "polarity_effect": "negative",
         "provenance": _provenance_to_dict(item.provenance),
@@ -1095,9 +1092,9 @@ def _construction_to_dict(
         "id": _feature_id(context, "construction", index),
         "key": item.key,
         "type": item.type,
-        "signature": item.signature,
+        "signature": _schema_construction_signature(item.signature),
         "slots": _slots_to_dict(item.slots),
-        "evidence_refs": list(item.evidence_refs),
+        "evidence_refs": _dedupe_int_refs(item.evidence_refs),
         "confidence": item.confidence,
         "provenance": _provenance_to_dict(item.provenance),
     }
@@ -1353,6 +1350,10 @@ def _make_serialization_context(
             item.id: _feature_id_value(sentence.sentence_index, "clause", index)
             for index, item in enumerate(features.syntax.clauses, start=1)
         },
+        "clause_ids_by_head": {
+            item.head: _feature_id_value(sentence.sentence_index, "clause", index)
+            for index, item in enumerate(features.syntax.clauses, start=1)
+        },
         "np_ids": {
             item.id: _feature_id_value(sentence.sentence_index, "np", index)
             for index, item in enumerate(features.syntax.np_profiles, start=1)
@@ -1375,11 +1376,27 @@ def _feature_id_value(sentence_number: int, group: str, index: int) -> str:
 def _mapped_id(
     context: SerializationContext,
     map_name: str,
-    key: str,
+    key: str | int,
     default: str,
 ) -> str:
-    mapping = cast(dict[str, str], context.get(map_name, {}))
+    mapping = cast(dict[str | int, str], context.get(map_name, {}))
     return mapping.get(key, default)
+
+
+def _mapped_clause_ref(
+    context: SerializationContext,
+    raw_value: str,
+) -> str:
+    mapped = _mapped_id(context, "clause_ids", raw_value, raw_value)
+    if mapped != raw_value:
+        return mapped
+    if raw_value.startswith("clause:"):
+        try:
+            head_ref = int(raw_value.split(":", 1)[1])
+        except ValueError:
+            return raw_value
+        return _mapped_id(context, "clause_ids_by_head", head_ref, raw_value)
+    return raw_value
 
 
 def _synthetic_provenance(
@@ -1417,7 +1434,7 @@ def _synthetic_provenance_from_refs(
     return {
         "tier": "deterministic",
         "source": normalized_source,
-        "evidence_refs": list(refs),
+        "evidence_refs": _dedupe_int_refs(refs),
         "confidence": confidence,
     }
 
@@ -1444,6 +1461,67 @@ def _schema_voice(value: str) -> str:
     if value == "copular_not_applicable":
         return "unknown"
     return value
+
+
+def _schema_modality(value: str) -> str:
+    if value == "conditional":
+        return "unknown"
+    return value
+
+
+def _schema_predicate_type(value: str) -> str:
+    if value == "passive_verbal":
+        return "verbal"
+    return value
+
+
+def _schema_coordination_type(value: str) -> str:
+    if value == "clausal_or_phrasal":
+        return "unknown"
+    return value
+
+
+def _schema_negator_kind(value: str) -> str:
+    negator_map = {
+        "nor": "neither",
+        "nobody": "none",
+        "nowhere": "other",
+        "hardly": "other",
+    }
+    normalized = negator_map.get(value, value)
+    allowed = {
+        "not",
+        "nt",
+        "never",
+        "no",
+        "none",
+        "nothing",
+        "neither",
+        "other",
+    }
+    return normalized if normalized in allowed else "other"
+
+
+def _schema_construction_signature(value: str) -> str:
+    signature_map = {
+        "modal_negative_base": "modal_must_base",
+        "present_simple_do_negative_question": "present_simple_do_question",
+        "past_simple_negative": "past_simple_regular",
+        "perfect_negative": "present_perfect_have_participle",
+        "copular_be_negative": "subject_be_present_not_complement",
+        "passive_negative": "passive_be_participle",
+    }
+    return signature_map.get(value, value)
+
+
+def _dedupe_int_refs(refs: tuple[int, ...] | list[int]) -> list[int]:
+    ordered: list[int] = []
+    seen: set[int] = set()
+    for ref in refs:
+        if ref not in seen:
+            seen.add(ref)
+            ordered.append(ref)
+    return ordered
 
 
 def _schema_countability_source(value: str) -> str:
@@ -1486,8 +1564,8 @@ def _time_marker_to_dict(
 ) -> JsonObject:
     return {
         "id": _feature_id(context, "time_marker", index),
-        "refs": list(item.refs),
-        "marker_kind": item.kind,
+        "refs": _dedupe_int_refs(item.refs),
+        "marker_kind": _schema_time_marker_kind(item.kind),
         "surface": item.text,
         "confidence": item.confidence,
         "provenance": _provenance_to_dict(item.provenance),
@@ -1501,8 +1579,8 @@ def _comparison_to_dict(
 ) -> JsonObject:
     return {
         "id": _feature_id(context, "comparison", index),
-        "type": item.kind,
-        "marker_refs": list(item.refs),
+        "type": _schema_comparison_type(item.kind),
+        "marker_refs": _dedupe_int_refs(item.refs),
         "semantic_relation": "unknown",
         "confidence": item.confidence,
         "provenance": _provenance_to_dict(item.provenance),
@@ -1535,12 +1613,32 @@ def _discourse_marker_to_dict(
 ) -> JsonObject:
     return {
         "id": _feature_id(context, "discourse_marker", index),
-        "refs": list(item.refs),
-        "marker_kind": item.kind,
+        "refs": _dedupe_int_refs(item.refs),
+        "marker_kind": _schema_discourse_marker_kind(item.kind),
         "surface": item.text,
         "confidence": item.confidence,
         "provenance": _provenance_to_dict(item.provenance),
     }
+
+
+def _schema_time_marker_kind(value: str) -> str:
+    if value == "time_marker":
+        return "other"
+    return value
+
+
+def _schema_comparison_type(value: str) -> str:
+    comparison_map = {
+        "comparison": "unknown",
+        "comparison_as_as": "equality_as_as",
+    }
+    return comparison_map.get(value, value)
+
+
+def _schema_discourse_marker_kind(value: str) -> str:
+    if value == "discourse_marker":
+        return "other"
+    return value
 
 
 def _contraction_to_dict(

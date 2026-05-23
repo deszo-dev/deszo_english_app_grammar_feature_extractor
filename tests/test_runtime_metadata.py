@@ -92,7 +92,7 @@ def test_manifest_includes_contract_runtime_metadata(
         (out_dir / "grammar_features.manifest.json").read_text(encoding="utf-8")
     )
     runtime_metadata = manifest["runtime_metadata"]
-    assert runtime_metadata["schema_version"] == "grammar_feature_extractor.v3"
+    assert runtime_metadata["schema_version"] == "grammar_feature_extractor.v5"
     assert runtime_metadata["extractor_version"]
     assert runtime_metadata["resources"]
 

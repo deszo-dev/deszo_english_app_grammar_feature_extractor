@@ -16,12 +16,12 @@ CompatibilityMode: TypeAlias = Literal[
     "hash_exact",
 ]
 
-STAGE_NAME = "grammar_feature_extraction"
-STAGE_CONTRACT_VERSION = "grammar-feature-extraction.v1"
+STAGE_NAME = "grammar_feature_extractor"
+STAGE_CONTRACT_VERSION = "grammar_feature_extractor.stage.v5"
 OUTPUT_SCHEMA_VERSION = SCHEMA_VERSION
-CONFIG_CONTRACT_VERSION = "extractor-config.v1"
+CONFIG_CONTRACT_VERSION = "grammar_feature_extractor.config.v5"
 PIPELINE_NAME = "grammar_feature_extractor"
-PIPELINE_CONTRACT_VERSION = "grammar-feature-extractor-pipeline.v1"
+PIPELINE_CONTRACT_VERSION = "grammar_feature_extractor.pipeline.v5"
 PACKAGE_DISTRIBUTION_NAME = "grammar-feature-extractor"
 
 
@@ -83,22 +83,20 @@ def grammar_feature_extractor_runtime_metadata() -> PipelineRuntimeMetadata:
 
 def runtime_assets() -> tuple[RuntimeAsset, ...]:
     root = repository_root()
-    asset_paths = (
-        root / "schema" / "catalog_feature_paths.json",
-        root / "schema" / "registered_construction_signatures.json",
-        root / "schema" / "registered_enums.json",
-        root
-        / "schema"
-        / "grammar_feature_extractor.v4"
-        / "construction_signature_registry.json",
-    )
+    schema_dir = root / "docs" / "architecture" / "schemas" / "schema"
+    registry_dir = root / "docs" / "architecture" / "schemas" / "registry" / "grammar_feature_extractor"
+    asset_entries: list[tuple[str, str, Path]] = []
+    for path in sorted(schema_dir.glob("*.json")):
+        asset_entries.append((path.name, "schema", path))
+    for path in sorted(registry_dir.glob("*.json")):
+        asset_entries.append((path.name, "registry", path))
     return tuple(
         RuntimeAsset(
-            name=path.relative_to(root).as_posix(),
-            kind="schema-file",
+            name=name,
+            kind=kind,
             sha256=sha256_file(path),
         )
-        for path in asset_paths
+        for name, kind, path in asset_entries
         if path.exists()
     )
 
@@ -156,24 +154,43 @@ def metadata_to_dict(metadata: PipelineRuntimeMetadata) -> dict[str, object]:
 
 def contract_runtime_metadata() -> dict[str, object]:
     resources: list[dict[str, object]] = []
-    schema_root = repository_root() / "docs" / "architecture" / "schema"
+    root = repository_root()
+    schema_root = root / "docs" / "architecture" / "schemas" / "schema"
+    registry_root = root / "docs" / "architecture" / "schemas" / "registry" / "grammar_feature_extractor"
     for path in sorted(schema_root.glob("*.json")):
-        kind = "registry" if "registry" in path.name else "schema"
-        version = "v3" if ".v3." in path.name else "unknown"
         resources.append(
             {
                 "name": path.name,
-                "kind": kind,
-                "version": version,
+                "kind": "schema",
+                "version": _resource_version(path.name),
                 "sha256": sha256_file(path),
                 "required": True,
             }
         )
+    for path in sorted(registry_root.glob("*.json")):
+        resources.append(
+            {
+                "name": path.name,
+                "kind": "registry",
+                "version": _resource_version(path.name),
+                "sha256": sha256_file(path),
+                "required": True,
+            }
+        )
+    resources.sort(key=lambda item: (str(item["kind"]), str(item["name"]), str(item["version"])))
     return {
         "schema_version": SCHEMA_VERSION,
         "extractor_version": get_module_version(PACKAGE_DISTRIBUTION_NAME),
         "resources": resources,
     }
+
+
+def _resource_version(name: str) -> str:
+    if ".v5." in name or name.endswith(".v5.json"):
+        return "v5"
+    if ".v2.0." in name:
+        return "v2.0"
+    return "unknown"
 
 
 def directory_source_fingerprint(root: Path) -> str:
@@ -218,7 +235,7 @@ def package_source_root() -> Path:
 
 
 def repository_root() -> Path:
-    return Path(__file__).resolve().parents[2]
+    return Path(__file__).resolve().parents[3]
 
 
 def get_module_version(distribution_name: str) -> str:

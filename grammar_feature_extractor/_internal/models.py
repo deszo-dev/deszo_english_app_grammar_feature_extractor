@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal, TypeAlias
 
-SCHEMA_VERSION = "grammar_feature_extractor.v3"
+SCHEMA_VERSION = "grammar_feature_extractor.v5"
+LEGACY_INPUT_SCHEMA_VERSION = "grammar_feature_extractor.annotated_document.input.v3"
+AQF_INPUT_SCHEMA_VERSION = "annotation_quality_filter.v2.0"
 DEFAULT_PAGE_SIZE = 300
 DEFAULT_PAGE_NUMBER = 1
 MAX_PAGE_SIZE = 5000
@@ -652,6 +654,18 @@ class AnnotatedDocument:
 
 
 @dataclass(frozen=True, slots=True)
+class ExtractorLimits:
+    max_input_bytes: int = 104857600
+    max_sentences: int = 200000
+    max_words_per_sentence: int = 512
+    max_total_words: int = 5000000
+    max_page_size: int = 5000
+    max_output_page_bytes: int = 104857600
+    max_output_pages: int = 100000
+    max_diagnostics_per_sentence: int = 100
+
+
+@dataclass(frozen=True, slots=True)
 class ExtractorConfig:
     include_diagnostics: bool = True
     include_evidence: bool = True
@@ -659,6 +673,7 @@ class ExtractorConfig:
     include_contrastive_support: bool = True
     enable_heuristics: bool = True
     debug: bool = False
+    limits: ExtractorLimits = field(default_factory=ExtractorLimits)
 
 
 @dataclass(frozen=True, slots=True)

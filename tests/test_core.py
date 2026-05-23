@@ -19,7 +19,7 @@ def test_extracts_v3_shell_evidence_and_morphology() -> None:
     page = GrammarFeatureExtractor().extract_page(document)
     first = page.features[0].features
 
-    assert page.schema_version == "grammar_feature_extractor.v3"
+    assert page.schema_version == "grammar_feature_extractor.v5"
     assert first.evidence.words[0].ref == 1
     assert first.evidence.words[0].lower == "the"
     assert first.evidence.words[1].children == (1,)

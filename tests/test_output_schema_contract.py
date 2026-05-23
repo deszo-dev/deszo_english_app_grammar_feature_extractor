@@ -14,7 +14,7 @@ from grammar_feature_extractor._internal.serialization import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA_DIR = ROOT / "docs" / "architecture" / "schema"
+SCHEMA_DIR = ROOT.parent / "docs" / "architecture" / "schemas" / "schema"
 FIXTURE_DIR = ROOT / "fixtures" / "inputs"
 
 
@@ -34,8 +34,8 @@ def _fixture_document(name: str):
     return loads_document(payload)
 
 
-def test_document_output_validates_against_authoritative_v3_schema() -> None:
-    validator = _validator("grammar_feature_document.v3.schema.json")
+def test_document_output_validates_against_authoritative_v5_schema() -> None:
+    validator = _validator("grammar_feature_document.v5.schema.json")
     extractor = GrammarFeatureExtractor()
 
     for fixture_name in (
@@ -52,8 +52,8 @@ def test_document_output_validates_against_authoritative_v3_schema() -> None:
         ]
 
 
-def test_page_output_validates_against_authoritative_v3_schema() -> None:
-    validator = _validator("grammar_feature_page.v3.schema.json")
+def test_page_output_validates_against_authoritative_v5_schema() -> None:
+    validator = _validator("grammar_feature_page.v5.schema.json")
     extractor = GrammarFeatureExtractor()
 
     fixtures = (

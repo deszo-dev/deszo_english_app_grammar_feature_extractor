@@ -16,7 +16,7 @@ def test_stable_json_omits_none_fields() -> None:
 
     assert payload.endswith("\n")
     assert '"next_page"' not in payload
-    assert payload.startswith('{"schema_version":"grammar_feature_extractor.v3"')
+    assert '"schema_version": "grammar_feature_extractor.v5"' in payload
     assert '"runtime_metadata"' in payload
     assert '"output_completeness"' in payload
     assert '"evidence"' in payload
@@ -34,7 +34,7 @@ def test_cli_stdout_contains_json_and_stderr_is_empty_on_success() -> None:
     )
 
     assert result.returncode == 0
-    assert json.loads(result.stdout)["schema_version"] == "grammar_feature_extractor.v3"
+    assert json.loads(result.stdout)["schema_version"] == "grammar_feature_extractor.v5"
     assert result.stderr == ""
 
 

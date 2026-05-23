@@ -91,8 +91,8 @@ def main(argv: list[str] | None = None) -> int:
         _emit_cli_error("input_json_serialization_error", str(exc))
         return 1
     except FeatureExtractionError as exc:
-        _emit_cli_error("input_validation_error", str(exc))
-        return 2
+        _emit_cli_error("unexpected_system_error", str(exc))
+        return 4
     except OSError as exc:
         _emit_cli_error("output_write_error", str(exc))
         return 3
@@ -237,9 +237,7 @@ def _write_output_dir(
         "pages": pages_manifest,
         "diagnostics": diagnostics_collected,
     }
-    manifest_payload = (
-        json.dumps(manifest, ensure_ascii=False, separators=(",", ":")) + "\n"
-    )
+    manifest_payload = json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
     _atomic_write_text(out_path / "grammar_features.manifest.json", manifest_payload)
     validate_manifest_semantics(manifest, out_path)
 

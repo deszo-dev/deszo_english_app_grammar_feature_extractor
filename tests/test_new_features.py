@@ -103,7 +103,7 @@ def test_output_dir_writes_pages_and_manifest(tmp_path: Path) -> None:
     assert page_path.exists()
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert manifest["kind"] == "grammar_feature_manifest"
-    assert manifest["schema_version"] == "grammar_feature_extractor.v3"
+    assert manifest["schema_version"] == "grammar_feature_extractor.v5"
     assert manifest["page_count"] == 1
     assert manifest["total_sentences"] == 1
     assert len(manifest["pages"]) == 1
