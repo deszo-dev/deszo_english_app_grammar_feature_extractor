@@ -1,0 +1,28 @@
+{
+  "producer": "stanza_annotator_document",
+  "document_id": "fixture-empty",
+  "schema_version": "stanza_annotation_handoff.v1",
+  "status": "succeeded",
+  "language": "en",
+  "execution_status": "completed",
+  "diagnostics": [],
+  "traversal": {
+    "order": "abstract_document_annotation_unit_order",
+    "selected_unit_count": 0,
+    "global_sentence_count": 0,
+    "global_word_count": 0
+  },
+  "unit_selection": {
+    "selected_unit_ids": [],
+    "excluded_units": []
+  },
+  "units": [],
+  "sentence_stream": {
+    "sentences": []
+  },
+  "validation_summary": {
+    "is_handoff_ready": true,
+    "error_count": 0,
+    "warning_count": 0
+  }
+}

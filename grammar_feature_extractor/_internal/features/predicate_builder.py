@@ -5,15 +5,31 @@ from grammar_feature_extractor._internal.features.dependency_helpers import (
     sorted_refs,
 )
 from grammar_feature_extractor._internal.form_signature_registry import (
+    BE_PAST_COPULAR,
     BE_PRESENT_COPULAR,
+    FUTURE_PERFECT,
+    FUTURE_PROGRESSIVE,
+    FUTURE_SIMPLE,
     MODAL_BASE_VERB,
+    MODAL_PERFECT,
+    MODAL_PROGRESSIVE,
     PASSIVE_BE_PARTICIPLE,
+    PASSIVE_PERFECT,
+    PASSIVE_PROGRESSIVE,
+    PAST_PERFECT,
+    PAST_PERFECT_PROGRESSIVE,
+    PAST_PROGRESSIVE,
     PAST_SIMPLE,
+    PAST_SIMPLE_DO_NEGATIVE,
+    PAST_SIMPLE_DO_QUESTION,
     PRESENT_PERFECT,
+    PRESENT_PERFECT_PROGRESSIVE,
     PRESENT_PROGRESSIVE,
     PRESENT_SIMPLE_DO_NEGATIVE,
     PRESENT_SIMPLE_DO_QUESTION,
     PRESENT_SIMPLE_LEXICAL,
+    THERE_BE_EXISTENTIAL_PAST,
+    THERE_BE_EXISTENTIAL_PRESENT,
     UNKNOWN,
 )
 from grammar_feature_extractor._internal.modal_registry import (
@@ -455,23 +471,62 @@ def _form_signature(
     aspect: AspectValue,
     voice: VoiceValue,
 ) -> str:
-    if copula is not None and tense == "present":
+    is_existential = predicate_type == "existential_there"
+    has_modal = any(auxiliary.role == "modal" for auxiliary in auxiliaries)
+    has_do = any(auxiliary.role == "do_support" for auxiliary in auxiliaries)
+
+    if is_existential:
+        if tense == "past":
+            return THERE_BE_EXISTENTIAL_PAST
+        return THERE_BE_EXISTENTIAL_PRESENT
+
+    if copula is not None:
+        if tense == "past":
+            return BE_PAST_COPULAR
         return BE_PRESENT_COPULAR
+
     if voice == "passive":
+        if aspect == "perfect":
+            return PASSIVE_PERFECT
+        if aspect == "progressive":
+            return PASSIVE_PROGRESSIVE
         return PASSIVE_BE_PARTICIPLE
-    if any(auxiliary.role == "modal" for auxiliary in auxiliaries):
+
+    if has_modal:
+        if aspect == "perfect":
+            return MODAL_PERFECT
+        if aspect == "progressive":
+            return MODAL_PROGRESSIVE
+        if tense == "future":
+            if aspect == "perfect":
+                return FUTURE_PERFECT
+            if aspect == "progressive":
+                return FUTURE_PROGRESSIVE
+            return FUTURE_SIMPLE
         return MODAL_BASE_VERB
+
+    if aspect == "perfect" and tense == "past":
+        return PAST_PERFECT
+    if aspect == "perfect_progressive":
+        if tense == "past":
+            return PAST_PERFECT_PROGRESSIVE
+        return PRESENT_PERFECT_PROGRESSIVE
     if aspect == "perfect":
         return PRESENT_PERFECT
     if aspect == "progressive":
+        if tense == "past":
+            return PAST_PROGRESSIVE
         return PRESENT_PROGRESSIVE
-    if (
-        any(auxiliary.role == "do_support" for auxiliary in auxiliaries)
-        and negation is not None
-    ):
+
+    if has_do and negation is not None:
+        if tense == "past":
+            return PAST_SIMPLE_DO_NEGATIVE
         return PRESENT_SIMPLE_DO_NEGATIVE
-    if any(auxiliary.role == "do_support" for auxiliary in auxiliaries):
+    if has_do:
+        if tense == "past":
+            return PAST_SIMPLE_DO_QUESTION
         return PRESENT_SIMPLE_DO_QUESTION
+
     if predicate_type == "verbal" and tense == "past":
         return PAST_SIMPLE
     if (

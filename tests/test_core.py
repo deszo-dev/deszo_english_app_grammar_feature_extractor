@@ -11,7 +11,7 @@ from grammar_feature_extractor._internal.serialization import (
     loads_document,
     page_to_dict,
 )
-from tests.conftest import sample_document
+from tests.conftest import sample_document, stanza_document_from_words
 
 
 def test_extracts_v3_shell_evidence_and_morphology() -> None:
@@ -138,24 +138,7 @@ def test_suffix_only_comparative_does_not_create_normalized_comparative() -> Non
         },
     ]
     page = GrammarFeatureExtractor().extract_page(
-        loads_document(
-            json.dumps(
-                {
-                    "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
-                    "sentences": [
-                        {
-                            "text": "Forever flushing.",
-                            "tokens": [
-                                {"text": str(word["text"]), "words": [word]}
-                                for word in words
-                            ],
-                            "words": words,
-                        }
-                    ],
-                    "entities": [],
-                }
-            )
-        )
+        loads_document(json.dumps(stanza_document_from_words("Forever flushing.", words)))
     )
 
     assert page.features[0].features.morphology.normalized[0].is_comparative is False
@@ -217,22 +200,7 @@ def test_normalizes_infinitive_gerund_and_participles() -> None:
     ]
     page = GrammarFeatureExtractor().extract_page(
         loads_document(
-            json.dumps(
-                {
-                    "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
-                    "sentences": [
-                        {
-                            "text": "To go running written working.",
-                            "tokens": [
-                                {"text": str(word["text"]), "words": [word]}
-                                for word in words
-                            ],
-                            "words": words,
-                        }
-                    ],
-                    "entities": [],
-                }
-            )
+            json.dumps(stanza_document_from_words("To go running written working.", words))
         )
     )
     normalized = page.features[0].features.morphology.normalized
@@ -291,22 +259,7 @@ def test_fragment_gets_sentence_feature() -> None:
         },
     ]
     document = loads_document(
-        json.dumps(
-            {
-                "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
-                "sentences": [
-                    {
-                        "text": "The beautiful place!",
-                        "tokens": [
-                            {"text": str(word["text"]), "words": [word]}
-                            for word in words
-                        ],
-                        "words": words,
-                    }
-                ],
-                "entities": [],
-            }
-        )
+        json.dumps(stanza_document_from_words("The beautiful place!", words))
     )
     page = GrammarFeatureExtractor().extract_page(document)
     sentence = page.features[0].features.lexical.sentence

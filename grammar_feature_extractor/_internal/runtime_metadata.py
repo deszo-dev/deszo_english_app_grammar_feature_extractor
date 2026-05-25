@@ -81,23 +81,35 @@ def grammar_feature_extractor_runtime_metadata() -> PipelineRuntimeMetadata:
     )
 
 
-def runtime_assets() -> tuple[RuntimeAsset, ...]:
+def runtime_asset_sources() -> tuple[tuple[str, str, Path], ...]:
     root = repository_root()
-    schema_dir = root / "docs" / "architecture" / "schemas" / "schema"
-    registry_dir = root / "docs" / "architecture" / "schemas" / "registry" / "grammar_feature_extractor"
+    package_schema_dir = (
+        Path(__file__).resolve().parents[2] / "schema"
+    )
+    docs_schema_dir = root / "docs" / "docs" / "schemas"
     asset_entries: list[tuple[str, str, Path]] = []
-    for path in sorted(schema_dir.glob("*.json")):
-        asset_entries.append((path.name, "schema", path))
-    for path in sorted(registry_dir.glob("*.json")):
-        asset_entries.append((path.name, "registry", path))
+    if docs_schema_dir.exists():
+        for path in sorted(docs_schema_dir.glob("grammar_feature_*.v5.schema.json")):
+            asset_entries.append((path.name, "schema", path))
+    if package_schema_dir.exists():
+        for path in sorted(package_schema_dir.rglob("*.json")):
+            kind = "registry" if "registry" in path.name or "registered" in path.name else "schema"
+            asset_entries.append((path.name, kind, path))
+    lexicon_dir = Path(__file__).resolve().parent / "lexicons"
+    if lexicon_dir.exists():
+        for path in sorted(lexicon_dir.glob("*.json")):
+            asset_entries.append((path.name, "lexicon", path))
+    return tuple(entry for entry in asset_entries if entry[2].exists())
+
+
+def runtime_assets() -> tuple[RuntimeAsset, ...]:
     return tuple(
         RuntimeAsset(
             name=name,
             kind=kind,
             sha256=sha256_file(path),
         )
-        for name, kind, path in asset_entries
-        if path.exists()
+        for name, kind, path in runtime_asset_sources()
     )
 
 
@@ -154,30 +166,19 @@ def metadata_to_dict(metadata: PipelineRuntimeMetadata) -> dict[str, object]:
 
 def contract_runtime_metadata() -> dict[str, object]:
     resources: list[dict[str, object]] = []
-    root = repository_root()
-    schema_root = root / "docs" / "architecture" / "schemas" / "schema"
-    registry_root = root / "docs" / "architecture" / "schemas" / "registry" / "grammar_feature_extractor"
-    for path in sorted(schema_root.glob("*.json")):
+    for name, kind, path in runtime_asset_sources():
         resources.append(
             {
-                "name": path.name,
-                "kind": "schema",
-                "version": _resource_version(path.name),
+                "name": name,
+                "kind": kind,
+                "version": _resource_version(name),
                 "sha256": sha256_file(path),
-                "required": True,
+                "required": kind != "lexicon",
             }
         )
-    for path in sorted(registry_root.glob("*.json")):
-        resources.append(
-            {
-                "name": path.name,
-                "kind": "registry",
-                "version": _resource_version(path.name),
-                "sha256": sha256_file(path),
-                "required": True,
-            }
-        )
-    resources.sort(key=lambda item: (str(item["kind"]), str(item["name"]), str(item["version"])))
+    resources.sort(
+        key=lambda item: (str(item["kind"]), str(item["name"]), str(item["version"]))
+    )
     return {
         "schema_version": SCHEMA_VERSION,
         "extractor_version": get_module_version(PACKAGE_DISTRIBUTION_NAME),

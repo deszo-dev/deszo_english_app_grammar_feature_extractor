@@ -10,31 +10,23 @@ from grammar_feature_extractor._internal.cli import main as cli_main
 from grammar_feature_extractor._internal.errors import InputValidationError
 from grammar_feature_extractor._internal.serialization import dumps_page, loads_document
 from grammar_feature_extractor._internal.validation import parse_annotated_document
-from tests.conftest import sample_aqf_document, sample_document
+from tests.conftest import sample_document
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA_DIR = ROOT.parent / "docs" / "architecture" / "schemas" / "schema"
-REGISTRY_DIR = ROOT.parent / "docs" / "architecture" / "schemas" / "registry" / "grammar_feature_extractor"
+SCHEMA_DIR = ROOT.parent / "docs" / "docs" / "schemas"
+CONTRACT_DIR = ROOT.parent / "docs" / "docs" / "contracts"
 
 
 def test_required_contract_artifacts_exist() -> None:
     required = [
-        str(SCHEMA_DIR / "annotated_document.input.v5.schema.json"),
-        str(SCHEMA_DIR / "cli_error.v5.schema.json"),
-        str(SCHEMA_DIR / "grammar_feature_common.v5.schema.json"),
-        str(SCHEMA_DIR / "grammar_feature_config.input.v5.schema.json"),
         str(SCHEMA_DIR / "grammar_feature_config.v5.schema.json"),
         str(SCHEMA_DIR / "grammar_feature_document.v5.schema.json"),
         str(SCHEMA_DIR / "grammar_feature_manifest.v5.schema.json"),
         str(SCHEMA_DIR / "grammar_feature_page.v5.schema.json"),
-        str(SCHEMA_DIR / "annotation_quality_filter.v2.0.schema.json"),
-        str(SCHEMA_DIR / "annotation_quality_filter_diagnostics.v2.0.schema.json"),
-        str(SCHEMA_DIR / "stanza_annotator.v2.0.schema.json"),
-        str(REGISTRY_DIR / "construction_signature_registry.v5.json"),
-        str(REGISTRY_DIR / "diagnostic_registry.v5.json"),
-        str(REGISTRY_DIR / "feature_path_registry.v5.json"),
-        str(REGISTRY_DIR / "predicate_form_signature_registry.v5.json"),
-        str(REGISTRY_DIR / "semantic_validation_registry.v5.json"),
+        str(SCHEMA_DIR / "stanza_annotator_document_output.schema.json"),
+        str(SCHEMA_DIR / "stanza_annotator_output.schema.json"),
+        str(CONTRACT_DIR / "diagnostics-registry.json"),
+        str(CONTRACT_DIR / "fixture-manifest.json"),
     ]
     for name in required:
         assert Path(name).exists(), name
@@ -42,42 +34,23 @@ def test_required_contract_artifacts_exist() -> None:
 
 def test_registry_counts_match_testing_guide() -> None:
     diagnostics = json.loads(
-        (REGISTRY_DIR / "diagnostic_registry.v5.json").read_text(encoding="utf-8")
+        (CONTRACT_DIR / "diagnostics-registry.json").read_text(encoding="utf-8")
     )
-    semantic = json.loads(
-        (REGISTRY_DIR / "semantic_validation_registry.v5.json").read_text(
-            encoding="utf-8"
-        )
+    fixture_manifest = json.loads(
+        (CONTRACT_DIR / "fixture-manifest.json").read_text(encoding="utf-8")
     )
-    constructions = json.loads(
-        (REGISTRY_DIR / "construction_signature_registry.v5.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    predicates = json.loads(
-        (REGISTRY_DIR / "predicate_form_signature_registry.v5.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    feature_paths = json.loads(
-        (REGISTRY_DIR / "feature_path_registry.v5.json").read_text(encoding="utf-8")
-    )
-    assert len(diagnostics["codes"]) == 21
-    assert len(semantic["codes"]) == 29
-    assert len(constructions["signatures"]) == 24
-    assert len(predicates["form_signatures"]) == 21
-    assert len(feature_paths["paths"]) == 21
+    assert len(diagnostics["diagnostics"]) == 9
+    assert len(fixture_manifest["fixtures"]) == 10
 
 
-def test_input_requires_schema_version_and_rejects_unknown_fields() -> None:
+def test_input_requires_stanza_producer_and_allows_upstream_metadata() -> None:
     raw = sample_document()
-    raw.pop("schema_version")
+    raw.pop("producer")
     with pytest.raises(InputValidationError):
         parse_annotated_document(raw)
     raw = sample_document()
-    raw["unknown"] = 1
-    with pytest.raises(InputValidationError):
-        parse_annotated_document(raw)
+    raw["metadata"] = {"source": "upstream"}
+    parse_annotated_document(raw)
 
 
 def test_input_rejects_null_feats() -> None:
@@ -138,7 +111,12 @@ def test_canonical_output_is_stable() -> None:
     assert page1 == page2
 
 
-def test_parse_aqf_success_envelope() -> None:
-    document = parse_annotated_document(sample_aqf_document())
-    assert len(document.sentences) == 1
-    assert document.sentences[0].text == "The students will read books."
+def test_rejects_aqf_success_envelope() -> None:
+    with pytest.raises(InputValidationError):
+        parse_annotated_document(
+            {
+                "schema_version": "annotation_quality_filter.v2.0",
+                "status": "succeeded",
+                "diagnostics": [],
+            }
+        )

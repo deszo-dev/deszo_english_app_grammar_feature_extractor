@@ -37,6 +37,9 @@ def build_token_evidence(
                 start_char=word.start_char,
                 end_char=word.end_char,
                 position=position,
+                source_word_id=word.source_word_id,
+                source_token_id=word.source_token_id,
+                source_unit_id=word.source_unit_id,
             )
         )
     return tuple(items)

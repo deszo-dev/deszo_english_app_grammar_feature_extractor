@@ -5,6 +5,7 @@ import json
 from grammar_feature_extractor import GrammarFeatureExtractor
 from grammar_feature_extractor._internal.models import NPFeature, PredicateFeature
 from grammar_feature_extractor._internal.serialization import loads_document
+from tests.conftest import stanza_document_from_words
 
 
 def _word(
@@ -32,17 +33,7 @@ def _word(
 
 
 def _sentence(text: str, words: list[dict[str, object]]):
-    payload = {
-        "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
-        "sentences": [
-            {
-                "text": text,
-                "tokens": [{"text": word["text"], "words": [word]} for word in words],
-                "words": words,
-            }
-        ],
-        "entities": [],
-    }
+    payload = stanza_document_from_words(text, words)
     document = loads_document(json.dumps(payload))
     return GrammarFeatureExtractor().extract_page(document).features[0]
 

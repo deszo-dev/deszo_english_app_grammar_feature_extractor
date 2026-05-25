@@ -21,20 +21,12 @@ def test_v5_output_has_kind_and_no_registry_version_field() -> None:
     assert "construction_signature_registry_version" not in payload
 
 
-def test_construction_registry_v5_exists_and_has_signatures() -> None:
+def test_schema_bundle_manifest_tracks_feature_schemas() -> None:
     root = Path(__file__).resolve().parents[4]
-    registry_path = (
-        root
-        / "docs"
-        / "architecture"
-        / "schemas"
-        / "registry"
-        / "grammar_feature_extractor"
-        / "construction_signature_registry.v5.json"
-    )
-    registry = json.loads(registry_path.read_text(encoding="utf-8"))
-    signatures = {item["signature"] for item in registry["signatures"]}
+    manifest_path = root / "docs" / "docs" / "contracts" / "schema-bundle-manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    schema_paths = {item["path"] for item in manifest["schemas"]}
 
-    assert registry["schema_version"] == "grammar_feature_extractor.v5"
-    assert "there_be_np" in signatures
-    assert len(signatures) >= 20
+    assert manifest["schema_version"] == "1.0.0"
+    assert "docs/schemas/grammar_feature_document.v5.schema.json" in schema_paths
+    assert "docs/schemas/stanza_annotator_document_output.schema.json" in schema_paths

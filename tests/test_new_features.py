@@ -7,7 +7,7 @@ from pathlib import Path
 from grammar_feature_extractor import GrammarFeatureExtractor
 from grammar_feature_extractor._internal.cli import main as cli_main
 from grammar_feature_extractor._internal.serialization import loads_document
-from tests.conftest import sample_document
+from tests.conftest import sample_document, stanza_document_from_words
 
 
 def _extract():
@@ -16,51 +16,39 @@ def _extract():
 
 
 def test_pronouns_emitted_for_known_pronoun() -> None:
-    payload = {
-        "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
-        "sentences": [
-            {
-                "text": "She reads books.",
-                "tokens": [],
-                "words": [
-                    {
-                        "text": "She",
-                        "lemma": "she",
-                        "upos": "PRON",
-                        "feats": "Person=3|Number=Sing",
-                        "head": 2,
-                        "deprel": "nsubj",
-                        "start_char": 0,
-                        "end_char": 3,
-                    },
-                    {
-                        "text": "reads",
-                        "lemma": "read",
-                        "upos": "VERB",
-                        "feats": "Tense=Pres|VerbForm=Fin|Person=3|Number=Sing",
-                        "head": 0,
-                        "deprel": "root",
-                        "start_char": 4,
-                        "end_char": 9,
-                    },
-                    {
-                        "text": "books",
-                        "lemma": "book",
-                        "upos": "NOUN",
-                        "feats": "Number=Plur",
-                        "head": 2,
-                        "deprel": "obj",
-                        "start_char": 10,
-                        "end_char": 15,
-                    },
-                ],
-            }
-        ],
-        "entities": [],
-    }
-    payload["sentences"][0]["tokens"] = [
-        {"text": w["text"], "words": [w]} for w in payload["sentences"][0]["words"]
+    words: list[dict[str, object]] = [
+        {
+            "text": "She",
+            "lemma": "she",
+            "upos": "PRON",
+            "feats": "Person=3|Number=Sing",
+            "head": 2,
+            "deprel": "nsubj",
+            "start_char": 0,
+            "end_char": 3,
+        },
+        {
+            "text": "reads",
+            "lemma": "read",
+            "upos": "VERB",
+            "feats": "Tense=Pres|VerbForm=Fin|Person=3|Number=Sing",
+            "head": 0,
+            "deprel": "root",
+            "start_char": 4,
+            "end_char": 9,
+        },
+        {
+            "text": "books",
+            "lemma": "book",
+            "upos": "NOUN",
+            "feats": "Number=Plur",
+            "head": 2,
+            "deprel": "obj",
+            "start_char": 10,
+            "end_char": 15,
+        },
     ]
+    payload = stanza_document_from_words("She reads books.", words)
     document = loads_document(json.dumps(payload))
     result = GrammarFeatureExtractor().extract(document)
     pronouns = result.sentences[0].features.syntax.pronouns

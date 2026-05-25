@@ -4,27 +4,11 @@ import json
 
 from grammar_feature_extractor import GrammarFeatureExtractor
 from grammar_feature_extractor._internal.serialization import loads_document
+from tests.conftest import stanza_document_from_words
 
 
 def document_from_words(text: str, words: list[dict[str, object]]):
-    return loads_document(
-        json.dumps(
-            {
-                "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
-                "sentences": [
-                    {
-                        "text": text,
-                        "tokens": [
-                            {"text": str(word["text"]), "words": [word]}
-                            for word in words
-                        ],
-                        "words": words,
-                    }
-                ],
-                "entities": [],
-            }
-        )
-    )
+    return loads_document(json.dumps(stanza_document_from_words(text, words)))
 
 
 def test_builds_phrases_roles_valency_and_complements() -> None:

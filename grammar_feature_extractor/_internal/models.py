@@ -4,8 +4,7 @@ from dataclasses import dataclass, field
 from typing import Literal, TypeAlias
 
 SCHEMA_VERSION = "grammar_feature_extractor.v5"
-LEGACY_INPUT_SCHEMA_VERSION = "grammar_feature_extractor.annotated_document.input.v3"
-AQF_INPUT_SCHEMA_VERSION = "annotation_quality_filter.v2.0"
+STANZA_DOCUMENT_PRODUCER = "stanza_annotator_document"
 DEFAULT_PAGE_SIZE = 300
 DEFAULT_PAGE_NUMBER = 1
 MAX_PAGE_SIZE = 5000
@@ -624,6 +623,9 @@ class AnnotatedWord:
     deprel: str
     start_char: int
     end_char: int
+    source_word_id: str | None = None
+    source_token_id: str | None = None
+    source_unit_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -645,12 +647,33 @@ class AnnotatedSentence:
     text: str
     tokens: tuple[AnnotatedToken, ...]
     words: tuple[AnnotatedWord, ...]
+    global_sentence_id: str | None = None
+    global_sentence_index: int | None = None
+    local_sentence_index: int | None = None
+    source_unit_id: str | None = None
+    source_unit_order: int | None = None
+    source_unit_type: str | None = None
+    source_unit_role: str | None = None
+    source_text_hash: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class StanzaDocumentInputLineage:
+    source_module: str
+    source_schema_version: str
+    document_id: str
+    language: str | None
+    source_status: Literal["success", "succeeded", "partial"]
+    selected_unit_count: int
+    global_sentence_count: int
+    global_word_count: int
 
 
 @dataclass(frozen=True, slots=True)
 class AnnotatedDocument:
     sentences: tuple[AnnotatedSentence, ...]
     entities: tuple[Entity, ...]
+    input_lineage: StanzaDocumentInputLineage
 
 
 @dataclass(frozen=True, slots=True)
@@ -706,6 +729,9 @@ class TokenEvidence:
     start_char: int
     end_char: int
     position: int
+    source_word_id: str | None = None
+    source_token_id: str | None = None
+    source_unit_id: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -1391,6 +1417,137 @@ class LexicalFeatures:
 
 
 @dataclass(frozen=True, slots=True)
+class FeatureGroupQuality:
+    overall: str = "high"
+    evidence: str | None = None
+    morphology: str | None = None
+    dependencies: str | None = None
+    predicates: str | None = None
+    clauses: str | None = None
+    np_profiles: str | None = None
+    constructions: str | None = None
+    lexical: str | None = None
+    recommended_processing_mode: str | None = None
+    reason_codes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class CoverageEntry:
+    status: str = "not_applicable"
+    expected: int | None = None
+    emitted: int = 0
+    families_attempted: tuple[str, ...] = ()
+    families_omitted: tuple[str, ...] = ()
+    reason_codes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class FeatureCoverage:
+    predicate_detection: CoverageEntry | None = None
+    clause_detection: CoverageEntry | None = None
+    np_detection: CoverageEntry | None = None
+    construction_detection: CoverageEntry | None = None
+    lexical_detection: CoverageEntry | None = None
+    absence_detection: CoverageEntry | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class CandidateFeature:
+    candidate_id: str
+    group: str
+    decision: str
+    reason: str
+    evidence_refs: tuple[int, ...]
+    confidence: str
+    candidate_type: str | None = None
+    signature: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class NormalizationTraceStep:
+    step: str
+    result: str
+    refs: tuple[int, ...] = ()
+    reason: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class NormalizationTrace:
+    trace_id: str
+    target_group: str
+    steps: tuple[NormalizationTraceStep, ...]
+    target_feature_id: str | None = None
+    nearest_known_signatures: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class ConstructionFamilySummary:
+    count: int
+    signatures: tuple[str, ...]
+    status: str
+    reason_codes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class FeatureConflict:
+    conflict_id: str
+    type: str
+    feature_paths: tuple[str, ...]
+    evidence_refs: tuple[int, ...]
+    resolution: str
+    winner: str | None = None
+    confidence_after_resolution: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class NegativeEvidence:
+    target: str
+    scope: str
+    anchor_ref: int
+    checked_window: tuple[int, int]
+    result: str
+    confidence: str
+    interpretation: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class PatternWindow:
+    window_id: str
+    anchor_ref: int
+    window_type: str
+    refs: tuple[int, ...]
+    surface: str
+    lemmas: tuple[str, ...]
+    upos: tuple[str, ...]
+    deprels: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class LocalContext:
+    paragraph_position: str = "unknown"
+    same_unit_previous_sentence_available: bool = False
+    same_unit_next_sentence_available: bool = False
+    quote_continuation_state: str = "unknown"
+    previous_sentence_index: int | None = None
+    next_sentence_index: int | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ProcessingSupport:
+    quality: FeatureGroupQuality = field(default_factory=FeatureGroupQuality)
+    coverage: FeatureCoverage = field(default_factory=FeatureCoverage)
+    candidate_features: tuple[CandidateFeature, ...] = ()
+    normalization_trace: tuple[NormalizationTrace, ...] = ()
+    construction_family_summary: dict[str, ConstructionFamilySummary] = field(
+        default_factory=dict
+    )
+    feature_conflicts: tuple[FeatureConflict, ...] = ()
+    negative_evidence: tuple[NegativeEvidence, ...] = ()
+    pattern_windows: tuple[PatternWindow, ...] = ()
+    local_context: LocalContext = field(default_factory=LocalContext)
+
+
+@dataclass(frozen=True, slots=True)
 class GrammarFeatureSet:
     evidence: EvidenceFeatures
     morphology: MorphologyFeatures
@@ -1404,6 +1561,7 @@ class GrammarFeatureSet:
     diagnostics: tuple[FeatureDiagnostic, ...]
     feature_diagnostics: FeatureDiagnostics
     feature_support: dict[str, FeatureSupportItem]
+    processing_support: ProcessingSupport | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -1411,6 +1569,14 @@ class SentenceGrammarFeatures:
     sentence_index: int
     text: str
     features: GrammarFeatureSet
+    global_sentence_id: str | None = None
+    global_sentence_index: int | None = None
+    local_sentence_index: int | None = None
+    source_unit_id: str | None = None
+    source_unit_order: int | None = None
+    source_unit_type: str | None = None
+    source_unit_role: str | None = None
+    source_text_hash: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -1418,6 +1584,7 @@ class GrammarFeatureDocument:
     schema_version: str
     source_sentence_count: int
     sentences: tuple[SentenceGrammarFeatures, ...]
+    input_lineage: StanzaDocumentInputLineage
 
 
 @dataclass(frozen=True, slots=True)
@@ -1436,6 +1603,7 @@ class GrammarFeaturePage:
     schema_version: str
     page: PageInfo
     features: tuple[SentenceGrammarFeatures, ...]
+    input_lineage: StanzaDocumentInputLineage
 
 
 @dataclass(frozen=True, slots=True)

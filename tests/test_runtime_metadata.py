@@ -94,7 +94,7 @@ def test_manifest_includes_contract_runtime_metadata(
     runtime_metadata = manifest["runtime_metadata"]
     assert runtime_metadata["schema_version"] == "grammar_feature_extractor.v5"
     assert runtime_metadata["extractor_version"]
-    assert runtime_metadata["resources"]
+    assert isinstance(runtime_metadata["resources"], list)
 
 
 def test_source_fingerprint_ignores_ignored_directories(tmp_path: Path) -> None:

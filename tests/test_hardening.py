@@ -4,6 +4,7 @@ import json
 
 from grammar_feature_extractor import ExtractorConfig, GrammarFeatureExtractor
 from grammar_feature_extractor._internal.serialization import loads_document
+from tests.conftest import stanza_document_from_words
 
 
 def test_no_object_np_makes_predicate_negative() -> None:
@@ -119,22 +120,7 @@ def _extract(
     config: ExtractorConfig | None = None,
 ):
     document = loads_document(
-        json.dumps(
-            {
-                "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
-                "sentences": [
-                    {
-                        "text": text,
-                        "tokens": [
-                            {"text": str(word["text"]), "words": [word]}
-                            for word in words
-                        ],
-                        "words": words,
-                    }
-                ],
-                "entities": [],
-            }
-        )
+        json.dumps(stanza_document_from_words(text, words))
     )
     return GrammarFeatureExtractor().extract_page(document, config=config)
 

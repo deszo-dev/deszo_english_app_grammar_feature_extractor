@@ -62,6 +62,7 @@ from grammar_feature_extractor._internal.models import (
     SentenceGrammarFeatures,
     SlotValue,
     SpecialSubjectConstructionFeature,
+    StanzaDocumentInputLineage,
     SyntaxFeatures,
     TAVMFeature,
     TimeExpressionFeature,
@@ -99,6 +100,7 @@ def page_to_dict(page: GrammarFeaturePage) -> JsonObject:
         "schema_version": page.schema_version,
         "kind": "grammar_feature_page",
         "runtime_metadata": _coerce_json_object(contract_runtime_metadata()),
+        "input_lineage": _input_lineage_to_dict(page.input_lineage),
         "output_completeness": _output_completeness_from_sentences(page.features),
         "page": _page_info_to_dict(page.page),
         "features": [_sentence_to_dict(sentence) for sentence in page.features],
@@ -110,6 +112,7 @@ def document_to_dict(document: GrammarFeatureDocument) -> JsonObject:
         "schema_version": document.schema_version,
         "kind": "grammar_feature_document",
         "runtime_metadata": _coerce_json_object(contract_runtime_metadata()),
+        "input_lineage": _input_lineage_to_dict(document.input_lineage),
         "output_completeness": _output_completeness_from_sentences(document.sentences),
         "source_sentence_count": document.source_sentence_count,
         "sentences": [_sentence_to_dict(sentence) for sentence in document.sentences],
@@ -132,11 +135,43 @@ def _page_info_to_dict(page: PageInfo) -> JsonObject:
 
 def _sentence_to_dict(sentence: SentenceGrammarFeatures) -> JsonObject:
     context = _make_serialization_context(sentence)
-    return {
+    result: JsonObject = {
         "sentence_index": sentence.sentence_index,
         "text": sentence.text,
         "features": _feature_set_to_dict(sentence.features, context),
     }
+    if sentence.global_sentence_id is not None:
+        result["global_sentence_id"] = sentence.global_sentence_id
+    if sentence.global_sentence_index is not None:
+        result["global_sentence_index"] = sentence.global_sentence_index
+    if sentence.local_sentence_index is not None:
+        result["local_sentence_index"] = sentence.local_sentence_index
+    if sentence.source_unit_id is not None:
+        result["source_unit_id"] = sentence.source_unit_id
+    if sentence.source_unit_order is not None:
+        result["source_unit_order"] = sentence.source_unit_order
+    if sentence.source_unit_type is not None:
+        result["source_unit_type"] = sentence.source_unit_type
+    if sentence.source_unit_role is not None:
+        result["source_unit_role"] = sentence.source_unit_role
+    if sentence.source_text_hash is not None:
+        result["source_text_hash"] = sentence.source_text_hash
+    return result
+
+
+def _input_lineage_to_dict(lineage: StanzaDocumentInputLineage) -> JsonObject:
+    result: JsonObject = {
+        "source_module": lineage.source_module,
+        "source_schema_version": lineage.source_schema_version,
+        "document_id": lineage.document_id,
+        "source_status": lineage.source_status,
+        "selected_unit_count": lineage.selected_unit_count,
+        "global_sentence_count": lineage.global_sentence_count,
+        "global_word_count": lineage.global_word_count,
+    }
+    if lineage.language is not None:
+        result["language"] = lineage.language
+    return result
 
 
 def _feature_set_to_dict(
@@ -171,7 +206,209 @@ def _feature_set_to_dict(
             for diagnostic in [_diagnostic_to_dict(item)]
             if diagnostic is not None
         ],
+        "processing_support": _processing_support_to_dict(features.processing_support),
     }
+
+
+def _processing_support_to_dict(support: object) -> JsonObject:
+    from grammar_feature_extractor._internal.models import (  # local to avoid cycle
+        FeatureCoverage,
+        FeatureGroupQuality,
+        LocalContext,
+        ProcessingSupport,
+    )
+
+    if support is None:
+        support = ProcessingSupport()
+    quality = support.quality if isinstance(support.quality, FeatureGroupQuality) else FeatureGroupQuality()
+    coverage = support.coverage if isinstance(support.coverage, FeatureCoverage) else FeatureCoverage()
+    local_context = (
+        support.local_context
+        if isinstance(support.local_context, LocalContext)
+        else LocalContext()
+    )
+
+    return {
+        "quality": _quality_to_dict(quality),
+        "coverage": _coverage_to_dict(coverage),
+        "candidate_features": [
+            _candidate_feature_to_dict(c) for c in support.candidate_features
+        ],
+        "normalization_trace": [
+            _normalization_trace_to_dict(t) for t in support.normalization_trace
+        ],
+        "construction_family_summary": {
+            family: _construction_family_summary_to_dict(summary)
+            for family, summary in support.construction_family_summary.items()
+        },
+        "feature_conflicts": [
+            _feature_conflict_to_dict(c) for c in support.feature_conflicts
+        ],
+        "negative_evidence": [
+            _negative_evidence_to_dict(n) for n in support.negative_evidence
+        ],
+        "pattern_windows": [
+            _pattern_window_to_dict(w) for w in support.pattern_windows
+        ],
+        "local_context": _local_context_to_dict(local_context),
+    }
+
+
+def _quality_to_dict(q: object) -> JsonObject:
+    result: JsonObject = {"overall": q.overall}
+    for attr in (
+        "evidence",
+        "morphology",
+        "dependencies",
+        "predicates",
+        "clauses",
+        "np_profiles",
+        "constructions",
+        "lexical",
+        "recommended_processing_mode",
+    ):
+        value = getattr(q, attr, None)
+        if value is not None:
+            result[attr] = value
+    if q.reason_codes:
+        result["reason_codes"] = list(q.reason_codes)
+    return result
+
+
+def _coverage_to_dict(coverage: object) -> JsonObject:
+    result: JsonObject = {}
+    for attr in (
+        "predicate_detection",
+        "clause_detection",
+        "np_detection",
+        "construction_detection",
+        "lexical_detection",
+        "absence_detection",
+    ):
+        entry = getattr(coverage, attr, None)
+        if entry is not None:
+            result[attr] = _coverage_entry_to_dict(entry)
+    return result
+
+
+def _coverage_entry_to_dict(entry: object) -> JsonObject:
+    result: JsonObject = {
+        "status": entry.status,
+        "emitted": entry.emitted,
+        "reason_codes": list(entry.reason_codes),
+    }
+    if entry.expected is not None:
+        result["expected"] = entry.expected
+    if entry.families_attempted:
+        result["families_attempted"] = list(entry.families_attempted)
+    if entry.families_omitted:
+        result["families_omitted"] = list(entry.families_omitted)
+    return result
+
+
+def _candidate_feature_to_dict(c: object) -> JsonObject:
+    result: JsonObject = {
+        "candidate_id": c.candidate_id,
+        "group": c.group,
+        "decision": c.decision,
+        "reason": c.reason,
+        "evidence_refs": list(c.evidence_refs),
+        "confidence": c.confidence,
+    }
+    if c.candidate_type is not None:
+        result["candidate_type"] = c.candidate_type
+    if c.signature is not None:
+        result["signature"] = c.signature
+    return result
+
+
+def _normalization_trace_to_dict(trace: object) -> JsonObject:
+    result: JsonObject = {
+        "trace_id": trace.trace_id,
+        "target_group": trace.target_group,
+        "steps": [_normalization_step_to_dict(s) for s in trace.steps],
+    }
+    if trace.target_feature_id is not None:
+        result["target_feature_id"] = trace.target_feature_id
+    if trace.nearest_known_signatures:
+        result["nearest_known_signatures"] = list(trace.nearest_known_signatures)
+    return result
+
+
+def _normalization_step_to_dict(step: object) -> JsonObject:
+    result: JsonObject = {"step": step.step, "result": step.result}
+    if step.refs:
+        result["refs"] = list(step.refs)
+    if step.reason is not None:
+        result["reason"] = step.reason
+    return result
+
+
+def _construction_family_summary_to_dict(summary: object) -> JsonObject:
+    result: JsonObject = {
+        "count": summary.count,
+        "signatures": list(summary.signatures),
+        "status": summary.status,
+    }
+    if summary.reason_codes:
+        result["reason_codes"] = list(summary.reason_codes)
+    return result
+
+
+def _feature_conflict_to_dict(c: object) -> JsonObject:
+    result: JsonObject = {
+        "conflict_id": c.conflict_id,
+        "type": c.type,
+        "feature_paths": list(c.feature_paths),
+        "evidence_refs": list(c.evidence_refs),
+        "resolution": c.resolution,
+    }
+    if c.winner is not None:
+        result["winner"] = c.winner
+    if c.confidence_after_resolution is not None:
+        result["confidence_after_resolution"] = c.confidence_after_resolution
+    return result
+
+
+def _negative_evidence_to_dict(item: object) -> JsonObject:
+    result: JsonObject = {
+        "target": item.target,
+        "scope": item.scope,
+        "anchor_ref": item.anchor_ref,
+        "checked_window": list(item.checked_window),
+        "result": item.result,
+        "confidence": item.confidence,
+    }
+    if item.interpretation is not None:
+        result["interpretation"] = item.interpretation
+    return result
+
+
+def _pattern_window_to_dict(window: object) -> JsonObject:
+    return {
+        "window_id": window.window_id,
+        "anchor_ref": window.anchor_ref,
+        "window_type": window.window_type,
+        "refs": list(window.refs),
+        "surface": window.surface,
+        "lemmas": list(window.lemmas),
+        "upos": list(window.upos),
+        "deprels": list(window.deprels),
+    }
+
+
+def _local_context_to_dict(ctx: object) -> JsonObject:
+    result: JsonObject = {
+        "paragraph_position": ctx.paragraph_position,
+        "same_unit_previous_sentence_available": ctx.same_unit_previous_sentence_available,
+        "same_unit_next_sentence_available": ctx.same_unit_next_sentence_available,
+        "quote_continuation_state": ctx.quote_continuation_state,
+    }
+    if ctx.previous_sentence_index is not None:
+        result["previous_sentence_index"] = ctx.previous_sentence_index
+    if ctx.next_sentence_index is not None:
+        result["next_sentence_index"] = ctx.next_sentence_index
+    return result
 
 
 def _tokens_to_dict(evidence: EvidenceFeatures) -> list[JsonValue]:
@@ -222,6 +459,12 @@ def _token_evidence_to_dict(item: TokenEvidence) -> JsonObject:
     }
     if item.xpos is not None:
         result["xpos"] = item.xpos
+    if item.source_word_id is not None:
+        result["source_word_id"] = item.source_word_id
+    if item.source_token_id is not None:
+        result["source_token_id"] = item.source_token_id
+    if item.source_unit_id is not None:
+        result["source_unit_id"] = item.source_unit_id
     return result
 
 
@@ -1292,27 +1535,27 @@ def _normalized_diagnostic(item: FeatureDiagnostic) -> FeatureDiagnostic | None:
             "features.evidence.words[*].ref",
         ),
         "unknown_predicate_type": (
-            "internal_feature_error",
+            "predicate_type_unknown",
             "features.syntax.predicates[*].tavm.form_signature",
         ),
         "fragment_non_predicative_root": (
-            "unsupported_feature",
+            "non_predicative_fragment",
             "features.lexical.sentence.sentence_type",
         ),
         "quoted_speech_fragment": (
-            "unsupported_feature",
+            "quoted_speech_fragment",
             "features.lexical.sentence.sentence_type",
         ),
         "address_or_date_fragment": (
-            "unsupported_feature",
+            "address_or_date_fragment",
             "features.lexical.sentence.sentence_type",
         ),
         "heading_fragment": (
-            "unsupported_feature",
+            "heading_fragment",
             "features.lexical.sentence.sentence_type",
         ),
         "possible_parser_error": (
-            "internal_feature_error",
+            "parser_degraded_predicate",
             "features.syntax.predicates[*].tavm.form_signature",
         ),
         "article_slot_not_applicable": (None, None),

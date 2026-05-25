@@ -46,10 +46,16 @@ def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     try:
         args = parser.parse_args(argv)
+        if args.input and args.input_dir:
+            raise ConfigurationError("--input and --input-dir are mutually exclusive.")
         if args.output and args.output_dir:
             raise ConfigurationError(
                 "--output and --output-dir are mutually exclusive."
             )
+        if args.input_dir and args.output:
+            raise ConfigurationError("--output cannot be used with --input-dir.")
+        if args.input_dir and not args.output_dir:
+            raise ConfigurationError("--input-dir requires --output-dir.")
         page_number = _positive_int(args.page, "--page")
         page_size = _positive_int(args.page_size, "--page-size")
         paging = PagingConfig(page_number=page_number, page_size=page_size)
@@ -59,6 +65,15 @@ def main(argv: list[str] | None = None) -> int:
             enable_heuristics=not args.no_heuristics,
             debug=args.debug,
         )
+        if args.input_dir:
+            _write_batch_output_dir(
+                args.input_dir,
+                page_size,
+                config,
+                args.output_dir,
+                args.overwrite,
+            )
+            return 0
         payload = _read_input(args.input)
         document = loads_document(payload)
         if args.output_dir:
@@ -109,6 +124,14 @@ def _build_parser() -> argparse.ArgumentParser:
         help="AnnotatedDocument JSON input file.",
     )
     parser.add_argument(
+        "--input-dir",
+        default=None,
+        help=(
+            "Batch mode: directory of stanza_annotator_document JSON files. "
+            "Requires --output-dir."
+        ),
+    )
+    parser.add_argument(
         "--output",
         default=None,
         help="GrammarFeaturePage JSON output file.",
@@ -155,6 +178,22 @@ def _read_input(path: str | None) -> str:
     return input_path.read_text(encoding="utf-8")
 
 
+def _input_files_from_dir(path: str) -> list[Path]:
+    input_dir = Path(path)
+    if input_dir.is_symlink() or not input_dir.is_dir():
+        raise OSError("--input-dir must be a directory.")
+    files = sorted(
+        candidate
+        for candidate in input_dir.iterdir()
+        if candidate.is_file()
+        and not candidate.is_symlink()
+        and candidate.suffix.casefold() == ".json"
+    )
+    if not files:
+        raise OSError("--input-dir must contain at least one .json file.")
+    return files
+
+
 def _write_output(path: str | None, payload: str) -> None:
     if path is None:
         sys.stdout.write(payload)
@@ -166,13 +205,13 @@ def _write_output(path: str | None, payload: str) -> None:
     if output_path.exists() and output_path.is_dir():
         raise OSError("--output must not be a directory.")
     parent = output_path.parent if output_path.parent != Path("") else Path(".")
+    payload_bytes = payload.encode("utf-8")
     with tempfile.NamedTemporaryFile(
-        "w",
-        encoding="utf-8",
+        "wb",
         dir=parent,
         delete=False,
     ) as tmp:
-        tmp.write(payload)
+        tmp.write(payload_bytes)
         tmp.flush()
         os.fsync(tmp.fileno())
         tmp_path = Path(tmp.name)
@@ -207,7 +246,8 @@ def _write_output_dir(
         max(1, math.ceil(total_sentences / page_size)) if total_sentences else 1
     )
     pages_manifest: list[dict[str, object]] = []
-    diagnostics_collected: list[dict[str, object]] = []
+    page_diagnostic_counts: dict[str, int] = {}
+    total_page_diagnostics = 0
     for page_number in range(1, page_count + 1):
         paging = PagingConfig(page_number=page_number, page_size=page_size)
         page = extractor.extract_page(document, paging, config)
@@ -216,6 +256,18 @@ def _write_output_dir(
         target = out_path / file_name
         _atomic_write_text(target, payload)
         sha256 = hashlib.sha256(payload.encode("utf-8")).hexdigest()
+        on_disk_sha256 = hashlib.sha256(target.read_bytes()).hexdigest()
+        if on_disk_sha256 != sha256:
+            raise SerializationError(
+                "Canonical page bytes on disk diverge from payload hash "
+                f"({file_name}); aborting to avoid manifest mismatch."
+            )
+        serialized_page = json.loads(payload)
+        for sentence in serialized_page.get("features", []):
+            for diagnostic in sentence.get("features", {}).get("diagnostics", []):
+                code = str(diagnostic.get("code", ""))
+                total_page_diagnostics += 1
+                page_diagnostic_counts[code] = page_diagnostic_counts.get(code, 0) + 1
         pages_manifest.append(
             {
                 "page_number": page_number,
@@ -225,8 +277,15 @@ def _write_output_dir(
                 "sha256": sha256,
             }
         )
-        for diagnostic in _diagnostics_in_page(page):
-            diagnostics_collected.append(diagnostic)
+    diagnostic_summary = {
+        "source": "page_diagnostics_plus_document_summary",
+        "page_diagnostic_counts": dict(
+            sorted(page_diagnostic_counts.items(), key=lambda item: item[0])
+        ),
+        "document_summary_counts": {},
+        "total_page_diagnostics": total_page_diagnostics,
+        "total_document_summary_diagnostics": 0,
+    }
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "kind": "grammar_feature_manifest",
@@ -235,11 +294,87 @@ def _write_output_dir(
         "page_count": page_count,
         "total_sentences": total_sentences,
         "pages": pages_manifest,
-        "diagnostics": diagnostics_collected,
+        "diagnostic_summary": diagnostic_summary,
     }
     manifest_payload = json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
     _atomic_write_text(out_path / "grammar_features.manifest.json", manifest_payload)
     validate_manifest_semantics(manifest, out_path)
+
+
+def _write_batch_output_dir(
+    input_dir: str,
+    page_size: int,
+    config: ExtractorConfig,
+    output_dir: str,
+    overwrite: bool,
+) -> None:
+    input_files = _input_files_from_dir(input_dir)
+    out_path = Path(output_dir)
+    if out_path.is_symlink():
+        raise OSError("Symlink output targets are rejected.")
+    if out_path.exists() and not out_path.is_dir():
+        raise OSError("--output-dir must be a directory path.")
+    out_path.mkdir(parents=True, exist_ok=True)
+    if not overwrite and any(out_path.iterdir()):
+        raise OSError("--output-dir must be empty unless --overwrite is set.")
+
+    inputs_manifest: list[dict[str, object]] = []
+    used_names: set[str] = set()
+    for input_file in input_files:
+        payload = input_file.read_text(encoding="utf-8")
+        document = loads_document(payload)
+        input_sha256 = hashlib.sha256(payload.encode("utf-8")).hexdigest()
+        subdir_name = _unique_batch_subdir_name(input_file.stem, used_names)
+        target_dir = out_path / subdir_name
+        _write_output_dir(
+            document,
+            page_size,
+            config,
+            str(target_dir),
+            input_sha256,
+            overwrite,
+        )
+        manifest_path = target_dir / "grammar_features.manifest.json"
+        child_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        inputs_manifest.append(
+            {
+                "input_file": input_file.name,
+                "output_dir": subdir_name,
+                "manifest_file": f"{subdir_name}/grammar_features.manifest.json",
+                "input_sha256": input_sha256,
+                "page_count": child_manifest["page_count"],
+                "total_sentences": child_manifest["total_sentences"],
+            }
+        )
+
+    batch_manifest = {
+        "schema_version": SCHEMA_VERSION,
+        "kind": "grammar_feature_batch_manifest",
+        "runtime_metadata": contract_runtime_metadata(),
+        "input_dir": str(Path(input_dir)),
+        "output_dir": str(out_path),
+        "input_count": len(inputs_manifest),
+        "page_size": page_size,
+        "inputs": inputs_manifest,
+    }
+    batch_payload = json.dumps(batch_manifest, ensure_ascii=False, indent=2) + "\n"
+    _atomic_write_text(out_path / "grammar_features.batch_manifest.json", batch_payload)
+
+
+def _unique_batch_subdir_name(stem: str, used_names: set[str]) -> str:
+    safe = "".join(
+        char if char.isalnum() or char in {"-", "_", "."} else "_"
+        for char in stem.strip()
+    ).strip("._")
+    if not safe:
+        safe = "input"
+    candidate = safe
+    index = 2
+    while candidate in used_names:
+        candidate = f"{safe}_{index}"
+        index += 1
+    used_names.add(candidate)
+    return candidate
 
 
 def _diagnostics_in_page(page: GrammarFeaturePage) -> list[dict[str, object]]:
@@ -264,13 +399,13 @@ def _atomic_write_text(target: Path, payload: str) -> None:
         raise OSError("Symlink output targets are rejected.")
     parent = target.parent if target.parent != Path("") else Path(".")
     parent.mkdir(parents=True, exist_ok=True)
+    payload_bytes = payload.encode("utf-8")
     with tempfile.NamedTemporaryFile(
-        "w",
-        encoding="utf-8",
+        "wb",
         dir=parent,
         delete=False,
     ) as tmp:
-        tmp.write(payload)
+        tmp.write(payload_bytes)
         tmp.flush()
         os.fsync(tmp.fileno())
         tmp_path = Path(tmp.name)

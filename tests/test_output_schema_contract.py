@@ -14,8 +14,8 @@ from grammar_feature_extractor._internal.serialization import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA_DIR = ROOT.parent / "docs" / "architecture" / "schemas" / "schema"
-FIXTURE_DIR = ROOT / "fixtures" / "inputs"
+SCHEMA_DIR = ROOT.parent / "docs" / "docs" / "schemas"
+FIXTURE_DIR = ROOT / "tests" / "fixtures" / "stanza"
 
 
 def _validator(schema_name: str) -> Draft202012Validator:
@@ -39,9 +39,8 @@ def test_document_output_validates_against_authoritative_v5_schema() -> None:
     extractor = GrammarFeatureExtractor()
 
     for fixture_name in (
-        "valid_minimal_copular.json",
-        "valid_empty_document.json",
-        "filtered_annotated_document.v3.json",
+        "minimal_empty_stanza_document.json",
+        "dracula_single_unit_stanza_document.json",
     ):
         document = _fixture_document(fixture_name)
         payload = document_to_dict(extractor.extract(document))
@@ -57,12 +56,8 @@ def test_page_output_validates_against_authoritative_v5_schema() -> None:
     extractor = GrammarFeatureExtractor()
 
     fixtures = (
-        ("valid_minimal_copular.json", PagingConfig(page_number=1, page_size=300)),
-        ("valid_empty_document.json", PagingConfig(page_number=1, page_size=300)),
-        (
-            "filtered_annotated_document.v3.json",
-            PagingConfig(page_number=1, page_size=5),
-        ),
+        ("minimal_empty_stanza_document.json", PagingConfig(page_number=1, page_size=300)),
+        ("dracula_single_unit_stanza_document.json", PagingConfig(page_number=1, page_size=5)),
     )
     for fixture_name, paging in fixtures:
         document = _fixture_document(fixture_name)

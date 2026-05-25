@@ -29,7 +29,25 @@ STRICT_NEGATORS = frozenset(
 )
 NEGATIVE_LIKE_ADVERBS = frozenset({"scarcely", "hardly"})
 NEGATIVE_COORDINATORS = frozenset({"nor"})
-CONTRACTION_SUFFIXES = ("n't", "'m", "'re", "'ve", "'ll", "'s", "'d")
+CONTRACTION_SUFFIXES = (
+    "n't",
+    "'m",
+    "'re",
+    "'ve",
+    "'ll",
+    "'s",
+    "'d",
+    "n’t",
+    "’m",
+    "’re",
+    "’ve",
+    "’ll",
+    "’s",
+    "’d",
+)
+ARCHAIC_CONTRACTIONS = frozenset(
+    {"'tis", "'twas", "'twere", "'twill", "'twould", "'em", "ne'er", "e'en", "o'er"}
+)
 DISCOURSE_MARKERS = frozenset(
     {"certainly", "therefore", "however", "but", "then", "indeed", "well"}
 )
@@ -501,11 +519,19 @@ def _discourse_markers(ctx: SentenceContext) -> list[LexicalItemFeature]:
 
 
 def _contractions(ctx: SentenceContext) -> list[LexicalItemFeature]:
-    return [
-        _lexical_item(ctx, "contraction", (ref,), "high")
-        for ref in ctx.refs
-        if ctx.word_by_ref[ref].text.casefold().endswith(CONTRACTION_SUFFIXES)
-    ]
+    items: list[LexicalItemFeature] = []
+    for ref in ctx.refs:
+        text = ctx.word_by_ref[ref].text
+        lowered = text.casefold()
+        if (
+            lowered.endswith(CONTRACTION_SUFFIXES)
+            or lowered in ARCHAIC_CONTRACTIONS
+            or ("'" in text[1:] and len(text) > 1 and not lowered.endswith("'s'"))
+            and any(suffix.strip("’'") in lowered for suffix in CONTRACTION_SUFFIXES)
+        ):
+            if lowered.endswith(CONTRACTION_SUFFIXES) or lowered in ARCHAIC_CONTRACTIONS:
+                items.append(_lexical_item(ctx, "contraction", (ref,), "high"))
+    return items
 
 
 def _noun_inflections(ctx: SentenceContext) -> list[LexicalItemFeature]:

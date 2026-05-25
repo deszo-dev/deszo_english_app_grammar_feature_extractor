@@ -33,16 +33,19 @@ def test_rejects_null_feats() -> None:
     raw = sample_document()
     sentence = raw["sentences"][0]  # type: ignore[index]
     sentence["words"][3]["feats"] = None  # type: ignore[index]
-    sentence["tokens"][3]["words"][0]["feats"] = None  # type: ignore[index]
 
     with pytest.raises(InputValidationError):
         parse_annotated_document(raw)
 
 
-def test_rejects_token_words_that_do_not_match_sentence_words() -> None:
+def test_rejects_duplicate_global_sentence_index() -> None:
     raw = sample_document()
-    sentence = raw["sentences"][0]  # type: ignore[index]
-    sentence["tokens"] = sentence["tokens"][:-1]  # type: ignore[index]
+    unit = raw["units"][0]  # type: ignore[index]
+    annotation = unit["annotation"]  # type: ignore[index]
+    sentence = annotation["sentences"][0]  # type: ignore[index]
+    duplicate = dict(sentence)
+    duplicate["global_sentence_id"] = "doc_test:s000001"
+    annotation["sentences"] = [sentence, duplicate]  # type: ignore[index]
 
     with pytest.raises(InputValidationError):
         parse_annotated_document(raw)

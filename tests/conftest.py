@@ -52,110 +52,141 @@ def sample_document() -> dict[str, object]:
             "end_char": 28,
         },
     ]
-    return {
-        "schema_version": "grammar_feature_extractor.annotated_document.input.v3",
-        "sentences": [
+    for index, word in enumerate(words, start=1):
+        word["id"] = f"u-test:s0000:w{index:04d}"
+        word["word_number"] = index
+    sentence = {
+        "id": "u-test:s0000",
+        "text": "The students will read books.",
+        "global_sentence_id": "doc_test:s000000",
+        "global_sentence_index": 0,
+        "local_sentence_index": 0,
+        "tokens": [
             {
-                "text": "The students will read books.",
-                "tokens": [
-                    {"text": str(word["text"]), "words": [word]} for word in words
-                ],
-                "words": words,
+                "text": str(word["text"]),
+                "word_ids": [str(word["id"])],
+                "words": [word],
+            }
+            for word in words
+        ],
+        "words": words,
+    }
+    return {
+        "producer": "stanza_annotator_document",
+        "document_id": "doc-test",
+        "schema_version": "stanza_annotation_handoff.v1",
+        "status": "succeeded",
+        "language": "en",
+        "execution_status": "completed",
+        "traversal": {
+            "order": "abstract_document_annotation_unit_order",
+            "selected_unit_count": 1,
+            "global_sentence_count": 1,
+            "global_word_count": len(words),
+        },
+        "unit_selection": {
+            "selected_unit_ids": ["u-test"],
+            "excluded_units": [],
+        },
+        "units": [
+            {
+                "unit_id": "u-test",
+                "unit_type": "paragraph",
+                "role": "body",
+                "order": 0,
+                "unit_order": 0,
+                "text_hash": "sha256:" + ("0" * 64),
+                "execution_status": "completed",
+                "annotation": {
+                    "status": "succeeded",
+                    "execution_status": "completed",
+                    "sentences": [sentence],
+                    "diagnostics": [],
+                },
             }
         ],
         "entities": [],
+        "diagnostics": [],
+        "sentence_stream": {"sentences": [sentence]},
+        "validation_summary": {
+            "is_handoff_ready": True,
+            "error_count": 0,
+            "warning_count": 0,
+        },
+        # Test compatibility alias only; the implementation ignores it.
+        "sentences": [sentence],
     }
 
 
-def sample_aqf_document() -> dict[str, object]:
-    legacy = sample_document()
-    sentence = legacy["sentences"][0]  # type: ignore[index]
-    words = sentence["words"]  # type: ignore[index]
-    tokens = sentence["tokens"]  # type: ignore[index]
-    stanza_words: list[dict[str, object]] = []
-    stanza_tokens: list[dict[str, object]] = []
-    for index, word in enumerate(words, start=1):
-        word_id = f"w{index}"
-        stanza_words.append(
+def stanza_document_from_words(
+    text: str,
+    words: list[dict[str, object]],
+    *,
+    document_id: str = "doc-test",
+    unit_id: str = "u-test",
+) -> dict[str, object]:
+    prepared_words: list[dict[str, object]] = []
+    for index, raw_word in enumerate(words, start=1):
+        word = dict(raw_word)
+        word.setdefault("id", f"{unit_id}:s0000:w{index:04d}")
+        word.setdefault("word_number", index)
+        prepared_words.append(word)
+    sentence = {
+        "id": f"{unit_id}:s0000",
+        "text": text,
+        "global_sentence_id": f"{document_id}:s000000",
+        "global_sentence_index": 0,
+        "local_sentence_index": 0,
+        "tokens": [
             {
-                "id": word_id,
-                "text_unit_id": "tu1",
-                "sentence_id": "s1",
-                "word_number": index,
-                **word,
+                "text": str(word["text"]),
+                "word_ids": [str(word["id"])],
+                "words": [word],
             }
-        )
-    for index, token in enumerate(tokens, start=1):
-        stanza_tokens.append(
-            {
-                "id": f"t{index}",
-                "text_unit_id": "tu1",
-                "sentence_id": "s1",
-                "token_number": index,
-                "text": token["text"],
-                "start_char": words[index - 1]["start_char"],
-                "end_char": words[index - 1]["end_char"],
-                "word_ids": [f"w{index}"],
-            }
-        )
+            for word in prepared_words
+        ],
+        "words": prepared_words,
+    }
     return {
-        "schema_version": "annotation_quality_filter.v2.0",
+        "producer": "stanza_annotator_document",
+        "document_id": document_id,
+        "schema_version": "stanza_annotation_handoff.v1",
         "status": "succeeded",
-        "diagnostics": [],
-        "annotation_quality": {
-            "module_name": "annotation_quality_filter",
-            "module_version": "2.0.0",
-            "config_version": "annotation_quality_filter_config.v2.0",
-            "status": "succeeded",
-            "duration_ms": 1,
+        "language": "en",
+        "execution_status": "completed",
+        "traversal": {
+            "order": "abstract_document_annotation_unit_order",
+            "selected_unit_count": 1,
+            "global_sentence_count": 1,
+            "global_word_count": len(prepared_words),
         },
-        "quality": {
-            "source": {
-                "stanza_schema_version": "stanza_annotator.v2.0",
-                "quality_input_fingerprint": "sha256:" + ("0" * 64),
-            },
-            "text_units": [],
-            "summary": {},
-            "config_version": "annotation_quality_filter_config.v2.0",
+        "unit_selection": {
+            "selected_unit_ids": [unit_id],
+            "excluded_units": [],
         },
-        "document": {
-            "book": {
-                "chapters": [
-                    {
-                        "id": "ch1",
-                        "chapter_number": 1,
-                        "type": "chapter",
-                        "text": sentence["text"],
-                        "text_annotation_status": "annotated",
-                        "text_annotation": {
-                            "text_unit_id": "tu1",
-                            "ref": {
-                                "kind": "chapter_text",
-                                "text_unit_id": "tu1",
-                                "owner_type": "chapter",
-                                "owner_id": "ch1",
-                                "source_field": "text",
-                            },
-                            "text": sentence["text"],
-                            "sentences": [
-                                {
-                                    "id": "s1",
-                                    "text_unit_id": "tu1",
-                                    "sentence_number": 1,
-                                    "text": sentence["text"],
-                                    "start_char": 0,
-                                    "end_char": words[-1]["end_char"],
-                                    "tokens": stanza_tokens,
-                                    "words": stanza_words,
-                                    "summary": {},
-                                }
-                            ],
-                            "entities": [],
-                            "summary": {},
-                        },
-                        "footnotes": [],
-                    }
-                ]
+        "units": [
+            {
+                "unit_id": unit_id,
+                "unit_type": "paragraph",
+                "role": "body",
+                "order": 0,
+                "unit_order": 0,
+                "text_hash": "sha256:" + ("0" * 64),
+                "execution_status": "completed",
+                "annotation": {
+                    "status": "succeeded",
+                    "execution_status": "completed",
+                    "sentences": [sentence],
+                    "diagnostics": [],
+                },
             }
+        ],
+        "diagnostics": [],
+        "sentence_stream": {"sentences": [sentence]},
+        "validation_summary": {
+            "is_handoff_ready": True,
+            "error_count": 0,
+            "warning_count": 0,
         },
+        "sentences": [sentence],
     }

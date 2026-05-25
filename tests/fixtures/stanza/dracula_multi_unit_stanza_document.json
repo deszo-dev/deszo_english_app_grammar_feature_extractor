@@ -1,0 +1,4698 @@
+{
+  "producer": "stanza_annotator_document",
+  "document_id": "epub:sha256:3788fa5c940a3e15f923ce345e484e2c97eaa26d54c96cc304e07cac5330a466",
+  "schema_version": "stanza_annotation_handoff.v1",
+  "status": "succeeded",
+  "language": "en",
+  "execution_status": "completed",
+  "diagnostics": [],
+  "traversal": {
+    "order": "abstract_document_annotation_unit_order",
+    "selected_unit_count": 3,
+    "global_sentence_count": 5,
+    "global_word_count": 97
+  },
+  "unit_selection": {
+    "selected_unit_ids": [
+      "u0000-p-chapter-001",
+      "u0001-h-chapter-002",
+      "u0002-p-chapter-002"
+    ],
+    "excluded_units": []
+  },
+  "units": [
+    {
+      "unit_id": "u0000-p-chapter-001",
+      "unit_type": "paragraph",
+      "role": "body",
+      "order": 0,
+      "unit_order": 0,
+      "external_id": "abstract_document:u0000-p-chapter-001",
+      "document_path": {
+        "part": "body",
+        "chapter_index": null,
+        "section_index": null
+      },
+      "text_hash": "sha256:bb3e6a9bc8229f003502f05024f8188accd6bacdaa555d55b6cdea33bd33053b",
+      "execution_status": "completed",
+      "annotation_layer_quality": {
+        "tokenization": "high",
+        "char_spans": "high",
+        "sentence_boundary": "high",
+        "lemma": "high",
+        "upos": "high",
+        "xpos": "high",
+        "morphology": "high",
+        "dependency_parse": "high",
+        "quote_context": "high",
+        "entities": "unknown"
+      },
+      "consumer_readiness": {
+        "eligible": true,
+        "mode": "normal",
+        "safe_annotation_layers": [
+          "words",
+          "tokens",
+          "morphology"
+        ],
+        "risky_annotation_layers": [],
+        "blocked_annotation_layers": [],
+        "reason_codes": []
+      },
+      "annotation": {
+        "text": "How these papers have been placed in sequence will be made manifest in the reading of them. All needless matters have been eliminated, so that a history almost at variance with the possibilities of later-day belief may stand forth as simple fact. There is throughout no statement of past things wherein memory may err, for all the records chosen are exactly contemporary, given from the standpoints and within the range of knowledge of those who made them.",
+        "status": "succeeded",
+        "sentences": [
+          {
+            "index": 0,
+            "text": "How these papers have been placed in sequence will be made manifest in the reading of them.",
+            "tokens": [
+              {
+                "index": 0,
+                "text": "How",
+                "id": "u0000-p-chapter-001:s0000:t0001",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0001"
+                ],
+                "mwt": false,
+                "lemma": "how",
+                "upos": "ADV",
+                "xpos": "WRB",
+                "feats": {
+                  "PronType": "Int"
+                },
+                "head": 11,
+                "deprel": "advmod",
+                "start_char": 0,
+                "end_char": 3
+              },
+              {
+                "index": 1,
+                "text": "these",
+                "id": "u0000-p-chapter-001:s0000:t0002",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0002"
+                ],
+                "mwt": false,
+                "lemma": "this",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats": {
+                  "Number": "Plur",
+                  "PronType": "Dem"
+                },
+                "head": 3,
+                "deprel": "det",
+                "start_char": 4,
+                "end_char": 9
+              },
+              {
+                "index": 2,
+                "text": "papers",
+                "id": "u0000-p-chapter-001:s0000:t0003",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0003"
+                ],
+                "mwt": false,
+                "lemma": "paper",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats": {
+                  "Number": "Plur"
+                },
+                "head": 6,
+                "deprel": "nsubj:pass",
+                "start_char": 10,
+                "end_char": 16
+              },
+              {
+                "index": 3,
+                "text": "have",
+                "id": "u0000-p-chapter-001:s0000:t0004",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0004"
+                ],
+                "mwt": false,
+                "lemma": "have",
+                "upos": "AUX",
+                "xpos": "VBP",
+                "feats": {
+                  "Mood": "Ind",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "Tense": "Pres",
+                  "VerbForm": "Fin"
+                },
+                "head": 6,
+                "deprel": "aux",
+                "start_char": 17,
+                "end_char": 21
+              },
+              {
+                "index": 4,
+                "text": "been",
+                "id": "u0000-p-chapter-001:s0000:t0005",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0005"
+                ],
+                "mwt": false,
+                "lemma": "be",
+                "upos": "AUX",
+                "xpos": "VBN",
+                "feats": {
+                  "Tense": "Past",
+                  "VerbForm": "Part"
+                },
+                "head": 6,
+                "deprel": "aux:pass",
+                "start_char": 22,
+                "end_char": 26
+              },
+              {
+                "index": 5,
+                "text": "placed",
+                "id": "u0000-p-chapter-001:s0000:t0006",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0006"
+                ],
+                "mwt": false,
+                "lemma": "place",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "head": 1,
+                "deprel": "advcl:relcl",
+                "start_char": 27,
+                "end_char": 33
+              },
+              {
+                "index": 6,
+                "text": "in",
+                "id": "u0000-p-chapter-001:s0000:t0007",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0007"
+                ],
+                "mwt": false,
+                "lemma": "in",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 8,
+                "deprel": "case",
+                "start_char": 34,
+                "end_char": 36
+              },
+              {
+                "index": 7,
+                "text": "sequence",
+                "id": "u0000-p-chapter-001:s0000:t0008",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0008"
+                ],
+                "mwt": false,
+                "lemma": "sequence",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 6,
+                "deprel": "obl",
+                "start_char": 37,
+                "end_char": 45
+              },
+              {
+                "index": 8,
+                "text": "will",
+                "id": "u0000-p-chapter-001:s0000:t0009",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0009"
+                ],
+                "mwt": false,
+                "lemma": "will",
+                "upos": "AUX",
+                "xpos": "MD",
+                "feats": {
+                  "VerbForm": "Fin"
+                },
+                "head": 11,
+                "deprel": "aux",
+                "start_char": 46,
+                "end_char": 50
+              },
+              {
+                "index": 9,
+                "text": "be",
+                "id": "u0000-p-chapter-001:s0000:t0010",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0010"
+                ],
+                "mwt": false,
+                "lemma": "be",
+                "upos": "AUX",
+                "xpos": "VB",
+                "feats": {
+                  "VerbForm": "Inf"
+                },
+                "head": 11,
+                "deprel": "aux:pass",
+                "start_char": 51,
+                "end_char": 53
+              },
+              {
+                "index": 10,
+                "text": "made",
+                "id": "u0000-p-chapter-001:s0000:t0011",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0011"
+                ],
+                "mwt": false,
+                "lemma": "make",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "head": 0,
+                "deprel": "root",
+                "start_char": 54,
+                "end_char": 58
+              },
+              {
+                "index": 11,
+                "text": "manifest",
+                "id": "u0000-p-chapter-001:s0000:t0012",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0012"
+                ],
+                "mwt": false,
+                "lemma": "manifest",
+                "upos": "ADJ",
+                "xpos": "JJ",
+                "feats": {
+                  "Degree": "Pos"
+                },
+                "head": 11,
+                "deprel": "xcomp",
+                "start_char": 59,
+                "end_char": 67
+              },
+              {
+                "index": 12,
+                "text": "in",
+                "id": "u0000-p-chapter-001:s0000:t0013",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0013"
+                ],
+                "mwt": false,
+                "lemma": "in",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 15,
+                "deprel": "case",
+                "start_char": 68,
+                "end_char": 70
+              },
+              {
+                "index": 13,
+                "text": "the",
+                "id": "u0000-p-chapter-001:s0000:t0014",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0014"
+                ],
+                "mwt": false,
+                "lemma": "the",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats": {
+                  "Definite": "Def",
+                  "PronType": "Art"
+                },
+                "head": 15,
+                "deprel": "det",
+                "start_char": 71,
+                "end_char": 74
+              },
+              {
+                "index": 14,
+                "text": "reading",
+                "id": "u0000-p-chapter-001:s0000:t0015",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0015"
+                ],
+                "mwt": false,
+                "lemma": "reading",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 11,
+                "deprel": "obl",
+                "start_char": 75,
+                "end_char": 82
+              },
+              {
+                "index": 15,
+                "text": "of",
+                "id": "u0000-p-chapter-001:s0000:t0016",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0016"
+                ],
+                "mwt": false,
+                "lemma": "of",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 17,
+                "deprel": "case",
+                "start_char": 83,
+                "end_char": 85
+              },
+              {
+                "index": 16,
+                "text": "them",
+                "id": "u0000-p-chapter-001:s0000:t0017",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0017"
+                ],
+                "mwt": false,
+                "lemma": "they",
+                "upos": "PRON",
+                "xpos": "PRP",
+                "feats": {
+                  "Case": "Acc",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "PronType": "Prs"
+                },
+                "head": 15,
+                "deprel": "nmod",
+                "start_char": 86,
+                "end_char": 90
+              },
+              {
+                "index": 17,
+                "text": ".",
+                "id": "u0000-p-chapter-001:s0000:t0018",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0000:w0018"
+                ],
+                "mwt": false,
+                "lemma": ".",
+                "upos": "PUNCT",
+                "xpos": ".",
+                "feats": null,
+                "head": 11,
+                "deprel": "punct",
+                "start_char": 90,
+                "end_char": 91
+              }
+            ],
+            "id": "u0000-p-chapter-001:s0000",
+            "text_unit_id": "u0000-p-chapter-001",
+            "sentence_index": 0,
+            "local_sentence_index": 0,
+            "global_sentence_id": "fixture:dracula:s000000",
+            "global_sentence_index": 0,
+            "start_char": 0,
+            "end_char": 91,
+            "offset_space": "text_unit_text",
+            "sentence_span_source": "reconstructed_from_word_spans",
+            "words": [
+              {
+                "id": "u0000-p-chapter-001:s0000:w0001",
+                "word_number": 1,
+                "text": "How",
+                "lemma": "how",
+                "upos": "ADV",
+                "xpos": "WRB",
+                "feats_raw": "PronType=Int",
+                "feats_map": {
+                  "PronType": "Int"
+                },
+                "feats_parse_status": "parsed",
+                "head": 11,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0011",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0000:w0006"
+                ],
+                "deprel": "advmod",
+                "start_char": 0,
+                "end_char": 3
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0002",
+                "word_number": 2,
+                "text": "these",
+                "lemma": "this",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats_raw": "Number=Plur|PronType=Dem",
+                "feats_map": {
+                  "Number": "Plur",
+                  "PronType": "Dem"
+                },
+                "feats_parse_status": "parsed",
+                "head": 3,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0003",
+                "children_word_ids": [],
+                "deprel": "det",
+                "start_char": 4,
+                "end_char": 9
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0003",
+                "word_number": 3,
+                "text": "papers",
+                "lemma": "paper",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats_raw": "Number=Plur",
+                "feats_map": {
+                  "Number": "Plur"
+                },
+                "feats_parse_status": "parsed",
+                "head": 6,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0006",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0000:w0002"
+                ],
+                "deprel": "nsubj:pass",
+                "start_char": 10,
+                "end_char": 16
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0004",
+                "word_number": 4,
+                "text": "have",
+                "lemma": "have",
+                "upos": "AUX",
+                "xpos": "VBP",
+                "feats_raw": "Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin",
+                "feats_map": {
+                  "Mood": "Ind",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "Tense": "Pres",
+                  "VerbForm": "Fin"
+                },
+                "feats_parse_status": "parsed",
+                "head": 6,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0006",
+                "children_word_ids": [],
+                "deprel": "aux",
+                "start_char": 17,
+                "end_char": 21
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0005",
+                "word_number": 5,
+                "text": "been",
+                "lemma": "be",
+                "upos": "AUX",
+                "xpos": "VBN",
+                "feats_raw": "Tense=Past|VerbForm=Part",
+                "feats_map": {
+                  "Tense": "Past",
+                  "VerbForm": "Part"
+                },
+                "feats_parse_status": "parsed",
+                "head": 6,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0006",
+                "children_word_ids": [],
+                "deprel": "aux:pass",
+                "start_char": 22,
+                "end_char": 26
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0006",
+                "word_number": 6,
+                "text": "placed",
+                "lemma": "place",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats_raw": "Tense=Past|VerbForm=Part|Voice=Pass",
+                "feats_map": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "feats_parse_status": "parsed",
+                "head": 1,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0001",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0000:w0003",
+                  "u0000-p-chapter-001:s0000:w0004",
+                  "u0000-p-chapter-001:s0000:w0005",
+                  "u0000-p-chapter-001:s0000:w0008"
+                ],
+                "deprel": "advcl:relcl",
+                "start_char": 27,
+                "end_char": 33
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0007",
+                "word_number": 7,
+                "text": "in",
+                "lemma": "in",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 8,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0008",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 34,
+                "end_char": 36
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0008",
+                "word_number": 8,
+                "text": "sequence",
+                "lemma": "sequence",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 6,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0006",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0000:w0007"
+                ],
+                "deprel": "obl",
+                "start_char": 37,
+                "end_char": 45
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0009",
+                "word_number": 9,
+                "text": "will",
+                "lemma": "will",
+                "upos": "AUX",
+                "xpos": "MD",
+                "feats_raw": "VerbForm=Fin",
+                "feats_map": {
+                  "VerbForm": "Fin"
+                },
+                "feats_parse_status": "parsed",
+                "head": 11,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0011",
+                "children_word_ids": [],
+                "deprel": "aux",
+                "start_char": 46,
+                "end_char": 50
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0010",
+                "word_number": 10,
+                "text": "be",
+                "lemma": "be",
+                "upos": "AUX",
+                "xpos": "VB",
+                "feats_raw": "VerbForm=Inf",
+                "feats_map": {
+                  "VerbForm": "Inf"
+                },
+                "feats_parse_status": "parsed",
+                "head": 11,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0011",
+                "children_word_ids": [],
+                "deprel": "aux:pass",
+                "start_char": 51,
+                "end_char": 53
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0011",
+                "word_number": 11,
+                "text": "made",
+                "lemma": "make",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats_raw": "Tense=Past|VerbForm=Part|Voice=Pass",
+                "feats_map": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "feats_parse_status": "parsed",
+                "head": 0,
+                "head_word_id": null,
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0000:w0001",
+                  "u0000-p-chapter-001:s0000:w0009",
+                  "u0000-p-chapter-001:s0000:w0010",
+                  "u0000-p-chapter-001:s0000:w0012",
+                  "u0000-p-chapter-001:s0000:w0015",
+                  "u0000-p-chapter-001:s0000:w0018"
+                ],
+                "deprel": "root",
+                "start_char": 54,
+                "end_char": 58
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0012",
+                "word_number": 12,
+                "text": "manifest",
+                "lemma": "manifest",
+                "upos": "ADJ",
+                "xpos": "JJ",
+                "feats_raw": "Degree=Pos",
+                "feats_map": {
+                  "Degree": "Pos"
+                },
+                "feats_parse_status": "parsed",
+                "head": 11,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0011",
+                "children_word_ids": [],
+                "deprel": "xcomp",
+                "start_char": 59,
+                "end_char": 67
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0013",
+                "word_number": 13,
+                "text": "in",
+                "lemma": "in",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 15,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0015",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 68,
+                "end_char": 70
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0014",
+                "word_number": 14,
+                "text": "the",
+                "lemma": "the",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats_raw": "Definite=Def|PronType=Art",
+                "feats_map": {
+                  "Definite": "Def",
+                  "PronType": "Art"
+                },
+                "feats_parse_status": "parsed",
+                "head": 15,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0015",
+                "children_word_ids": [],
+                "deprel": "det",
+                "start_char": 71,
+                "end_char": 74
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0015",
+                "word_number": 15,
+                "text": "reading",
+                "lemma": "reading",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 11,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0011",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0000:w0013",
+                  "u0000-p-chapter-001:s0000:w0014",
+                  "u0000-p-chapter-001:s0000:w0017"
+                ],
+                "deprel": "obl",
+                "start_char": 75,
+                "end_char": 82
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0016",
+                "word_number": 16,
+                "text": "of",
+                "lemma": "of",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 17,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0017",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 83,
+                "end_char": 85
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0017",
+                "word_number": 17,
+                "text": "them",
+                "lemma": "they",
+                "upos": "PRON",
+                "xpos": "PRP",
+                "feats_raw": "Case=Acc|Number=Plur|Person=3|PronType=Prs",
+                "feats_map": {
+                  "Case": "Acc",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "PronType": "Prs"
+                },
+                "feats_parse_status": "parsed",
+                "head": 15,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0015",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0000:w0016"
+                ],
+                "deprel": "nmod",
+                "start_char": 86,
+                "end_char": 90
+              },
+              {
+                "id": "u0000-p-chapter-001:s0000:w0018",
+                "word_number": 18,
+                "text": ".",
+                "lemma": ".",
+                "upos": "PUNCT",
+                "xpos": ".",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 11,
+                "head_word_id": "u0000-p-chapter-001:s0000:w0011",
+                "children_word_ids": [],
+                "deprel": "punct",
+                "start_char": 90,
+                "end_char": 91
+              }
+            ],
+            "dependency_convention": {
+              "head_indexing": "stanza_1_based_word_number_0_root",
+              "word_number_base": 1,
+              "root_head_value": 0
+            },
+            "dependency_audit": {
+              "status": "valid",
+              "root_count": 1,
+              "has_missing_root": false,
+              "has_multiple_roots": false,
+              "has_self_head": false,
+              "has_out_of_range_head": false,
+              "has_cycle": false,
+              "children_inverse_valid": true,
+              "head_indexing": "stanza_1_based_word_number_0_root",
+              "dependency_confidence": "high",
+              "diagnostic_refs": []
+            },
+            "sentence_boundary_audit": {
+              "status": "valid",
+              "confidence": "high",
+              "signals": [],
+              "risk": "unknown",
+              "does_not_invalidate_tokens": true,
+              "diagnostic_refs": []
+            },
+            "annotation_layer_quality": {
+              "tokenization": "high",
+              "char_spans": "high",
+              "sentence_boundary": "high",
+              "lemma": "high",
+              "upos": "high",
+              "xpos": "high",
+              "morphology": "high",
+              "dependency_parse": "high",
+              "entities": "unknown",
+              "quote_context": "high"
+            },
+            "sentence_quote_context": {
+              "mode": "outside",
+              "confidence": "high",
+              "quote_span_refs": []
+            },
+            "multiword_audit": {
+              "has_multiword_tokens": false,
+              "token_word_alignment_valid": true,
+              "multiword_token_count": 0,
+              "contraction_candidates": []
+            },
+            "sentence_fragment_context": {
+              "is_fragment_candidate": false,
+              "reason": "unknown",
+              "confidence": "high"
+            }
+          },
+          {
+            "index": 1,
+            "text": "All needless matters have been eliminated, so that a history almost at variance with the possibilities of later-day belief may stand forth as simple fact.",
+            "tokens": [
+              {
+                "index": 0,
+                "text": "All",
+                "id": "u0000-p-chapter-001:s0001:t0001",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0001"
+                ],
+                "mwt": false,
+                "lemma": "all",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats": {
+                  "PronType": "Tot"
+                },
+                "head": 3,
+                "deprel": "det",
+                "start_char": 92,
+                "end_char": 95
+              },
+              {
+                "index": 1,
+                "text": "needless",
+                "id": "u0000-p-chapter-001:s0001:t0002",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0002"
+                ],
+                "mwt": false,
+                "lemma": "needless",
+                "upos": "ADJ",
+                "xpos": "JJ",
+                "feats": {
+                  "Degree": "Pos"
+                },
+                "head": 3,
+                "deprel": "amod",
+                "start_char": 96,
+                "end_char": 104
+              },
+              {
+                "index": 2,
+                "text": "matters",
+                "id": "u0000-p-chapter-001:s0001:t0003",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0003"
+                ],
+                "mwt": false,
+                "lemma": "matter",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats": {
+                  "Number": "Plur"
+                },
+                "head": 6,
+                "deprel": "nsubj:pass",
+                "start_char": 105,
+                "end_char": 112
+              },
+              {
+                "index": 3,
+                "text": "have",
+                "id": "u0000-p-chapter-001:s0001:t0004",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0004"
+                ],
+                "mwt": false,
+                "lemma": "have",
+                "upos": "AUX",
+                "xpos": "VBP",
+                "feats": {
+                  "Mood": "Ind",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "Tense": "Pres",
+                  "VerbForm": "Fin"
+                },
+                "head": 6,
+                "deprel": "aux",
+                "start_char": 113,
+                "end_char": 117
+              },
+              {
+                "index": 4,
+                "text": "been",
+                "id": "u0000-p-chapter-001:s0001:t0005",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0005"
+                ],
+                "mwt": false,
+                "lemma": "be",
+                "upos": "AUX",
+                "xpos": "VBN",
+                "feats": {
+                  "Tense": "Past",
+                  "VerbForm": "Part"
+                },
+                "head": 6,
+                "deprel": "aux:pass",
+                "start_char": 118,
+                "end_char": 122
+              },
+              {
+                "index": 5,
+                "text": "eliminated",
+                "id": "u0000-p-chapter-001:s0001:t0006",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0006"
+                ],
+                "mwt": false,
+                "lemma": "eliminate",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "head": 0,
+                "deprel": "root",
+                "start_char": 123,
+                "end_char": 133
+              },
+              {
+                "index": 6,
+                "text": ",",
+                "id": "u0000-p-chapter-001:s0001:t0007",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0007"
+                ],
+                "mwt": false,
+                "lemma": ",",
+                "upos": "PUNCT",
+                "xpos": ",",
+                "feats": null,
+                "head": 24,
+                "deprel": "punct",
+                "start_char": 133,
+                "end_char": 134
+              },
+              {
+                "index": 7,
+                "text": "so",
+                "id": "u0000-p-chapter-001:s0001:t0008",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0008"
+                ],
+                "mwt": false,
+                "lemma": "so",
+                "upos": "SCONJ",
+                "xpos": "IN",
+                "feats": {
+                  "ExtPos": "SCONJ"
+                },
+                "head": 24,
+                "deprel": "mark",
+                "start_char": 135,
+                "end_char": 137
+              },
+              {
+                "index": 8,
+                "text": "that",
+                "id": "u0000-p-chapter-001:s0001:t0009",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0009"
+                ],
+                "mwt": false,
+                "lemma": "that",
+                "upos": "SCONJ",
+                "xpos": "IN",
+                "feats": null,
+                "head": 8,
+                "deprel": "fixed",
+                "start_char": 138,
+                "end_char": 142
+              },
+              {
+                "index": 9,
+                "text": "a",
+                "id": "u0000-p-chapter-001:s0001:t0010",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0010"
+                ],
+                "mwt": false,
+                "lemma": "a",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats": {
+                  "Definite": "Ind",
+                  "PronType": "Art"
+                },
+                "head": 11,
+                "deprel": "det",
+                "start_char": 143,
+                "end_char": 144
+              },
+              {
+                "index": 10,
+                "text": "history",
+                "id": "u0000-p-chapter-001:s0001:t0011",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0011"
+                ],
+                "mwt": false,
+                "lemma": "history",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 24,
+                "deprel": "nsubj",
+                "start_char": 145,
+                "end_char": 152
+              },
+              {
+                "index": 11,
+                "text": "almost",
+                "id": "u0000-p-chapter-001:s0001:t0012",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0012"
+                ],
+                "mwt": false,
+                "lemma": "almost",
+                "upos": "ADV",
+                "xpos": "RB",
+                "feats": null,
+                "head": 14,
+                "deprel": "advmod",
+                "start_char": 153,
+                "end_char": 159
+              },
+              {
+                "index": 12,
+                "text": "at",
+                "id": "u0000-p-chapter-001:s0001:t0013",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0013"
+                ],
+                "mwt": false,
+                "lemma": "at",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 14,
+                "deprel": "case",
+                "start_char": 160,
+                "end_char": 162
+              },
+              {
+                "index": 13,
+                "text": "variance",
+                "id": "u0000-p-chapter-001:s0001:t0014",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0014"
+                ],
+                "mwt": false,
+                "lemma": "variance",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 11,
+                "deprel": "nmod",
+                "start_char": 163,
+                "end_char": 171
+              },
+              {
+                "index": 14,
+                "text": "with",
+                "id": "u0000-p-chapter-001:s0001:t0015",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0015"
+                ],
+                "mwt": false,
+                "lemma": "with",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 17,
+                "deprel": "case",
+                "start_char": 172,
+                "end_char": 176
+              },
+              {
+                "index": 15,
+                "text": "the",
+                "id": "u0000-p-chapter-001:s0001:t0016",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0016"
+                ],
+                "mwt": false,
+                "lemma": "the",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats": {
+                  "Definite": "Def",
+                  "PronType": "Art"
+                },
+                "head": 17,
+                "deprel": "det",
+                "start_char": 177,
+                "end_char": 180
+              },
+              {
+                "index": 16,
+                "text": "possibilities",
+                "id": "u0000-p-chapter-001:s0001:t0017",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0017"
+                ],
+                "mwt": false,
+                "lemma": "possibility",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats": {
+                  "Number": "Plur"
+                },
+                "head": 14,
+                "deprel": "nmod",
+                "start_char": 181,
+                "end_char": 194
+              },
+              {
+                "index": 17,
+                "text": "of",
+                "id": "u0000-p-chapter-001:s0001:t0018",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0018"
+                ],
+                "mwt": false,
+                "lemma": "of",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 22,
+                "deprel": "case",
+                "start_char": 195,
+                "end_char": 197
+              },
+              {
+                "index": 18,
+                "text": "later",
+                "id": "u0000-p-chapter-001:s0001:t0019",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0019"
+                ],
+                "mwt": false,
+                "lemma": "late",
+                "upos": "ADJ",
+                "xpos": "JJR",
+                "feats": {
+                  "Degree": "Cmp"
+                },
+                "head": 21,
+                "deprel": "amod",
+                "start_char": 198,
+                "end_char": 203
+              },
+              {
+                "index": 19,
+                "text": "-",
+                "id": "u0000-p-chapter-001:s0001:t0020",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0020"
+                ],
+                "mwt": false,
+                "lemma": "-",
+                "upos": "PUNCT",
+                "xpos": "HYPH",
+                "feats": null,
+                "head": 19,
+                "deprel": "punct",
+                "start_char": 203,
+                "end_char": 204
+              },
+              {
+                "index": 20,
+                "text": "day",
+                "id": "u0000-p-chapter-001:s0001:t0021",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0021"
+                ],
+                "mwt": false,
+                "lemma": "day",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 22,
+                "deprel": "compound",
+                "start_char": 204,
+                "end_char": 207
+              },
+              {
+                "index": 21,
+                "text": "belief",
+                "id": "u0000-p-chapter-001:s0001:t0022",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0022"
+                ],
+                "mwt": false,
+                "lemma": "belief",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 17,
+                "deprel": "nmod",
+                "start_char": 208,
+                "end_char": 214
+              },
+              {
+                "index": 22,
+                "text": "may",
+                "id": "u0000-p-chapter-001:s0001:t0023",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0023"
+                ],
+                "mwt": false,
+                "lemma": "may",
+                "upos": "AUX",
+                "xpos": "MD",
+                "feats": {
+                  "VerbForm": "Fin"
+                },
+                "head": 24,
+                "deprel": "aux",
+                "start_char": 215,
+                "end_char": 218
+              },
+              {
+                "index": 23,
+                "text": "stand",
+                "id": "u0000-p-chapter-001:s0001:t0024",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0024"
+                ],
+                "mwt": false,
+                "lemma": "stand",
+                "upos": "VERB",
+                "xpos": "VB",
+                "feats": {
+                  "VerbForm": "Inf"
+                },
+                "head": 6,
+                "deprel": "advcl",
+                "start_char": 219,
+                "end_char": 224
+              },
+              {
+                "index": 24,
+                "text": "forth",
+                "id": "u0000-p-chapter-001:s0001:t0025",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0025"
+                ],
+                "mwt": false,
+                "lemma": "forth",
+                "upos": "ADV",
+                "xpos": "RB",
+                "feats": null,
+                "head": 24,
+                "deprel": "advmod",
+                "start_char": 225,
+                "end_char": 230
+              },
+              {
+                "index": 25,
+                "text": "as",
+                "id": "u0000-p-chapter-001:s0001:t0026",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0026"
+                ],
+                "mwt": false,
+                "lemma": "as",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 28,
+                "deprel": "case",
+                "start_char": 231,
+                "end_char": 233
+              },
+              {
+                "index": 26,
+                "text": "simple",
+                "id": "u0000-p-chapter-001:s0001:t0027",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0027"
+                ],
+                "mwt": false,
+                "lemma": "simple",
+                "upos": "ADJ",
+                "xpos": "JJ",
+                "feats": {
+                  "Degree": "Pos"
+                },
+                "head": 28,
+                "deprel": "amod",
+                "start_char": 234,
+                "end_char": 240
+              },
+              {
+                "index": 27,
+                "text": "fact",
+                "id": "u0000-p-chapter-001:s0001:t0028",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0028"
+                ],
+                "mwt": false,
+                "lemma": "fact",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 24,
+                "deprel": "obl",
+                "start_char": 241,
+                "end_char": 245
+              },
+              {
+                "index": 28,
+                "text": ".",
+                "id": "u0000-p-chapter-001:s0001:t0029",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0001:w0029"
+                ],
+                "mwt": false,
+                "lemma": ".",
+                "upos": "PUNCT",
+                "xpos": ".",
+                "feats": null,
+                "head": 6,
+                "deprel": "punct",
+                "start_char": 245,
+                "end_char": 246
+              }
+            ],
+            "id": "u0000-p-chapter-001:s0001",
+            "text_unit_id": "u0000-p-chapter-001",
+            "sentence_index": 1,
+            "local_sentence_index": 1,
+            "global_sentence_id": "fixture:dracula:s000001",
+            "global_sentence_index": 1,
+            "start_char": 92,
+            "end_char": 246,
+            "offset_space": "text_unit_text",
+            "sentence_span_source": "reconstructed_from_word_spans",
+            "words": [
+              {
+                "id": "u0000-p-chapter-001:s0001:w0001",
+                "word_number": 1,
+                "text": "All",
+                "lemma": "all",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats_raw": "PronType=Tot",
+                "feats_map": {
+                  "PronType": "Tot"
+                },
+                "feats_parse_status": "parsed",
+                "head": 3,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0003",
+                "children_word_ids": [],
+                "deprel": "det",
+                "start_char": 92,
+                "end_char": 95
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0002",
+                "word_number": 2,
+                "text": "needless",
+                "lemma": "needless",
+                "upos": "ADJ",
+                "xpos": "JJ",
+                "feats_raw": "Degree=Pos",
+                "feats_map": {
+                  "Degree": "Pos"
+                },
+                "feats_parse_status": "parsed",
+                "head": 3,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0003",
+                "children_word_ids": [],
+                "deprel": "amod",
+                "start_char": 96,
+                "end_char": 104
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0003",
+                "word_number": 3,
+                "text": "matters",
+                "lemma": "matter",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats_raw": "Number=Plur",
+                "feats_map": {
+                  "Number": "Plur"
+                },
+                "feats_parse_status": "parsed",
+                "head": 6,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0006",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0001:w0001",
+                  "u0000-p-chapter-001:s0001:w0002"
+                ],
+                "deprel": "nsubj:pass",
+                "start_char": 105,
+                "end_char": 112
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0004",
+                "word_number": 4,
+                "text": "have",
+                "lemma": "have",
+                "upos": "AUX",
+                "xpos": "VBP",
+                "feats_raw": "Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin",
+                "feats_map": {
+                  "Mood": "Ind",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "Tense": "Pres",
+                  "VerbForm": "Fin"
+                },
+                "feats_parse_status": "parsed",
+                "head": 6,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0006",
+                "children_word_ids": [],
+                "deprel": "aux",
+                "start_char": 113,
+                "end_char": 117
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0005",
+                "word_number": 5,
+                "text": "been",
+                "lemma": "be",
+                "upos": "AUX",
+                "xpos": "VBN",
+                "feats_raw": "Tense=Past|VerbForm=Part",
+                "feats_map": {
+                  "Tense": "Past",
+                  "VerbForm": "Part"
+                },
+                "feats_parse_status": "parsed",
+                "head": 6,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0006",
+                "children_word_ids": [],
+                "deprel": "aux:pass",
+                "start_char": 118,
+                "end_char": 122
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0006",
+                "word_number": 6,
+                "text": "eliminated",
+                "lemma": "eliminate",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats_raw": "Tense=Past|VerbForm=Part|Voice=Pass",
+                "feats_map": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "feats_parse_status": "parsed",
+                "head": 0,
+                "head_word_id": null,
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0001:w0003",
+                  "u0000-p-chapter-001:s0001:w0004",
+                  "u0000-p-chapter-001:s0001:w0005",
+                  "u0000-p-chapter-001:s0001:w0024",
+                  "u0000-p-chapter-001:s0001:w0029"
+                ],
+                "deprel": "root",
+                "start_char": 123,
+                "end_char": 133
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0007",
+                "word_number": 7,
+                "text": ",",
+                "lemma": ",",
+                "upos": "PUNCT",
+                "xpos": ",",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 24,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0024",
+                "children_word_ids": [],
+                "deprel": "punct",
+                "start_char": 133,
+                "end_char": 134
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0008",
+                "word_number": 8,
+                "text": "so",
+                "lemma": "so",
+                "upos": "SCONJ",
+                "xpos": "IN",
+                "feats_raw": "ExtPos=SCONJ",
+                "feats_map": {
+                  "ExtPos": "SCONJ"
+                },
+                "feats_parse_status": "parsed",
+                "head": 24,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0024",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0001:w0009"
+                ],
+                "deprel": "mark",
+                "start_char": 135,
+                "end_char": 137
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0009",
+                "word_number": 9,
+                "text": "that",
+                "lemma": "that",
+                "upos": "SCONJ",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 8,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0008",
+                "children_word_ids": [],
+                "deprel": "fixed",
+                "start_char": 138,
+                "end_char": 142
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0010",
+                "word_number": 10,
+                "text": "a",
+                "lemma": "a",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats_raw": "Definite=Ind|PronType=Art",
+                "feats_map": {
+                  "Definite": "Ind",
+                  "PronType": "Art"
+                },
+                "feats_parse_status": "parsed",
+                "head": 11,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0011",
+                "children_word_ids": [],
+                "deprel": "det",
+                "start_char": 143,
+                "end_char": 144
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0011",
+                "word_number": 11,
+                "text": "history",
+                "lemma": "history",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 24,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0024",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0001:w0010",
+                  "u0000-p-chapter-001:s0001:w0014"
+                ],
+                "deprel": "nsubj",
+                "start_char": 145,
+                "end_char": 152
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0012",
+                "word_number": 12,
+                "text": "almost",
+                "lemma": "almost",
+                "upos": "ADV",
+                "xpos": "RB",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 14,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0014",
+                "children_word_ids": [],
+                "deprel": "advmod",
+                "start_char": 153,
+                "end_char": 159
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0013",
+                "word_number": 13,
+                "text": "at",
+                "lemma": "at",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 14,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0014",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 160,
+                "end_char": 162
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0014",
+                "word_number": 14,
+                "text": "variance",
+                "lemma": "variance",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 11,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0011",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0001:w0012",
+                  "u0000-p-chapter-001:s0001:w0013",
+                  "u0000-p-chapter-001:s0001:w0017"
+                ],
+                "deprel": "nmod",
+                "start_char": 163,
+                "end_char": 171
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0015",
+                "word_number": 15,
+                "text": "with",
+                "lemma": "with",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 17,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0017",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 172,
+                "end_char": 176
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0016",
+                "word_number": 16,
+                "text": "the",
+                "lemma": "the",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats_raw": "Definite=Def|PronType=Art",
+                "feats_map": {
+                  "Definite": "Def",
+                  "PronType": "Art"
+                },
+                "feats_parse_status": "parsed",
+                "head": 17,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0017",
+                "children_word_ids": [],
+                "deprel": "det",
+                "start_char": 177,
+                "end_char": 180
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0017",
+                "word_number": 17,
+                "text": "possibilities",
+                "lemma": "possibility",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats_raw": "Number=Plur",
+                "feats_map": {
+                  "Number": "Plur"
+                },
+                "feats_parse_status": "parsed",
+                "head": 14,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0014",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0001:w0015",
+                  "u0000-p-chapter-001:s0001:w0016",
+                  "u0000-p-chapter-001:s0001:w0022"
+                ],
+                "deprel": "nmod",
+                "start_char": 181,
+                "end_char": 194
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0018",
+                "word_number": 18,
+                "text": "of",
+                "lemma": "of",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 22,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0022",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 195,
+                "end_char": 197
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0019",
+                "word_number": 19,
+                "text": "later",
+                "lemma": "late",
+                "upos": "ADJ",
+                "xpos": "JJR",
+                "feats_raw": "Degree=Cmp",
+                "feats_map": {
+                  "Degree": "Cmp"
+                },
+                "feats_parse_status": "parsed",
+                "head": 21,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0021",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0001:w0020"
+                ],
+                "deprel": "amod",
+                "start_char": 198,
+                "end_char": 203
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0020",
+                "word_number": 20,
+                "text": "-",
+                "lemma": "-",
+                "upos": "PUNCT",
+                "xpos": "HYPH",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 19,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0019",
+                "children_word_ids": [],
+                "deprel": "punct",
+                "start_char": 203,
+                "end_char": 204
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0021",
+                "word_number": 21,
+                "text": "day",
+                "lemma": "day",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 22,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0022",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0001:w0019"
+                ],
+                "deprel": "compound",
+                "start_char": 204,
+                "end_char": 207
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0022",
+                "word_number": 22,
+                "text": "belief",
+                "lemma": "belief",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 17,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0017",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0001:w0018",
+                  "u0000-p-chapter-001:s0001:w0021"
+                ],
+                "deprel": "nmod",
+                "start_char": 208,
+                "end_char": 214
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0023",
+                "word_number": 23,
+                "text": "may",
+                "lemma": "may",
+                "upos": "AUX",
+                "xpos": "MD",
+                "feats_raw": "VerbForm=Fin",
+                "feats_map": {
+                  "VerbForm": "Fin"
+                },
+                "feats_parse_status": "parsed",
+                "head": 24,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0024",
+                "children_word_ids": [],
+                "deprel": "aux",
+                "start_char": 215,
+                "end_char": 218
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0024",
+                "word_number": 24,
+                "text": "stand",
+                "lemma": "stand",
+                "upos": "VERB",
+                "xpos": "VB",
+                "feats_raw": "VerbForm=Inf",
+                "feats_map": {
+                  "VerbForm": "Inf"
+                },
+                "feats_parse_status": "parsed",
+                "head": 6,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0006",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0001:w0007",
+                  "u0000-p-chapter-001:s0001:w0008",
+                  "u0000-p-chapter-001:s0001:w0011",
+                  "u0000-p-chapter-001:s0001:w0023",
+                  "u0000-p-chapter-001:s0001:w0025",
+                  "u0000-p-chapter-001:s0001:w0028"
+                ],
+                "deprel": "advcl",
+                "start_char": 219,
+                "end_char": 224
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0025",
+                "word_number": 25,
+                "text": "forth",
+                "lemma": "forth",
+                "upos": "ADV",
+                "xpos": "RB",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 24,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0024",
+                "children_word_ids": [],
+                "deprel": "advmod",
+                "start_char": 225,
+                "end_char": 230
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0026",
+                "word_number": 26,
+                "text": "as",
+                "lemma": "as",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 28,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0028",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 231,
+                "end_char": 233
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0027",
+                "word_number": 27,
+                "text": "simple",
+                "lemma": "simple",
+                "upos": "ADJ",
+                "xpos": "JJ",
+                "feats_raw": "Degree=Pos",
+                "feats_map": {
+                  "Degree": "Pos"
+                },
+                "feats_parse_status": "parsed",
+                "head": 28,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0028",
+                "children_word_ids": [],
+                "deprel": "amod",
+                "start_char": 234,
+                "end_char": 240
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0028",
+                "word_number": 28,
+                "text": "fact",
+                "lemma": "fact",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 24,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0024",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0001:w0026",
+                  "u0000-p-chapter-001:s0001:w0027"
+                ],
+                "deprel": "obl",
+                "start_char": 241,
+                "end_char": 245
+              },
+              {
+                "id": "u0000-p-chapter-001:s0001:w0029",
+                "word_number": 29,
+                "text": ".",
+                "lemma": ".",
+                "upos": "PUNCT",
+                "xpos": ".",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 6,
+                "head_word_id": "u0000-p-chapter-001:s0001:w0006",
+                "children_word_ids": [],
+                "deprel": "punct",
+                "start_char": 245,
+                "end_char": 246
+              }
+            ],
+            "dependency_convention": {
+              "head_indexing": "stanza_1_based_word_number_0_root",
+              "word_number_base": 1,
+              "root_head_value": 0
+            },
+            "dependency_audit": {
+              "status": "valid",
+              "root_count": 1,
+              "has_missing_root": false,
+              "has_multiple_roots": false,
+              "has_self_head": false,
+              "has_out_of_range_head": false,
+              "has_cycle": false,
+              "children_inverse_valid": true,
+              "head_indexing": "stanza_1_based_word_number_0_root",
+              "dependency_confidence": "high",
+              "diagnostic_refs": []
+            },
+            "sentence_boundary_audit": {
+              "status": "valid",
+              "confidence": "high",
+              "signals": [],
+              "risk": "unknown",
+              "does_not_invalidate_tokens": true,
+              "diagnostic_refs": []
+            },
+            "annotation_layer_quality": {
+              "tokenization": "high",
+              "char_spans": "high",
+              "sentence_boundary": "high",
+              "lemma": "high",
+              "upos": "high",
+              "xpos": "high",
+              "morphology": "high",
+              "dependency_parse": "high",
+              "entities": "unknown",
+              "quote_context": "high"
+            },
+            "sentence_quote_context": {
+              "mode": "outside",
+              "confidence": "high",
+              "quote_span_refs": []
+            },
+            "multiword_audit": {
+              "has_multiword_tokens": false,
+              "token_word_alignment_valid": true,
+              "multiword_token_count": 0,
+              "contraction_candidates": []
+            },
+            "sentence_fragment_context": {
+              "is_fragment_candidate": false,
+              "reason": "unknown",
+              "confidence": "high"
+            }
+          },
+          {
+            "index": 2,
+            "text": "There is throughout no statement of past things wherein memory may err, for all the records chosen are exactly contemporary, given from the standpoints and within the range of knowledge of those who made them.",
+            "tokens": [
+              {
+                "index": 0,
+                "text": "There",
+                "id": "u0000-p-chapter-001:s0002:t0001",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0001"
+                ],
+                "mwt": false,
+                "lemma": "there",
+                "upos": "PRON",
+                "xpos": "EX",
+                "feats": null,
+                "head": 2,
+                "deprel": "expl",
+                "start_char": 247,
+                "end_char": 252
+              },
+              {
+                "index": 1,
+                "text": "is",
+                "id": "u0000-p-chapter-001:s0002:t0002",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0002"
+                ],
+                "mwt": false,
+                "lemma": "be",
+                "upos": "VERB",
+                "xpos": "VBZ",
+                "feats": {
+                  "Mood": "Ind",
+                  "Number": "Sing",
+                  "Person": "3",
+                  "Tense": "Pres",
+                  "VerbForm": "Fin"
+                },
+                "head": 0,
+                "deprel": "root",
+                "start_char": 253,
+                "end_char": 255
+              },
+              {
+                "index": 2,
+                "text": "throughout",
+                "id": "u0000-p-chapter-001:s0002:t0003",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0003"
+                ],
+                "mwt": false,
+                "lemma": "throughout",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 5,
+                "deprel": "case",
+                "start_char": 256,
+                "end_char": 266
+              },
+              {
+                "index": 3,
+                "text": "no",
+                "id": "u0000-p-chapter-001:s0002:t0004",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0004"
+                ],
+                "mwt": false,
+                "lemma": "no",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats": {
+                  "PronType": "Neg"
+                },
+                "head": 5,
+                "deprel": "det",
+                "start_char": 267,
+                "end_char": 269
+              },
+              {
+                "index": 4,
+                "text": "statement",
+                "id": "u0000-p-chapter-001:s0002:t0005",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0005"
+                ],
+                "mwt": false,
+                "lemma": "statement",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 2,
+                "deprel": "obl",
+                "start_char": 270,
+                "end_char": 279
+              },
+              {
+                "index": 5,
+                "text": "of",
+                "id": "u0000-p-chapter-001:s0002:t0006",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0006"
+                ],
+                "mwt": false,
+                "lemma": "of",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 8,
+                "deprel": "case",
+                "start_char": 280,
+                "end_char": 282
+              },
+              {
+                "index": 6,
+                "text": "past",
+                "id": "u0000-p-chapter-001:s0002:t0007",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0007"
+                ],
+                "mwt": false,
+                "lemma": "past",
+                "upos": "ADJ",
+                "xpos": "JJ",
+                "feats": {
+                  "Degree": "Pos"
+                },
+                "head": 8,
+                "deprel": "amod",
+                "start_char": 283,
+                "end_char": 287
+              },
+              {
+                "index": 7,
+                "text": "things",
+                "id": "u0000-p-chapter-001:s0002:t0008",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0008"
+                ],
+                "mwt": false,
+                "lemma": "thing",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats": {
+                  "Number": "Plur"
+                },
+                "head": 5,
+                "deprel": "nmod",
+                "start_char": 288,
+                "end_char": 294
+              },
+              {
+                "index": 8,
+                "text": "wherein",
+                "id": "u0000-p-chapter-001:s0002:t0009",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0009"
+                ],
+                "mwt": false,
+                "lemma": "wherein",
+                "upos": "SCONJ",
+                "xpos": "IN",
+                "feats": null,
+                "head": 12,
+                "deprel": "mark",
+                "start_char": 295,
+                "end_char": 302
+              },
+              {
+                "index": 9,
+                "text": "memory",
+                "id": "u0000-p-chapter-001:s0002:t0010",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0010"
+                ],
+                "mwt": false,
+                "lemma": "memory",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 12,
+                "deprel": "nsubj",
+                "start_char": 303,
+                "end_char": 309
+              },
+              {
+                "index": 10,
+                "text": "may",
+                "id": "u0000-p-chapter-001:s0002:t0011",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0011"
+                ],
+                "mwt": false,
+                "lemma": "may",
+                "upos": "AUX",
+                "xpos": "MD",
+                "feats": {
+                  "VerbForm": "Fin"
+                },
+                "head": 12,
+                "deprel": "aux",
+                "start_char": 310,
+                "end_char": 313
+              },
+              {
+                "index": 11,
+                "text": "err",
+                "id": "u0000-p-chapter-001:s0002:t0012",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0012"
+                ],
+                "mwt": false,
+                "lemma": "err",
+                "upos": "VERB",
+                "xpos": "VB",
+                "feats": {
+                  "VerbForm": "Inf"
+                },
+                "head": 2,
+                "deprel": "advcl",
+                "start_char": 314,
+                "end_char": 317
+              },
+              {
+                "index": 12,
+                "text": ",",
+                "id": "u0000-p-chapter-001:s0002:t0013",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0013"
+                ],
+                "mwt": false,
+                "lemma": ",",
+                "upos": "PUNCT",
+                "xpos": ",",
+                "feats": null,
+                "head": 21,
+                "deprel": "punct",
+                "start_char": 317,
+                "end_char": 318
+              },
+              {
+                "index": 13,
+                "text": "for",
+                "id": "u0000-p-chapter-001:s0002:t0014",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0014"
+                ],
+                "mwt": false,
+                "lemma": "for",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 17,
+                "deprel": "case",
+                "start_char": 319,
+                "end_char": 322
+              },
+              {
+                "index": 14,
+                "text": "all",
+                "id": "u0000-p-chapter-001:s0002:t0015",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0015"
+                ],
+                "mwt": false,
+                "lemma": "all",
+                "upos": "DET",
+                "xpos": "PDT",
+                "feats": {
+                  "PronType": "Tot"
+                },
+                "head": 17,
+                "deprel": "det:predet",
+                "start_char": 323,
+                "end_char": 326
+              },
+              {
+                "index": 15,
+                "text": "the",
+                "id": "u0000-p-chapter-001:s0002:t0016",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0016"
+                ],
+                "mwt": false,
+                "lemma": "the",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats": {
+                  "Definite": "Def",
+                  "PronType": "Art"
+                },
+                "head": 17,
+                "deprel": "det",
+                "start_char": 327,
+                "end_char": 330
+              },
+              {
+                "index": 16,
+                "text": "records",
+                "id": "u0000-p-chapter-001:s0002:t0017",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0017"
+                ],
+                "mwt": false,
+                "lemma": "record",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats": {
+                  "Number": "Plur"
+                },
+                "head": 21,
+                "deprel": "obl",
+                "start_char": 331,
+                "end_char": 338
+              },
+              {
+                "index": 17,
+                "text": "chosen",
+                "id": "u0000-p-chapter-001:s0002:t0018",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0018"
+                ],
+                "mwt": false,
+                "lemma": "choose",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "head": 17,
+                "deprel": "acl",
+                "start_char": 339,
+                "end_char": 345
+              },
+              {
+                "index": 18,
+                "text": "are",
+                "id": "u0000-p-chapter-001:s0002:t0019",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0019"
+                ],
+                "mwt": false,
+                "lemma": "be",
+                "upos": "AUX",
+                "xpos": "VBP",
+                "feats": {
+                  "Mood": "Ind",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "Tense": "Pres",
+                  "VerbForm": "Fin"
+                },
+                "head": 21,
+                "deprel": "cop",
+                "start_char": 346,
+                "end_char": 349
+              },
+              {
+                "index": 19,
+                "text": "exactly",
+                "id": "u0000-p-chapter-001:s0002:t0020",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0020"
+                ],
+                "mwt": false,
+                "lemma": "exactly",
+                "upos": "ADV",
+                "xpos": "RB",
+                "feats": null,
+                "head": 21,
+                "deprel": "advmod",
+                "start_char": 350,
+                "end_char": 357
+              },
+              {
+                "index": 20,
+                "text": "contemporary",
+                "id": "u0000-p-chapter-001:s0002:t0021",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0021"
+                ],
+                "mwt": false,
+                "lemma": "contemporary",
+                "upos": "ADJ",
+                "xpos": "JJ",
+                "feats": {
+                  "Degree": "Pos"
+                },
+                "head": 12,
+                "deprel": "conj",
+                "start_char": 358,
+                "end_char": 370
+              },
+              {
+                "index": 21,
+                "text": ",",
+                "id": "u0000-p-chapter-001:s0002:t0022",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0022"
+                ],
+                "mwt": false,
+                "lemma": ",",
+                "upos": "PUNCT",
+                "xpos": ",",
+                "feats": null,
+                "head": 23,
+                "deprel": "punct",
+                "start_char": 370,
+                "end_char": 371
+              },
+              {
+                "index": 22,
+                "text": "given",
+                "id": "u0000-p-chapter-001:s0002:t0023",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0023"
+                ],
+                "mwt": false,
+                "lemma": "give",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "head": 21,
+                "deprel": "advcl",
+                "start_char": 372,
+                "end_char": 377
+              },
+              {
+                "index": 23,
+                "text": "from",
+                "id": "u0000-p-chapter-001:s0002:t0024",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0024"
+                ],
+                "mwt": false,
+                "lemma": "from",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 26,
+                "deprel": "case",
+                "start_char": 378,
+                "end_char": 382
+              },
+              {
+                "index": 24,
+                "text": "the",
+                "id": "u0000-p-chapter-001:s0002:t0025",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0025"
+                ],
+                "mwt": false,
+                "lemma": "the",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats": {
+                  "Definite": "Def",
+                  "PronType": "Art"
+                },
+                "head": 26,
+                "deprel": "det",
+                "start_char": 383,
+                "end_char": 386
+              },
+              {
+                "index": 25,
+                "text": "standpoints",
+                "id": "u0000-p-chapter-001:s0002:t0026",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0026"
+                ],
+                "mwt": false,
+                "lemma": "standpoint",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats": {
+                  "Number": "Plur"
+                },
+                "head": 23,
+                "deprel": "obl",
+                "start_char": 387,
+                "end_char": 398
+              },
+              {
+                "index": 26,
+                "text": "and",
+                "id": "u0000-p-chapter-001:s0002:t0027",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0027"
+                ],
+                "mwt": false,
+                "lemma": "and",
+                "upos": "CCONJ",
+                "xpos": "CC",
+                "feats": null,
+                "head": 30,
+                "deprel": "cc",
+                "start_char": 399,
+                "end_char": 402
+              },
+              {
+                "index": 27,
+                "text": "within",
+                "id": "u0000-p-chapter-001:s0002:t0028",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0028"
+                ],
+                "mwt": false,
+                "lemma": "within",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 30,
+                "deprel": "case",
+                "start_char": 403,
+                "end_char": 409
+              },
+              {
+                "index": 28,
+                "text": "the",
+                "id": "u0000-p-chapter-001:s0002:t0029",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0029"
+                ],
+                "mwt": false,
+                "lemma": "the",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats": {
+                  "Definite": "Def",
+                  "PronType": "Art"
+                },
+                "head": 30,
+                "deprel": "det",
+                "start_char": 410,
+                "end_char": 413
+              },
+              {
+                "index": 29,
+                "text": "range",
+                "id": "u0000-p-chapter-001:s0002:t0030",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0030"
+                ],
+                "mwt": false,
+                "lemma": "range",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 26,
+                "deprel": "conj",
+                "start_char": 414,
+                "end_char": 419
+              },
+              {
+                "index": 30,
+                "text": "of",
+                "id": "u0000-p-chapter-001:s0002:t0031",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0031"
+                ],
+                "mwt": false,
+                "lemma": "of",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 32,
+                "deprel": "case",
+                "start_char": 420,
+                "end_char": 422
+              },
+              {
+                "index": 31,
+                "text": "knowledge",
+                "id": "u0000-p-chapter-001:s0002:t0032",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0032"
+                ],
+                "mwt": false,
+                "lemma": "knowledge",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 30,
+                "deprel": "nmod",
+                "start_char": 423,
+                "end_char": 432
+              },
+              {
+                "index": 32,
+                "text": "of",
+                "id": "u0000-p-chapter-001:s0002:t0033",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0033"
+                ],
+                "mwt": false,
+                "lemma": "of",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 34,
+                "deprel": "case",
+                "start_char": 433,
+                "end_char": 435
+              },
+              {
+                "index": 33,
+                "text": "those",
+                "id": "u0000-p-chapter-001:s0002:t0034",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0034"
+                ],
+                "mwt": false,
+                "lemma": "that",
+                "upos": "PRON",
+                "xpos": "DT",
+                "feats": {
+                  "Number": "Plur",
+                  "PronType": "Dem"
+                },
+                "head": 32,
+                "deprel": "nmod",
+                "start_char": 436,
+                "end_char": 441
+              },
+              {
+                "index": 34,
+                "text": "who",
+                "id": "u0000-p-chapter-001:s0002:t0035",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0035"
+                ],
+                "mwt": false,
+                "lemma": "who",
+                "upos": "PRON",
+                "xpos": "WP",
+                "feats": {
+                  "PronType": "Rel"
+                },
+                "head": 36,
+                "deprel": "nsubj",
+                "start_char": 442,
+                "end_char": 445
+              },
+              {
+                "index": 35,
+                "text": "made",
+                "id": "u0000-p-chapter-001:s0002:t0036",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0036"
+                ],
+                "mwt": false,
+                "lemma": "make",
+                "upos": "VERB",
+                "xpos": "VBD",
+                "feats": {
+                  "Mood": "Ind",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "Tense": "Past",
+                  "VerbForm": "Fin"
+                },
+                "head": 34,
+                "deprel": "acl:relcl",
+                "start_char": 446,
+                "end_char": 450
+              },
+              {
+                "index": 36,
+                "text": "them",
+                "id": "u0000-p-chapter-001:s0002:t0037",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0037"
+                ],
+                "mwt": false,
+                "lemma": "they",
+                "upos": "PRON",
+                "xpos": "PRP",
+                "feats": {
+                  "Case": "Acc",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "PronType": "Prs"
+                },
+                "head": 36,
+                "deprel": "obj",
+                "start_char": 451,
+                "end_char": 455
+              },
+              {
+                "index": 37,
+                "text": ".",
+                "id": "u0000-p-chapter-001:s0002:t0038",
+                "word_ids": [
+                  "u0000-p-chapter-001:s0002:w0038"
+                ],
+                "mwt": false,
+                "lemma": ".",
+                "upos": "PUNCT",
+                "xpos": ".",
+                "feats": null,
+                "head": 2,
+                "deprel": "punct",
+                "start_char": 455,
+                "end_char": 456
+              }
+            ],
+            "id": "u0000-p-chapter-001:s0002",
+            "text_unit_id": "u0000-p-chapter-001",
+            "sentence_index": 2,
+            "local_sentence_index": 2,
+            "global_sentence_id": "fixture:dracula:s000002",
+            "global_sentence_index": 2,
+            "start_char": 247,
+            "end_char": 456,
+            "offset_space": "text_unit_text",
+            "sentence_span_source": "reconstructed_from_word_spans",
+            "words": [
+              {
+                "id": "u0000-p-chapter-001:s0002:w0001",
+                "word_number": 1,
+                "text": "There",
+                "lemma": "there",
+                "upos": "PRON",
+                "xpos": "EX",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 2,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0002",
+                "children_word_ids": [],
+                "deprel": "expl",
+                "start_char": 247,
+                "end_char": 252
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0002",
+                "word_number": 2,
+                "text": "is",
+                "lemma": "be",
+                "upos": "VERB",
+                "xpos": "VBZ",
+                "feats_raw": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+                "feats_map": {
+                  "Mood": "Ind",
+                  "Number": "Sing",
+                  "Person": "3",
+                  "Tense": "Pres",
+                  "VerbForm": "Fin"
+                },
+                "feats_parse_status": "parsed",
+                "head": 0,
+                "head_word_id": null,
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0001",
+                  "u0000-p-chapter-001:s0002:w0005",
+                  "u0000-p-chapter-001:s0002:w0012",
+                  "u0000-p-chapter-001:s0002:w0038"
+                ],
+                "deprel": "root",
+                "start_char": 253,
+                "end_char": 255
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0003",
+                "word_number": 3,
+                "text": "throughout",
+                "lemma": "throughout",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 5,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0005",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 256,
+                "end_char": 266
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0004",
+                "word_number": 4,
+                "text": "no",
+                "lemma": "no",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats_raw": "PronType=Neg",
+                "feats_map": {
+                  "PronType": "Neg"
+                },
+                "feats_parse_status": "parsed",
+                "head": 5,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0005",
+                "children_word_ids": [],
+                "deprel": "det",
+                "start_char": 267,
+                "end_char": 269
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0005",
+                "word_number": 5,
+                "text": "statement",
+                "lemma": "statement",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 2,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0002",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0003",
+                  "u0000-p-chapter-001:s0002:w0004",
+                  "u0000-p-chapter-001:s0002:w0008"
+                ],
+                "deprel": "obl",
+                "start_char": 270,
+                "end_char": 279
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0006",
+                "word_number": 6,
+                "text": "of",
+                "lemma": "of",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 8,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0008",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 280,
+                "end_char": 282
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0007",
+                "word_number": 7,
+                "text": "past",
+                "lemma": "past",
+                "upos": "ADJ",
+                "xpos": "JJ",
+                "feats_raw": "Degree=Pos",
+                "feats_map": {
+                  "Degree": "Pos"
+                },
+                "feats_parse_status": "parsed",
+                "head": 8,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0008",
+                "children_word_ids": [],
+                "deprel": "amod",
+                "start_char": 283,
+                "end_char": 287
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0008",
+                "word_number": 8,
+                "text": "things",
+                "lemma": "thing",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats_raw": "Number=Plur",
+                "feats_map": {
+                  "Number": "Plur"
+                },
+                "feats_parse_status": "parsed",
+                "head": 5,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0005",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0006",
+                  "u0000-p-chapter-001:s0002:w0007"
+                ],
+                "deprel": "nmod",
+                "start_char": 288,
+                "end_char": 294
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0009",
+                "word_number": 9,
+                "text": "wherein",
+                "lemma": "wherein",
+                "upos": "SCONJ",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 12,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0012",
+                "children_word_ids": [],
+                "deprel": "mark",
+                "start_char": 295,
+                "end_char": 302
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0010",
+                "word_number": 10,
+                "text": "memory",
+                "lemma": "memory",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 12,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0012",
+                "children_word_ids": [],
+                "deprel": "nsubj",
+                "start_char": 303,
+                "end_char": 309
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0011",
+                "word_number": 11,
+                "text": "may",
+                "lemma": "may",
+                "upos": "AUX",
+                "xpos": "MD",
+                "feats_raw": "VerbForm=Fin",
+                "feats_map": {
+                  "VerbForm": "Fin"
+                },
+                "feats_parse_status": "parsed",
+                "head": 12,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0012",
+                "children_word_ids": [],
+                "deprel": "aux",
+                "start_char": 310,
+                "end_char": 313
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0012",
+                "word_number": 12,
+                "text": "err",
+                "lemma": "err",
+                "upos": "VERB",
+                "xpos": "VB",
+                "feats_raw": "VerbForm=Inf",
+                "feats_map": {
+                  "VerbForm": "Inf"
+                },
+                "feats_parse_status": "parsed",
+                "head": 2,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0002",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0009",
+                  "u0000-p-chapter-001:s0002:w0010",
+                  "u0000-p-chapter-001:s0002:w0011",
+                  "u0000-p-chapter-001:s0002:w0021"
+                ],
+                "deprel": "advcl",
+                "start_char": 314,
+                "end_char": 317
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0013",
+                "word_number": 13,
+                "text": ",",
+                "lemma": ",",
+                "upos": "PUNCT",
+                "xpos": ",",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 21,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0021",
+                "children_word_ids": [],
+                "deprel": "punct",
+                "start_char": 317,
+                "end_char": 318
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0014",
+                "word_number": 14,
+                "text": "for",
+                "lemma": "for",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 17,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0017",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 319,
+                "end_char": 322
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0015",
+                "word_number": 15,
+                "text": "all",
+                "lemma": "all",
+                "upos": "DET",
+                "xpos": "PDT",
+                "feats_raw": "PronType=Tot",
+                "feats_map": {
+                  "PronType": "Tot"
+                },
+                "feats_parse_status": "parsed",
+                "head": 17,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0017",
+                "children_word_ids": [],
+                "deprel": "det:predet",
+                "start_char": 323,
+                "end_char": 326
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0016",
+                "word_number": 16,
+                "text": "the",
+                "lemma": "the",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats_raw": "Definite=Def|PronType=Art",
+                "feats_map": {
+                  "Definite": "Def",
+                  "PronType": "Art"
+                },
+                "feats_parse_status": "parsed",
+                "head": 17,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0017",
+                "children_word_ids": [],
+                "deprel": "det",
+                "start_char": 327,
+                "end_char": 330
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0017",
+                "word_number": 17,
+                "text": "records",
+                "lemma": "record",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats_raw": "Number=Plur",
+                "feats_map": {
+                  "Number": "Plur"
+                },
+                "feats_parse_status": "parsed",
+                "head": 21,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0021",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0014",
+                  "u0000-p-chapter-001:s0002:w0015",
+                  "u0000-p-chapter-001:s0002:w0016",
+                  "u0000-p-chapter-001:s0002:w0018"
+                ],
+                "deprel": "obl",
+                "start_char": 331,
+                "end_char": 338
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0018",
+                "word_number": 18,
+                "text": "chosen",
+                "lemma": "choose",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats_raw": "Tense=Past|VerbForm=Part|Voice=Pass",
+                "feats_map": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "feats_parse_status": "parsed",
+                "head": 17,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0017",
+                "children_word_ids": [],
+                "deprel": "acl",
+                "start_char": 339,
+                "end_char": 345
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0019",
+                "word_number": 19,
+                "text": "are",
+                "lemma": "be",
+                "upos": "AUX",
+                "xpos": "VBP",
+                "feats_raw": "Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin",
+                "feats_map": {
+                  "Mood": "Ind",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "Tense": "Pres",
+                  "VerbForm": "Fin"
+                },
+                "feats_parse_status": "parsed",
+                "head": 21,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0021",
+                "children_word_ids": [],
+                "deprel": "cop",
+                "start_char": 346,
+                "end_char": 349
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0020",
+                "word_number": 20,
+                "text": "exactly",
+                "lemma": "exactly",
+                "upos": "ADV",
+                "xpos": "RB",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 21,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0021",
+                "children_word_ids": [],
+                "deprel": "advmod",
+                "start_char": 350,
+                "end_char": 357
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0021",
+                "word_number": 21,
+                "text": "contemporary",
+                "lemma": "contemporary",
+                "upos": "ADJ",
+                "xpos": "JJ",
+                "feats_raw": "Degree=Pos",
+                "feats_map": {
+                  "Degree": "Pos"
+                },
+                "feats_parse_status": "parsed",
+                "head": 12,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0012",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0013",
+                  "u0000-p-chapter-001:s0002:w0017",
+                  "u0000-p-chapter-001:s0002:w0019",
+                  "u0000-p-chapter-001:s0002:w0020",
+                  "u0000-p-chapter-001:s0002:w0023"
+                ],
+                "deprel": "conj",
+                "start_char": 358,
+                "end_char": 370
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0022",
+                "word_number": 22,
+                "text": ",",
+                "lemma": ",",
+                "upos": "PUNCT",
+                "xpos": ",",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 23,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0023",
+                "children_word_ids": [],
+                "deprel": "punct",
+                "start_char": 370,
+                "end_char": 371
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0023",
+                "word_number": 23,
+                "text": "given",
+                "lemma": "give",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats_raw": "Tense=Past|VerbForm=Part|Voice=Pass",
+                "feats_map": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "feats_parse_status": "parsed",
+                "head": 21,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0021",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0022",
+                  "u0000-p-chapter-001:s0002:w0026"
+                ],
+                "deprel": "advcl",
+                "start_char": 372,
+                "end_char": 377
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0024",
+                "word_number": 24,
+                "text": "from",
+                "lemma": "from",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 26,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0026",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 378,
+                "end_char": 382
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0025",
+                "word_number": 25,
+                "text": "the",
+                "lemma": "the",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats_raw": "Definite=Def|PronType=Art",
+                "feats_map": {
+                  "Definite": "Def",
+                  "PronType": "Art"
+                },
+                "feats_parse_status": "parsed",
+                "head": 26,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0026",
+                "children_word_ids": [],
+                "deprel": "det",
+                "start_char": 383,
+                "end_char": 386
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0026",
+                "word_number": 26,
+                "text": "standpoints",
+                "lemma": "standpoint",
+                "upos": "NOUN",
+                "xpos": "NNS",
+                "feats_raw": "Number=Plur",
+                "feats_map": {
+                  "Number": "Plur"
+                },
+                "feats_parse_status": "parsed",
+                "head": 23,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0023",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0024",
+                  "u0000-p-chapter-001:s0002:w0025",
+                  "u0000-p-chapter-001:s0002:w0030"
+                ],
+                "deprel": "obl",
+                "start_char": 387,
+                "end_char": 398
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0027",
+                "word_number": 27,
+                "text": "and",
+                "lemma": "and",
+                "upos": "CCONJ",
+                "xpos": "CC",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 30,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0030",
+                "children_word_ids": [],
+                "deprel": "cc",
+                "start_char": 399,
+                "end_char": 402
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0028",
+                "word_number": 28,
+                "text": "within",
+                "lemma": "within",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 30,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0030",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 403,
+                "end_char": 409
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0029",
+                "word_number": 29,
+                "text": "the",
+                "lemma": "the",
+                "upos": "DET",
+                "xpos": "DT",
+                "feats_raw": "Definite=Def|PronType=Art",
+                "feats_map": {
+                  "Definite": "Def",
+                  "PronType": "Art"
+                },
+                "feats_parse_status": "parsed",
+                "head": 30,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0030",
+                "children_word_ids": [],
+                "deprel": "det",
+                "start_char": 410,
+                "end_char": 413
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0030",
+                "word_number": 30,
+                "text": "range",
+                "lemma": "range",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 26,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0026",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0027",
+                  "u0000-p-chapter-001:s0002:w0028",
+                  "u0000-p-chapter-001:s0002:w0029",
+                  "u0000-p-chapter-001:s0002:w0032"
+                ],
+                "deprel": "conj",
+                "start_char": 414,
+                "end_char": 419
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0031",
+                "word_number": 31,
+                "text": "of",
+                "lemma": "of",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 32,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0032",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 420,
+                "end_char": 422
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0032",
+                "word_number": 32,
+                "text": "knowledge",
+                "lemma": "knowledge",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 30,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0030",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0031",
+                  "u0000-p-chapter-001:s0002:w0034"
+                ],
+                "deprel": "nmod",
+                "start_char": 423,
+                "end_char": 432
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0033",
+                "word_number": 33,
+                "text": "of",
+                "lemma": "of",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 34,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0034",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 433,
+                "end_char": 435
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0034",
+                "word_number": 34,
+                "text": "those",
+                "lemma": "that",
+                "upos": "PRON",
+                "xpos": "DT",
+                "feats_raw": "Number=Plur|PronType=Dem",
+                "feats_map": {
+                  "Number": "Plur",
+                  "PronType": "Dem"
+                },
+                "feats_parse_status": "parsed",
+                "head": 32,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0032",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0033",
+                  "u0000-p-chapter-001:s0002:w0036"
+                ],
+                "deprel": "nmod",
+                "start_char": 436,
+                "end_char": 441
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0035",
+                "word_number": 35,
+                "text": "who",
+                "lemma": "who",
+                "upos": "PRON",
+                "xpos": "WP",
+                "feats_raw": "PronType=Rel",
+                "feats_map": {
+                  "PronType": "Rel"
+                },
+                "feats_parse_status": "parsed",
+                "head": 36,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0036",
+                "children_word_ids": [],
+                "deprel": "nsubj",
+                "start_char": 442,
+                "end_char": 445
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0036",
+                "word_number": 36,
+                "text": "made",
+                "lemma": "make",
+                "upos": "VERB",
+                "xpos": "VBD",
+                "feats_raw": "Mood=Ind|Number=Plur|Person=3|Tense=Past|VerbForm=Fin",
+                "feats_map": {
+                  "Mood": "Ind",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "Tense": "Past",
+                  "VerbForm": "Fin"
+                },
+                "feats_parse_status": "parsed",
+                "head": 34,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0034",
+                "children_word_ids": [
+                  "u0000-p-chapter-001:s0002:w0035",
+                  "u0000-p-chapter-001:s0002:w0037"
+                ],
+                "deprel": "acl:relcl",
+                "start_char": 446,
+                "end_char": 450
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0037",
+                "word_number": 37,
+                "text": "them",
+                "lemma": "they",
+                "upos": "PRON",
+                "xpos": "PRP",
+                "feats_raw": "Case=Acc|Number=Plur|Person=3|PronType=Prs",
+                "feats_map": {
+                  "Case": "Acc",
+                  "Number": "Plur",
+                  "Person": "3",
+                  "PronType": "Prs"
+                },
+                "feats_parse_status": "parsed",
+                "head": 36,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0036",
+                "children_word_ids": [],
+                "deprel": "obj",
+                "start_char": 451,
+                "end_char": 455
+              },
+              {
+                "id": "u0000-p-chapter-001:s0002:w0038",
+                "word_number": 38,
+                "text": ".",
+                "lemma": ".",
+                "upos": "PUNCT",
+                "xpos": ".",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 2,
+                "head_word_id": "u0000-p-chapter-001:s0002:w0002",
+                "children_word_ids": [],
+                "deprel": "punct",
+                "start_char": 455,
+                "end_char": 456
+              }
+            ],
+            "dependency_convention": {
+              "head_indexing": "stanza_1_based_word_number_0_root",
+              "word_number_base": 1,
+              "root_head_value": 0
+            },
+            "dependency_audit": {
+              "status": "valid",
+              "root_count": 1,
+              "has_missing_root": false,
+              "has_multiple_roots": false,
+              "has_self_head": false,
+              "has_out_of_range_head": false,
+              "has_cycle": false,
+              "children_inverse_valid": true,
+              "head_indexing": "stanza_1_based_word_number_0_root",
+              "dependency_confidence": "high",
+              "diagnostic_refs": []
+            },
+            "sentence_boundary_audit": {
+              "status": "valid",
+              "confidence": "high",
+              "signals": [],
+              "risk": "unknown",
+              "does_not_invalidate_tokens": true,
+              "diagnostic_refs": []
+            },
+            "annotation_layer_quality": {
+              "tokenization": "high",
+              "char_spans": "high",
+              "sentence_boundary": "high",
+              "lemma": "high",
+              "upos": "high",
+              "xpos": "high",
+              "morphology": "high",
+              "dependency_parse": "high",
+              "entities": "unknown",
+              "quote_context": "high"
+            },
+            "sentence_quote_context": {
+              "mode": "outside",
+              "confidence": "high",
+              "quote_span_refs": []
+            },
+            "multiword_audit": {
+              "has_multiword_tokens": false,
+              "token_word_alignment_valid": true,
+              "multiword_token_count": 0,
+              "contraction_candidates": []
+            },
+            "sentence_fragment_context": {
+              "is_fragment_candidate": false,
+              "reason": "unknown",
+              "confidence": "high"
+            }
+          }
+        ],
+        "diagnostics": [],
+        "external_id": "u0000-p-chapter-001",
+        "schema_version": "stanza_annotation_handoff.v1",
+        "execution_status": "completed",
+        "annotation_layer_quality": {
+          "tokenization": "high",
+          "char_spans": "high",
+          "sentence_boundary": "high",
+          "lemma": "high",
+          "upos": "high",
+          "xpos": "high",
+          "morphology": "high",
+          "dependency_parse": "high",
+          "quote_context": "high",
+          "entities": "unknown"
+        },
+        "consumer_readiness": {
+          "eligible": true,
+          "mode": "normal",
+          "safe_annotation_layers": [
+            "words",
+            "tokens",
+            "morphology"
+          ],
+          "risky_annotation_layers": [],
+          "blocked_annotation_layers": [],
+          "reason_codes": []
+        },
+        "quote_context": {
+          "unit_quote_mode": "none",
+          "has_quote_chars": false,
+          "has_unbalanced_quote": false,
+          "quote_spans": [],
+          "confidence": "high",
+          "likely_apostrophe_false_positives": 0,
+          "quote_open_before_unit": false,
+          "quote_continues_after_unit": false,
+          "continuation_group_id": null,
+          "continuation_status": "none"
+        },
+        "dialogue_context": {
+          "unit_type": "paragraph",
+          "speaker_known": false,
+          "speaker_id": null,
+          "dialogue_fragment_risk": "low"
+        },
+        "surface_normalization": {
+          "unicode_normalization": "NFC",
+          "quote_normalization": "preserved",
+          "dash_normalization": "preserved",
+          "apostrophe_policy": "preserved",
+          "case_preserved": true
+        },
+        "style_context": {
+          "register": "unknown",
+          "literary_dialogue": "low",
+          "archaic_language_risk": "unknown",
+          "non_modern_punctuation_risk": "unknown",
+          "confidence": "medium"
+        },
+        "parser_confidence_signals": {
+          "long_sentence": true,
+          "many_punctuation_marks": false,
+          "quote_density": "low",
+          "unknown_token_ratio": 0.0,
+          "dependency_depth": 9
+        },
+        "entity_audit": {
+          "entity_count": 0,
+          "all_entity_spans_valid": true,
+          "entity_confidence": "unknown"
+        },
+        "fingerprints": {
+          "document_text_hash": "sha256:bb3e6a9bc8229f003502f05024f8188accd6bacdaa555d55b6cdea33bd33053b",
+          "text_unit_hash": "sha256:bb3e6a9bc8229f003502f05024f8188accd6bacdaa555d55b6cdea33bd33053b",
+          "normalized_text_hash": "sha256:bb3e6a9bc8229f003502f05024f8188accd6bacdaa555d55b6cdea33bd33053b",
+          "annotation_payload_hash": "sha256:9b7f22c3a33c66307006a702fe6d292a5e94933950e991fd98d8c64ae8a924b6"
+        },
+        "processing_chunks": [],
+        "metadata": {
+          "backend": {
+            "name": "stanza",
+            "lang": "en",
+            "processors": [
+              "tokenize",
+              "pos",
+              "lemma",
+              "depparse"
+            ],
+            "stanza_version": "1.12.0",
+            "annotator_version": "2.0.0",
+            "package": "default",
+            "language": "en",
+            "generated_at_policy": "omitted_or_external_metadata_only"
+          },
+          "preprocessing": {
+            "profile": "ocr",
+            "changed": false,
+            "steps": [],
+            "offset_space": "original_text",
+            "offset_mapping_available": false,
+            "offset_mapping_ref": null,
+            "text_hash_before": "sha256:bb3e6a9bc8229f003502f05024f8188accd6bacdaa555d55b6cdea33bd33053b",
+            "text_hash_after": "sha256:bb3e6a9bc8229f003502f05024f8188accd6bacdaa555d55b6cdea33bd33053b"
+          },
+          "postprocessing": {
+            "profile": "diagnose",
+            "checks": [
+              "sentence_order",
+              "token_order",
+              "token_spans",
+              "dependency_tree"
+            ],
+            "repairs_applied": []
+          }
+        }
+      },
+      "metadata": {
+        "text_hash": "sha256:bb3e6a9bc8229f003502f05024f8188accd6bacdaa555d55b6cdea33bd33053b"
+      }
+    },
+    {
+      "unit_id": "u0001-h-chapter-002",
+      "unit_type": "heading",
+      "role": "heading",
+      "order": 1,
+      "unit_order": 1,
+      "external_id": "abstract_document:u0001-h-chapter-002",
+      "document_path": {
+        "part": "body",
+        "chapter_index": null,
+        "section_index": null
+      },
+      "text_hash": "sha256:a23a1a5033d098b9c54592067edcf74114c5aa562c1d79f65070c248dcd8548a",
+      "execution_status": "completed",
+      "annotation_layer_quality": {
+        "tokenization": "high",
+        "char_spans": "high",
+        "sentence_boundary": "high",
+        "lemma": "high",
+        "upos": "high",
+        "xpos": "high",
+        "morphology": "high",
+        "dependency_parse": "high",
+        "quote_context": "high",
+        "entities": "unknown"
+      },
+      "consumer_readiness": {
+        "eligible": true,
+        "mode": "normal",
+        "safe_annotation_layers": [
+          "words",
+          "tokens",
+          "morphology"
+        ],
+        "risky_annotation_layers": [],
+        "blocked_annotation_layers": [],
+        "reason_codes": []
+      },
+      "annotation": {
+        "text": "CHAPTER I JONATHAN HARKER’S JOURNAL",
+        "status": "succeeded",
+        "sentences": [
+          {
+            "index": 0,
+            "text": "CHAPTER I JONATHAN HARKER’S JOURNAL",
+            "tokens": [
+              {
+                "index": 0,
+                "text": "CHAPTER",
+                "id": "u0001-h-chapter-002:s0000:t0001",
+                "word_ids": [
+                  "u0001-h-chapter-002:s0000:w0001"
+                ],
+                "mwt": false,
+                "lemma": "CHAPTER",
+                "upos": "PROPN",
+                "xpos": "NNP",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 0,
+                "deprel": "root",
+                "start_char": 0,
+                "end_char": 7
+              },
+              {
+                "index": 1,
+                "text": "I",
+                "id": "u0001-h-chapter-002:s0000:t0002",
+                "word_ids": [
+                  "u0001-h-chapter-002:s0000:w0002"
+                ],
+                "mwt": false,
+                "lemma": "I",
+                "upos": "PRON",
+                "xpos": "PRP",
+                "feats": {
+                  "Case": "Nom",
+                  "Number": "Sing",
+                  "Person": "1",
+                  "PronType": "Prs"
+                },
+                "head": 6,
+                "deprel": "nmod:poss",
+                "start_char": 8,
+                "end_char": 9
+              },
+              {
+                "index": 2,
+                "text": "JONATHAN",
+                "id": "u0001-h-chapter-002:s0000:t0003",
+                "word_ids": [
+                  "u0001-h-chapter-002:s0000:w0003"
+                ],
+                "mwt": false,
+                "lemma": "Jonathan",
+                "upos": "PROPN",
+                "xpos": "NNP",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 6,
+                "deprel": "nmod:poss",
+                "start_char": 10,
+                "end_char": 18
+              },
+              {
+                "index": 3,
+                "text": "HARKER’S",
+                "id": "u0001-h-chapter-002:s0000:t0004",
+                "word_ids": [
+                  "u0001-h-chapter-002:s0000:w0004",
+                  "u0001-h-chapter-002:s0000:w0005"
+                ],
+                "mwt": true,
+                "lemma": "HARKER",
+                "upos": "PROPN",
+                "xpos": "NNP",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 3,
+                "deprel": "flat",
+                "start_char": 19,
+                "end_char": 27
+              },
+              {
+                "index": 4,
+                "text": "JOURNAL",
+                "id": "u0001-h-chapter-002:s0000:t0005",
+                "word_ids": [
+                  "u0001-h-chapter-002:s0000:w0006"
+                ],
+                "mwt": false,
+                "lemma": "JOURNAL",
+                "upos": "PROPN",
+                "xpos": "NNP",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 1,
+                "deprel": "appos",
+                "start_char": 28,
+                "end_char": 35
+              }
+            ],
+            "id": "u0001-h-chapter-002:s0000",
+            "text_unit_id": "u0001-h-chapter-002",
+            "sentence_index": 0,
+            "local_sentence_index": 0,
+            "global_sentence_id": "fixture:dracula:s000003",
+            "global_sentence_index": 3,
+            "start_char": 0,
+            "end_char": 35,
+            "offset_space": "text_unit_text",
+            "sentence_span_source": "reconstructed_from_word_spans",
+            "words": [
+              {
+                "id": "u0001-h-chapter-002:s0000:w0001",
+                "word_number": 1,
+                "text": "CHAPTER",
+                "lemma": "CHAPTER",
+                "upos": "PROPN",
+                "xpos": "NNP",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 0,
+                "head_word_id": null,
+                "children_word_ids": [
+                  "u0001-h-chapter-002:s0000:w0006"
+                ],
+                "deprel": "root",
+                "start_char": 0,
+                "end_char": 7
+              },
+              {
+                "id": "u0001-h-chapter-002:s0000:w0002",
+                "word_number": 2,
+                "text": "I",
+                "lemma": "I",
+                "upos": "PRON",
+                "xpos": "PRP",
+                "feats_raw": "Case=Nom|Number=Sing|Person=1|PronType=Prs",
+                "feats_map": {
+                  "Case": "Nom",
+                  "Number": "Sing",
+                  "Person": "1",
+                  "PronType": "Prs"
+                },
+                "feats_parse_status": "parsed",
+                "head": 6,
+                "head_word_id": "u0001-h-chapter-002:s0000:w0006",
+                "children_word_ids": [],
+                "deprel": "nmod:poss",
+                "start_char": 8,
+                "end_char": 9
+              },
+              {
+                "id": "u0001-h-chapter-002:s0000:w0003",
+                "word_number": 3,
+                "text": "JONATHAN",
+                "lemma": "Jonathan",
+                "upos": "PROPN",
+                "xpos": "NNP",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 6,
+                "head_word_id": "u0001-h-chapter-002:s0000:w0006",
+                "children_word_ids": [
+                  "u0001-h-chapter-002:s0000:w0004",
+                  "u0001-h-chapter-002:s0000:w0005"
+                ],
+                "deprel": "nmod:poss",
+                "start_char": 10,
+                "end_char": 18
+              },
+              {
+                "id": "u0001-h-chapter-002:s0000:w0004",
+                "word_number": 4,
+                "text": "HARKER",
+                "lemma": "HARKER",
+                "upos": "PROPN",
+                "xpos": "NNP",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 3,
+                "head_word_id": "u0001-h-chapter-002:s0000:w0003",
+                "children_word_ids": [],
+                "deprel": "flat",
+                "start_char": 19,
+                "end_char": 25
+              },
+              {
+                "id": "u0001-h-chapter-002:s0000:w0005",
+                "word_number": 5,
+                "text": "’S",
+                "lemma": "'s",
+                "upos": "PART",
+                "xpos": "POS",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 3,
+                "head_word_id": "u0001-h-chapter-002:s0000:w0003",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 25,
+                "end_char": 27
+              },
+              {
+                "id": "u0001-h-chapter-002:s0000:w0006",
+                "word_number": 6,
+                "text": "JOURNAL",
+                "lemma": "JOURNAL",
+                "upos": "PROPN",
+                "xpos": "NNP",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 1,
+                "head_word_id": "u0001-h-chapter-002:s0000:w0001",
+                "children_word_ids": [
+                  "u0001-h-chapter-002:s0000:w0002",
+                  "u0001-h-chapter-002:s0000:w0003"
+                ],
+                "deprel": "appos",
+                "start_char": 28,
+                "end_char": 35
+              }
+            ],
+            "dependency_convention": {
+              "head_indexing": "stanza_1_based_word_number_0_root",
+              "word_number_base": 1,
+              "root_head_value": 0
+            },
+            "dependency_audit": {
+              "status": "valid",
+              "root_count": 1,
+              "has_missing_root": false,
+              "has_multiple_roots": false,
+              "has_self_head": false,
+              "has_out_of_range_head": false,
+              "has_cycle": false,
+              "children_inverse_valid": true,
+              "head_indexing": "stanza_1_based_word_number_0_root",
+              "dependency_confidence": "high",
+              "diagnostic_refs": []
+            },
+            "sentence_boundary_audit": {
+              "status": "valid",
+              "confidence": "high",
+              "signals": [],
+              "risk": "unknown",
+              "does_not_invalidate_tokens": true,
+              "diagnostic_refs": []
+            },
+            "annotation_layer_quality": {
+              "tokenization": "high",
+              "char_spans": "high",
+              "sentence_boundary": "high",
+              "lemma": "high",
+              "upos": "high",
+              "xpos": "high",
+              "morphology": "high",
+              "dependency_parse": "high",
+              "entities": "unknown",
+              "quote_context": "high"
+            },
+            "sentence_quote_context": {
+              "mode": "outside",
+              "confidence": "high",
+              "quote_span_refs": []
+            },
+            "multiword_audit": {
+              "has_multiword_tokens": true,
+              "token_word_alignment_valid": true,
+              "multiword_token_count": 1,
+              "contraction_candidates": [
+                {
+                  "token_id": "u0001-h-chapter-002:s0000:t0004",
+                  "surface": "HARKER’S",
+                  "word_ids": [
+                    "u0001-h-chapter-002:s0000:w0004",
+                    "u0001-h-chapter-002:s0000:w0005"
+                  ],
+                  "confidence": "high"
+                }
+              ]
+            },
+            "sentence_fragment_context": {
+              "is_fragment_candidate": false,
+              "reason": "unknown",
+              "confidence": "high"
+            }
+          }
+        ],
+        "diagnostics": [],
+        "external_id": "u0001-h-chapter-002",
+        "schema_version": "stanza_annotation_handoff.v1",
+        "execution_status": "completed",
+        "annotation_layer_quality": {
+          "tokenization": "high",
+          "char_spans": "high",
+          "sentence_boundary": "high",
+          "lemma": "high",
+          "upos": "high",
+          "xpos": "high",
+          "morphology": "high",
+          "dependency_parse": "high",
+          "quote_context": "high",
+          "entities": "unknown"
+        },
+        "consumer_readiness": {
+          "eligible": true,
+          "mode": "normal",
+          "safe_annotation_layers": [
+            "words",
+            "tokens",
+            "morphology"
+          ],
+          "risky_annotation_layers": [],
+          "blocked_annotation_layers": [],
+          "reason_codes": []
+        },
+        "quote_context": {
+          "unit_quote_mode": "none",
+          "has_quote_chars": false,
+          "has_unbalanced_quote": false,
+          "quote_spans": [],
+          "confidence": "high",
+          "likely_apostrophe_false_positives": 0,
+          "quote_open_before_unit": false,
+          "quote_continues_after_unit": false,
+          "continuation_group_id": null,
+          "continuation_status": "none"
+        },
+        "dialogue_context": {
+          "unit_type": "heading",
+          "speaker_known": false,
+          "speaker_id": null,
+          "dialogue_fragment_risk": "low"
+        },
+        "surface_normalization": {
+          "unicode_normalization": "NFC",
+          "quote_normalization": "preserved",
+          "dash_normalization": "preserved",
+          "apostrophe_policy": "preserved",
+          "case_preserved": true
+        },
+        "style_context": {
+          "register": "unknown",
+          "literary_dialogue": "low",
+          "archaic_language_risk": "unknown",
+          "non_modern_punctuation_risk": "unknown",
+          "confidence": "medium"
+        },
+        "parser_confidence_signals": {
+          "long_sentence": false,
+          "many_punctuation_marks": false,
+          "quote_density": "low",
+          "unknown_token_ratio": 0.0,
+          "dependency_depth": 3
+        },
+        "entity_audit": {
+          "entity_count": 0,
+          "all_entity_spans_valid": true,
+          "entity_confidence": "unknown"
+        },
+        "fingerprints": {
+          "document_text_hash": "sha256:a23a1a5033d098b9c54592067edcf74114c5aa562c1d79f65070c248dcd8548a",
+          "text_unit_hash": "sha256:a23a1a5033d098b9c54592067edcf74114c5aa562c1d79f65070c248dcd8548a",
+          "normalized_text_hash": "sha256:a23a1a5033d098b9c54592067edcf74114c5aa562c1d79f65070c248dcd8548a",
+          "annotation_payload_hash": "sha256:8e2f1574c3ad35b60c9749e84b51b727c8befe4582100efdef0885fa7cdd79ca"
+        },
+        "processing_chunks": [],
+        "metadata": {
+          "backend": {
+            "name": "stanza",
+            "lang": "en",
+            "processors": [
+              "tokenize",
+              "pos",
+              "lemma",
+              "depparse"
+            ],
+            "stanza_version": "1.12.0",
+            "annotator_version": "2.0.0",
+            "package": "default",
+            "language": "en",
+            "generated_at_policy": "omitted_or_external_metadata_only"
+          },
+          "preprocessing": {
+            "profile": "ocr",
+            "changed": false,
+            "steps": [],
+            "offset_space": "original_text",
+            "offset_mapping_available": false,
+            "offset_mapping_ref": null,
+            "text_hash_before": "sha256:a23a1a5033d098b9c54592067edcf74114c5aa562c1d79f65070c248dcd8548a",
+            "text_hash_after": "sha256:a23a1a5033d098b9c54592067edcf74114c5aa562c1d79f65070c248dcd8548a"
+          },
+          "postprocessing": {
+            "profile": "diagnose",
+            "checks": [
+              "sentence_order",
+              "token_order",
+              "token_spans",
+              "dependency_tree"
+            ],
+            "repairs_applied": []
+          }
+        }
+      },
+      "metadata": {
+        "text_hash": "sha256:a23a1a5033d098b9c54592067edcf74114c5aa562c1d79f65070c248dcd8548a"
+      }
+    },
+    {
+      "unit_id": "u0002-p-chapter-002",
+      "unit_type": "paragraph",
+      "role": "body",
+      "order": 2,
+      "unit_order": 2,
+      "external_id": "abstract_document:u0002-p-chapter-002",
+      "document_path": {
+        "part": "body",
+        "chapter_index": null,
+        "section_index": null
+      },
+      "text_hash": "sha256:614be275e54c9fbd8a7cc9f32aad51aa1c081039dd61ec0c98c52e2d4a9b7a50",
+      "execution_status": "completed",
+      "annotation_layer_quality": {
+        "tokenization": "high",
+        "char_spans": "high",
+        "sentence_boundary": "high",
+        "lemma": "high",
+        "upos": "high",
+        "xpos": "high",
+        "morphology": "high",
+        "dependency_parse": "high",
+        "quote_context": "high",
+        "entities": "unknown"
+      },
+      "consumer_readiness": {
+        "eligible": true,
+        "mode": "normal",
+        "safe_annotation_layers": [
+          "words",
+          "tokens",
+          "morphology"
+        ],
+        "risky_annotation_layers": [],
+        "blocked_annotation_layers": [],
+        "reason_codes": []
+      },
+      "annotation": {
+        "text": "( Kept in shorthand. )",
+        "status": "succeeded",
+        "sentences": [
+          {
+            "index": 0,
+            "text": "( Kept in shorthand. )",
+            "tokens": [
+              {
+                "index": 0,
+                "text": "(",
+                "id": "u0002-p-chapter-002:s0000:t0001",
+                "word_ids": [
+                  "u0002-p-chapter-002:s0000:w0001"
+                ],
+                "mwt": false,
+                "lemma": "(",
+                "upos": "PUNCT",
+                "xpos": "-LRB-",
+                "feats": null,
+                "head": 2,
+                "deprel": "punct",
+                "start_char": 0,
+                "end_char": 1
+              },
+              {
+                "index": 1,
+                "text": "Kept",
+                "id": "u0002-p-chapter-002:s0000:t0002",
+                "word_ids": [
+                  "u0002-p-chapter-002:s0000:w0002"
+                ],
+                "mwt": false,
+                "lemma": "kept",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "head": 0,
+                "deprel": "root",
+                "start_char": 2,
+                "end_char": 6
+              },
+              {
+                "index": 2,
+                "text": "in",
+                "id": "u0002-p-chapter-002:s0000:t0003",
+                "word_ids": [
+                  "u0002-p-chapter-002:s0000:w0003"
+                ],
+                "mwt": false,
+                "lemma": "in",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats": null,
+                "head": 4,
+                "deprel": "case",
+                "start_char": 7,
+                "end_char": 9
+              },
+              {
+                "index": 3,
+                "text": "shorthand",
+                "id": "u0002-p-chapter-002:s0000:t0004",
+                "word_ids": [
+                  "u0002-p-chapter-002:s0000:w0004"
+                ],
+                "mwt": false,
+                "lemma": "shorthand",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats": {
+                  "Number": "Sing"
+                },
+                "head": 2,
+                "deprel": "obl",
+                "start_char": 10,
+                "end_char": 19
+              },
+              {
+                "index": 4,
+                "text": ".",
+                "id": "u0002-p-chapter-002:s0000:t0005",
+                "word_ids": [
+                  "u0002-p-chapter-002:s0000:w0005"
+                ],
+                "mwt": false,
+                "lemma": ".",
+                "upos": "PUNCT",
+                "xpos": ".",
+                "feats": null,
+                "head": 2,
+                "deprel": "punct",
+                "start_char": 19,
+                "end_char": 20
+              },
+              {
+                "index": 5,
+                "text": ")",
+                "id": "u0002-p-chapter-002:s0000:t0006",
+                "word_ids": [
+                  "u0002-p-chapter-002:s0000:w0006"
+                ],
+                "mwt": false,
+                "lemma": ")",
+                "upos": "PUNCT",
+                "xpos": "-RRB-",
+                "feats": null,
+                "head": 2,
+                "deprel": "punct",
+                "start_char": 21,
+                "end_char": 22
+              }
+            ],
+            "id": "u0002-p-chapter-002:s0000",
+            "text_unit_id": "u0002-p-chapter-002",
+            "sentence_index": 0,
+            "local_sentence_index": 0,
+            "global_sentence_id": "fixture:dracula:s000004",
+            "global_sentence_index": 4,
+            "start_char": 0,
+            "end_char": 22,
+            "offset_space": "text_unit_text",
+            "sentence_span_source": "reconstructed_from_word_spans",
+            "words": [
+              {
+                "id": "u0002-p-chapter-002:s0000:w0001",
+                "word_number": 1,
+                "text": "(",
+                "lemma": "(",
+                "upos": "PUNCT",
+                "xpos": "-LRB-",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 2,
+                "head_word_id": "u0002-p-chapter-002:s0000:w0002",
+                "children_word_ids": [],
+                "deprel": "punct",
+                "start_char": 0,
+                "end_char": 1
+              },
+              {
+                "id": "u0002-p-chapter-002:s0000:w0002",
+                "word_number": 2,
+                "text": "Kept",
+                "lemma": "kept",
+                "upos": "VERB",
+                "xpos": "VBN",
+                "feats_raw": "Tense=Past|VerbForm=Part|Voice=Pass",
+                "feats_map": {
+                  "Tense": "Past",
+                  "VerbForm": "Part",
+                  "Voice": "Pass"
+                },
+                "feats_parse_status": "parsed",
+                "head": 0,
+                "head_word_id": null,
+                "children_word_ids": [
+                  "u0002-p-chapter-002:s0000:w0001",
+                  "u0002-p-chapter-002:s0000:w0004",
+                  "u0002-p-chapter-002:s0000:w0005",
+                  "u0002-p-chapter-002:s0000:w0006"
+                ],
+                "deprel": "root",
+                "start_char": 2,
+                "end_char": 6
+              },
+              {
+                "id": "u0002-p-chapter-002:s0000:w0003",
+                "word_number": 3,
+                "text": "in",
+                "lemma": "in",
+                "upos": "ADP",
+                "xpos": "IN",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 4,
+                "head_word_id": "u0002-p-chapter-002:s0000:w0004",
+                "children_word_ids": [],
+                "deprel": "case",
+                "start_char": 7,
+                "end_char": 9
+              },
+              {
+                "id": "u0002-p-chapter-002:s0000:w0004",
+                "word_number": 4,
+                "text": "shorthand",
+                "lemma": "shorthand",
+                "upos": "NOUN",
+                "xpos": "NN",
+                "feats_raw": "Number=Sing",
+                "feats_map": {
+                  "Number": "Sing"
+                },
+                "feats_parse_status": "parsed",
+                "head": 2,
+                "head_word_id": "u0002-p-chapter-002:s0000:w0002",
+                "children_word_ids": [
+                  "u0002-p-chapter-002:s0000:w0003"
+                ],
+                "deprel": "obl",
+                "start_char": 10,
+                "end_char": 19
+              },
+              {
+                "id": "u0002-p-chapter-002:s0000:w0005",
+                "word_number": 5,
+                "text": ".",
+                "lemma": ".",
+                "upos": "PUNCT",
+                "xpos": ".",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 2,
+                "head_word_id": "u0002-p-chapter-002:s0000:w0002",
+                "children_word_ids": [],
+                "deprel": "punct",
+                "start_char": 19,
+                "end_char": 20
+              },
+              {
+                "id": "u0002-p-chapter-002:s0000:w0006",
+                "word_number": 6,
+                "text": ")",
+                "lemma": ")",
+                "upos": "PUNCT",
+                "xpos": "-RRB-",
+                "feats_raw": null,
+                "feats_map": null,
+                "feats_parse_status": "empty",
+                "head": 2,
+                "head_word_id": "u0002-p-chapter-002:s0000:w0002",
+                "children_word_ids": [],
+                "deprel": "punct",
+                "start_char": 21,
+                "end_char": 22
+              }
+            ],
+            "dependency_convention": {
+              "head_indexing": "stanza_1_based_word_number_0_root",
+              "word_number_base": 1,
+              "root_head_value": 0
+            },
+            "dependency_audit": {
+              "status": "valid",
+              "root_count": 1,
+              "has_missing_root": false,
+              "has_multiple_roots": false,
+              "has_self_head": false,
+              "has_out_of_range_head": false,
+              "has_cycle": false,
+              "children_inverse_valid": true,
+              "head_indexing": "stanza_1_based_word_number_0_root",
+              "dependency_confidence": "high",
+              "diagnostic_refs": []
+            },
+            "sentence_boundary_audit": {
+              "status": "valid",
+              "confidence": "high",
+              "signals": [],
+              "risk": "unknown",
+              "does_not_invalidate_tokens": true,
+              "diagnostic_refs": []
+            },
+            "annotation_layer_quality": {
+              "tokenization": "high",
+              "char_spans": "high",
+              "sentence_boundary": "high",
+              "lemma": "high",
+              "upos": "high",
+              "xpos": "high",
+              "morphology": "high",
+              "dependency_parse": "high",
+              "entities": "unknown",
+              "quote_context": "high"
+            },
+            "sentence_quote_context": {
+              "mode": "outside",
+              "confidence": "high",
+              "quote_span_refs": []
+            },
+            "multiword_audit": {
+              "has_multiword_tokens": false,
+              "token_word_alignment_valid": true,
+              "multiword_token_count": 0,
+              "contraction_candidates": []
+            },
+            "sentence_fragment_context": {
+              "is_fragment_candidate": false,
+              "reason": "unknown",
+              "confidence": "high"
+            }
+          }
+        ],
+        "diagnostics": [],
+        "external_id": "u0002-p-chapter-002",
+        "schema_version": "stanza_annotation_handoff.v1",
+        "execution_status": "completed",
+        "annotation_layer_quality": {
+          "tokenization": "high",
+          "char_spans": "high",
+          "sentence_boundary": "high",
+          "lemma": "high",
+          "upos": "high",
+          "xpos": "high",
+          "morphology": "high",
+          "dependency_parse": "high",
+          "quote_context": "high",
+          "entities": "unknown"
+        },
+        "consumer_readiness": {
+          "eligible": true,
+          "mode": "normal",
+          "safe_annotation_layers": [
+            "words",
+            "tokens",
+            "morphology"
+          ],
+          "risky_annotation_layers": [],
+          "blocked_annotation_layers": [],
+          "reason_codes": []
+        },
+        "quote_context": {
+          "unit_quote_mode": "none",
+          "has_quote_chars": false,
+          "has_unbalanced_quote": false,
+          "quote_spans": [],
+          "confidence": "high",
+          "likely_apostrophe_false_positives": 0,
+          "quote_open_before_unit": false,
+          "quote_continues_after_unit": false,
+          "continuation_group_id": null,
+          "continuation_status": "none"
+        },
+        "dialogue_context": {
+          "unit_type": "paragraph",
+          "speaker_known": false,
+          "speaker_id": null,
+          "dialogue_fragment_risk": "low"
+        },
+        "surface_normalization": {
+          "unicode_normalization": "NFC",
+          "quote_normalization": "preserved",
+          "dash_normalization": "preserved",
+          "apostrophe_policy": "preserved",
+          "case_preserved": true
+        },
+        "style_context": {
+          "register": "unknown",
+          "literary_dialogue": "low",
+          "archaic_language_risk": "unknown",
+          "non_modern_punctuation_risk": "unknown",
+          "confidence": "medium"
+        },
+        "parser_confidence_signals": {
+          "long_sentence": false,
+          "many_punctuation_marks": false,
+          "quote_density": "low",
+          "unknown_token_ratio": 0.0,
+          "dependency_depth": 2
+        },
+        "entity_audit": {
+          "entity_count": 0,
+          "all_entity_spans_valid": true,
+          "entity_confidence": "unknown"
+        },
+        "fingerprints": {
+          "document_text_hash": "sha256:614be275e54c9fbd8a7cc9f32aad51aa1c081039dd61ec0c98c52e2d4a9b7a50",
+          "text_unit_hash": "sha256:614be275e54c9fbd8a7cc9f32aad51aa1c081039dd61ec0c98c52e2d4a9b7a50",
+          "normalized_text_hash": "sha256:614be275e54c9fbd8a7cc9f32aad51aa1c081039dd61ec0c98c52e2d4a9b7a50",
+          "annotation_payload_hash": "sha256:d26642cb882db07a1b26c0ee2f1d25b3ce54d6d7349c1962d9f92da770834daa"
+        },
+        "processing_chunks": [],
+        "metadata": {
+          "backend": {
+            "name": "stanza",
+            "lang": "en",
+            "processors": [
+              "tokenize",
+              "pos",
+              "lemma",
+              "depparse"
+            ],
+            "stanza_version": "1.12.0",
+            "annotator_version": "2.0.0",
+            "package": "default",
+            "language": "en",
+            "generated_at_policy": "omitted_or_external_metadata_only"
+          },
+          "preprocessing": {
+            "profile": "ocr",
+            "changed": false,
+            "steps": [],
+            "offset_space": "original_text",
+            "offset_mapping_available": false,
+            "offset_mapping_ref": null,
+            "text_hash_before": "sha256:614be275e54c9fbd8a7cc9f32aad51aa1c081039dd61ec0c98c52e2d4a9b7a50",
+            "text_hash_after": "sha256:614be275e54c9fbd8a7cc9f32aad51aa1c081039dd61ec0c98c52e2d4a9b7a50"
+          },
+          "postprocessing": {
+            "profile": "diagnose",
+            "checks": [
+              "sentence_order",
+              "token_order",
+              "token_spans",
+              "dependency_tree"
+            ],
+            "repairs_applied": []
+          }
+        }
+      },
+      "metadata": {
+        "text_hash": "sha256:614be275e54c9fbd8a7cc9f32aad51aa1c081039dd61ec0c98c52e2d4a9b7a50"
+      }
+    }
+  ],
+  "sentence_stream": {
+    "sentences": [
+      {
+        "global_sentence_id": "fixture:dracula:s000000",
+        "global_sentence_index": 0,
+        "unit_id": "u0000-p-chapter-001",
+        "local_sentence_index": 0,
+        "text": "How these papers have been placed in sequence will be made manifest in the reading of them."
+      },
+      {
+        "global_sentence_id": "fixture:dracula:s000001",
+        "global_sentence_index": 1,
+        "unit_id": "u0000-p-chapter-001",
+        "local_sentence_index": 1,
+        "text": "All needless matters have been eliminated, so that a history almost at variance with the possibilities of later-day belief may stand forth as simple fact."
+      },
+      {
+        "global_sentence_id": "fixture:dracula:s000002",
+        "global_sentence_index": 2,
+        "unit_id": "u0000-p-chapter-001",
+        "local_sentence_index": 2,
+        "text": "There is throughout no statement of past things wherein memory may err, for all the records chosen are exactly contemporary, given from the standpoints and within the range of knowledge of those who made them."
+      },
+      {
+        "global_sentence_id": "fixture:dracula:s000003",
+        "global_sentence_index": 3,
+        "unit_id": "u0001-h-chapter-002",
+        "local_sentence_index": 0,
+        "text": "CHAPTER I JONATHAN HARKER’S JOURNAL"
+      },
+      {
+        "global_sentence_id": "fixture:dracula:s000004",
+        "global_sentence_index": 4,
+        "unit_id": "u0002-p-chapter-002",
+        "local_sentence_index": 0,
+        "text": "( Kept in shorthand. )"
+      }
+    ]
+  },
+  "validation_summary": {
+    "is_handoff_ready": true,
+    "error_count": 0,
+    "warning_count": 0
+  }
+}

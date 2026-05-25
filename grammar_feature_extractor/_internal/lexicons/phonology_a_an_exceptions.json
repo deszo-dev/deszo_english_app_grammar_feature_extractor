@@ -1,0 +1,29 @@
+{
+  "schema_version": "lexicon.phonology_a_an.v1",
+  "an_before_vowel_letter_exceptions": [
+    "european",
+    "uniform",
+    "unicorn",
+    "universal",
+    "union",
+    "unique",
+    "user",
+    "united",
+    "useful",
+    "use",
+    "utility",
+    "ewe",
+    "ewer",
+    "one",
+    "once"
+  ],
+  "an_before_consonant_letter_required": [
+    "hour",
+    "honest",
+    "honor",
+    "honour",
+    "heir",
+    "herb",
+    "homage"
+  ]
+}
