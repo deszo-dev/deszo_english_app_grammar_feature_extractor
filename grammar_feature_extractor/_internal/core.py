@@ -187,6 +187,15 @@ def extract_core(
                 config,
                 total_sentences=total_sentences,
                 source_unit_order=sentence.source_unit_order,
+                source_unit_id=sentence.source_unit_id,
+                previous_source_unit_id=(
+                    document.sentences[index - 1].source_unit_id if index > 0 else None
+                ),
+                next_source_unit_id=(
+                    document.sentences[index + 1].source_unit_id
+                    if index + 1 < total_sentences
+                    else None
+                ),
                 source_unit_type=sentence.source_unit_type,
                 source_unit_role=sentence.source_unit_role,
             ),
@@ -245,6 +254,9 @@ def extract_sentence_features(
     config: ExtractorConfig,
     total_sentences: int | None = None,
     source_unit_order: int | None = None,
+    source_unit_id: str | None = None,
+    previous_source_unit_id: str | None = None,
+    next_source_unit_id: str | None = None,
     source_unit_type: str | None = None,
     source_unit_role: str | None = None,
 ) -> GrammarFeatureSet:
@@ -373,6 +385,9 @@ def extract_sentence_features(
         sentence_index=sentence_index,
         total_sentences=total_sentences if total_sentences is not None else sentence_index + 1,
         source_unit_order=source_unit_order,
+        source_unit_id=source_unit_id,
+        previous_source_unit_id=previous_source_unit_id,
+        next_source_unit_id=next_source_unit_id,
         sentence_text=sentence.text,
         candidate_features=candidate_features,
         normalization_trace=normalization_traces,

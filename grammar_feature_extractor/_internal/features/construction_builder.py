@@ -10,8 +10,8 @@ from grammar_feature_extractor._internal.construction_registry import (
     MODAL_MUST_BASE,
     MODAL_NEGATIVE_BASE,
     PASSIVE_NEGATIVE,
+    PAST_SIMPLE_LEXICAL_AFFIRMATIVE,
     PAST_SIMPLE_NEGATIVE,
-    PAST_SIMPLE_REGULAR,
     PERFECT_NEGATIVE,
     PRESENT_PERFECT_HAVE_PARTICIPLE,
     PRESENT_PROGRESSIVE_AFFIRMATIVE,
@@ -112,7 +112,7 @@ def _predicate_signature(
     if predicate.form_signature == PRESENT_PERFECT:
         return PRESENT_PERFECT_HAVE_PARTICIPLE
     if predicate.form_signature == PAST_SIMPLE:
-        return PAST_SIMPLE_REGULAR
+        return PAST_SIMPLE_LEXICAL_AFFIRMATIVE
     if predicate.form_signature == MODAL_BASE_VERB and any(
         auxiliary.lemma == "must" for auxiliary in predicate.auxiliaries
     ):

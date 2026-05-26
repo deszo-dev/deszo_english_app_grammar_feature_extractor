@@ -246,8 +246,6 @@ def _write_output_dir(
         max(1, math.ceil(total_sentences / page_size)) if total_sentences else 1
     )
     pages_manifest: list[dict[str, object]] = []
-    page_diagnostic_counts: dict[str, int] = {}
-    total_page_diagnostics = 0
     for page_number in range(1, page_count + 1):
         paging = PagingConfig(page_number=page_number, page_size=page_size)
         page = extractor.extract_page(document, paging, config)
@@ -262,12 +260,6 @@ def _write_output_dir(
                 "Canonical page bytes on disk diverge from payload hash "
                 f"({file_name}); aborting to avoid manifest mismatch."
             )
-        serialized_page = json.loads(payload)
-        for sentence in serialized_page.get("features", []):
-            for diagnostic in sentence.get("features", {}).get("diagnostics", []):
-                code = str(diagnostic.get("code", ""))
-                total_page_diagnostics += 1
-                page_diagnostic_counts[code] = page_diagnostic_counts.get(code, 0) + 1
         pages_manifest.append(
             {
                 "page_number": page_number,
@@ -277,15 +269,6 @@ def _write_output_dir(
                 "sha256": sha256,
             }
         )
-    diagnostic_summary = {
-        "source": "page_diagnostics_plus_document_summary",
-        "page_diagnostic_counts": dict(
-            sorted(page_diagnostic_counts.items(), key=lambda item: item[0])
-        ),
-        "document_summary_counts": {},
-        "total_page_diagnostics": total_page_diagnostics,
-        "total_document_summary_diagnostics": 0,
-    }
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "kind": "grammar_feature_manifest",
@@ -294,7 +277,7 @@ def _write_output_dir(
         "page_count": page_count,
         "total_sentences": total_sentences,
         "pages": pages_manifest,
-        "diagnostic_summary": diagnostic_summary,
+        "diagnostics": [],
     }
     manifest_payload = json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
     _atomic_write_text(out_path / "grammar_features.manifest.json", manifest_payload)

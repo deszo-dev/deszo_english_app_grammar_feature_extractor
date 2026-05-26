@@ -15,11 +15,15 @@ def build_predicate_candidates(
         signature = predicate.form_signature or "unknown"
         if signature in {"unknown", "not_applicable"}:
             decision = "ambiguous" if signature == "unknown" else "omitted"
-            reason = (
-                "form_signature_not_registered_for_combination"
-                if signature == "unknown"
-                else "predicate_not_applicable_to_fragment"
+            non_finite = (
+                predicate.finite is False and predicate.main_upos in {"VERB", "AUX"}
             )
+            if signature == "not_applicable":
+                reason = "predicate_not_applicable_to_fragment"
+            elif non_finite:
+                reason = "non_finite_clause_candidate"
+            else:
+                reason = "form_signature_not_registered_for_combination"
             candidates.append(
                 CandidateFeature(
                     candidate_id=f"s{sentence_index}.predicate.{index}",

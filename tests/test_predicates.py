@@ -16,6 +16,11 @@ def predicates_for(text: str, words: list[dict[str, object]]):
     return page.features[0].features.syntax.predicates
 
 
+def features_for(text: str, words: list[dict[str, object]]):
+    page = GrammarFeatureExtractor().extract_page(document_from_words(text, words))
+    return page.features[0].features
+
+
 def test_verbal_predicate_v2_parity() -> None:
     predicates = predicates_for(
         "She reads books.",
@@ -199,6 +204,71 @@ def test_unknown_predicate_degrades_without_crashing() -> None:
     assert predicate.predicate_type == "unknown"
     assert predicate.confidence == "low"
     assert predicate.form_signature == "unknown"
+
+
+def test_participle_is_not_normalized_as_present_simple() -> None:
+    features = features_for(
+        "Feeling sick.",
+        [_word("Feeling", "feel", "VERB", 0, "root", 0, 7, "Tense=Pres|VerbForm=Part")],
+    )
+
+    predicate = features.syntax.predicates[0]
+    signatures = {item.signature for item in features.constructions}
+    candidate_reasons = {
+        item.reason for item in features.processing_support.candidate_features
+    }
+
+    assert predicate.finite is False
+    assert predicate.form_signature == "unknown"
+    assert "present_simple_lexical_affirmative" not in signatures
+    assert "non_finite_clause_candidate" in candidate_reasons
+
+
+def test_irregular_past_uses_neutral_past_simple_construction_signature() -> None:
+    features = features_for(
+        "He ran home.",
+        [
+            _word("He", "he", "PRON", 2, "nsubj", 0, 2),
+            _word("ran", "run", "VERB", 0, "root", 3, 6, "Tense=Past|VerbForm=Fin"),
+            _word("home", "home", "NOUN", 2, "obl", 7, 11),
+        ],
+    )
+
+    signatures = {item.signature for item in features.constructions}
+
+    assert "past_simple_regular" not in signatures
+    assert "past_simple_lexical_affirmative" in signatures
+
+
+def test_be_past_participle_passive_is_not_progressive() -> None:
+    predicates = predicates_for(
+        "He was seen.",
+        [
+            _word("He", "he", "PRON", 3, "nsubj:pass", 0, 2),
+            _word("was", "be", "AUX", 3, "aux:pass", 3, 6, "Tense=Past|VerbForm=Fin"),
+            _word("seen", "see", "VERB", 0, "root", 7, 11, "Tense=Past|VerbForm=Part"),
+        ],
+    )
+
+    predicate = predicates[0]
+    assert predicate.voice == "passive"
+    assert predicate.aspect == "unknown"
+    assert predicate.form_signature == "passive_be_participle"
+
+
+def test_to_be_past_participle_passive_is_not_progressive() -> None:
+    predicates = predicates_for(
+        "To be taken.",
+        [
+            _word("To", "to", "PART", 3, "mark", 0, 2),
+            _word("be", "be", "AUX", 3, "aux:pass", 3, 5, "VerbForm=Inf"),
+            _word("taken", "take", "VERB", 0, "root", 6, 11, "Tense=Past|VerbForm=Part"),
+        ],
+    )
+
+    predicate = predicates[0]
+    assert predicate.voice == "passive"
+    assert predicate.form_signature == "passive_be_participle"
 
 
 def test_serialized_predicates_do_not_restore_predicate_groups() -> None:

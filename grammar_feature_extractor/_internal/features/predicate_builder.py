@@ -434,7 +434,7 @@ def _aspect(
         if has_be:
             return "perfect_progressive"
         return "perfect"
-    if has_be and main_morph.get("VerbForm") in {"Ger", "Part"}:
+    if has_be and main_morph.get("VerbForm") == "Ger":
         return "progressive"
     if main_morph.get("VerbForm") in {"Fin", "Inf"}:
         return "simple"
@@ -526,6 +526,13 @@ def _form_signature(
         if tense == "past":
             return PAST_SIMPLE_DO_QUESTION
         return PRESENT_SIMPLE_DO_QUESTION
+
+    main_morph = ctx.morph_by_ref[main].features
+    if main_morph.get("VerbForm") in {"Part", "Ger", "Inf"} and not any(
+        ctx.normalized_morph_by_ref[auxiliary.ref].is_finite_verb
+        for auxiliary in auxiliaries
+    ):
+        return UNKNOWN
 
     if predicate_type == "verbal" and tense == "past":
         return PAST_SIMPLE

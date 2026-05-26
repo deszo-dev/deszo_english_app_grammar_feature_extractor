@@ -119,11 +119,16 @@ _CONSTRUCTION_FAMILY_BY_PREFIX: tuple[tuple[str, str], ...] = (
 )
 
 
-def _classify_construction_family(signature: str) -> str:
+def _classify_construction_family(construction: ConstructionFeature) -> str | None:
+    if construction.family_hint is not None and construction.family_hint != "predicate":
+        return construction.family_hint
+    if construction.type != "complement_pattern":
+        return construction.type
+    signature = construction.signature
     for prefix, family in _CONSTRUCTION_FAMILY_BY_PREFIX:
         if signature.startswith(prefix):
             return family
-    return "other"
+    return None
 
 
 def _coverage_status(emitted: int, expected: int | None) -> tuple[str, tuple[str, ...]]:
@@ -146,7 +151,9 @@ def build_construction_family_summary(
 ) -> dict[str, ConstructionFamilySummary]:
     family_to_signatures: dict[str, list[str]] = {}
     for construction in constructions:
-        family = _classify_construction_family(construction.signature)
+        family = _classify_construction_family(construction)
+        if family is None:
+            continue
         family_to_signatures.setdefault(family, []).append(construction.signature)
     return {
         family: ConstructionFamilySummary(
@@ -203,15 +210,25 @@ def build_feature_group_quality(
 ) -> FeatureGroupQuality:
     has_error = any(d.severity == "error" for d in diagnostics)
     has_warning = any(d.severity == "warning" for d in diagnostics)
+    codes = {d.code for d in diagnostics}
     overall = "high"
     mode = "normal"
-    if has_error:
+    if codes & {"heading_fragment", "address_or_date_fragment", "non_predicative_fragment"}:
+        overall = "medium"
+        mode = "skip"
+    elif codes & {"parser_degraded_predicate", "possible_parser_error"}:
+        overall = "low"
+        mode = "evidence_only"
+    elif codes & {"predicate_type_unknown", "unknown_predicate_type", "quoted_speech_fragment"}:
+        overall = "medium"
+        mode = "cautious"
+    elif has_error:
         overall = "low"
         mode = "cautious"
     elif has_warning:
         overall = "medium"
-        mode = "normal"
-    reason_codes = tuple(sorted({d.code for d in diagnostics}))
+        mode = "cautious"
+    reason_codes = tuple(sorted(codes))
     return FeatureGroupQuality(
         overall=overall,
         recommended_processing_mode=mode,
@@ -239,6 +256,9 @@ def build_local_context(
     sentence_index: int,
     total_sentences: int,
     source_unit_order: int | None,
+    source_unit_id: str | None = None,
+    previous_source_unit_id: str | None = None,
+    next_source_unit_id: str | None = None,
     sentence_text: str = "",
 ) -> LocalContext:
     previous_index = sentence_index - 1 if sentence_index > 0 else None
@@ -253,8 +273,16 @@ def build_local_context(
         paragraph_position = "middle"
     return LocalContext(
         paragraph_position=paragraph_position,
-        same_unit_previous_sentence_available=previous_index is not None,
-        same_unit_next_sentence_available=next_index is not None,
+        same_unit_previous_sentence_available=(
+            previous_index is not None
+            and source_unit_id is not None
+            and previous_source_unit_id == source_unit_id
+        ),
+        same_unit_next_sentence_available=(
+            next_index is not None
+            and source_unit_id is not None
+            and next_source_unit_id == source_unit_id
+        ),
         quote_continuation_state=_quote_continuation_state(sentence_text),
         previous_sentence_index=previous_index,
         next_sentence_index=next_index,
@@ -270,6 +298,9 @@ def build_processing_support(
     sentence_index: int,
     total_sentences: int,
     source_unit_order: int | None,
+    source_unit_id: str | None = None,
+    previous_source_unit_id: str | None = None,
+    next_source_unit_id: str | None = None,
     sentence_text: str = "",
     candidate_features: tuple[CandidateFeature, ...] = (),
     normalization_trace: tuple[NormalizationTrace, ...] = (),
@@ -287,7 +318,13 @@ def build_processing_support(
         negative_evidence=negative_evidence,
         pattern_windows=pattern_windows,
         local_context=build_local_context(
-            sentence_index, total_sentences, source_unit_order, sentence_text
+            sentence_index,
+            total_sentences,
+            source_unit_order,
+            source_unit_id,
+            previous_source_unit_id,
+            next_source_unit_id,
+            sentence_text,
         ),
     )
 

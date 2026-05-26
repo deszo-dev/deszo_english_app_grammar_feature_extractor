@@ -89,9 +89,12 @@ def _normalize_word(
         verb_form == "Inf" or xpos == "VB" or (verb_form is None and tense is None)
     )
     is_participle = is_verb and verb_form == "Part"
+    is_finite = is_verb and (
+        verb_form == "Fin" or (verb_form is None and tense in {"Past", "Pres"})
+    )
     return NormalizedMorph(
         ref=ref,
-        is_finite_verb=is_verb and (verb_form == "Fin" or tense in {"Past", "Pres"}),
+        is_finite_verb=is_finite,
         is_base_verb=is_base_verb,
         is_to_infinitive=is_to_infinitive,
         is_bare_infinitive=is_base_verb and not is_to_infinitive,

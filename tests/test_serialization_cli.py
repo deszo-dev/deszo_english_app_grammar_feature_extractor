@@ -8,7 +8,7 @@ from pathlib import Path
 
 from grammar_feature_extractor import GrammarFeatureExtractor
 from grammar_feature_extractor._internal.serialization import dumps_page, loads_document
-from tests.conftest import sample_document
+from tests.conftest import sample_document, stanza_document_from_words
 
 
 def test_stable_json_omits_none_fields() -> None:
@@ -269,7 +269,7 @@ def test_no_internal_feature_error_in_successful_output() -> None:
             )
 
 
-def test_manifest_diagnostic_summary_aggregates_page_diagnostics(tmp_path: Path) -> None:
+def test_manifest_uses_schema_valid_diagnostics_field(tmp_path: Path) -> None:
     out_dir = tmp_path / "out"
     result = subprocess.run(
         [
@@ -291,30 +291,107 @@ def test_manifest_diagnostic_summary_aggregates_page_diagnostics(tmp_path: Path)
     manifest = json.loads(
         (out_dir / "grammar_features.manifest.json").read_text(encoding="utf-8")
     )
-    summary = manifest["diagnostic_summary"]
+    assert manifest["diagnostics"] == []
+    assert "diagnostic_summary" not in manifest
 
-    assert summary["source"] == "page_diagnostics_plus_document_summary"
-    assert isinstance(summary["page_diagnostic_counts"], dict)
-    assert isinstance(summary["document_summary_counts"], dict)
-    assert summary["total_page_diagnostics"] == sum(
-        summary["page_diagnostic_counts"].values()
+
+def test_same_unit_context_flags_require_matching_source_unit_id() -> None:
+    first = stanza_document_from_words(
+        "She reads.",
+        [
+            _word("She", "she", "PRON", 2, "nsubj", 0, 3),
+            _word("reads", "read", "VERB", 0, "root", 4, 9, "Tense=Pres|VerbForm=Fin"),
+        ],
+        unit_id="u-one",
     )
-    assert summary["total_document_summary_diagnostics"] == sum(
-        summary["document_summary_counts"].values()
+    second = stanza_document_from_words(
+        "He ran.",
+        [
+            _word("He", "he", "PRON", 2, "nsubj", 0, 2),
+            _word("ran", "run", "VERB", 0, "root", 3, 6, "Tense=Past|VerbForm=Fin"),
+        ],
+        unit_id="u-two",
     )
+    first_unit = first["units"][0]
+    second_unit = second["units"][0]
+    second_sentence = dict(second_unit["annotation"]["sentences"][0])
+    second_sentence["global_sentence_index"] = 1
+    second_sentence["global_sentence_id"] = "doc-test:s000001"
+    second_sentence["id"] = "u-two:s0000"
+    second_unit = {
+        **dict(second_unit),
+        "annotation": {
+            **dict(second_unit["annotation"]),
+            "sentences": [second_sentence],
+        },
+    }
+    document = dict(first)
+    document["traversal"] = {
+        **dict(first["traversal"]),
+        "selected_unit_count": 2,
+        "global_sentence_count": 2,
+    }
+    document["unit_selection"] = {"selected_unit_ids": ["u-one", "u-two"], "excluded_units": []}
+    document["units"] = [first_unit, second_unit]
+    document["sentence_stream"] = {
+        "sentences": [
+            first_unit["annotation"]["sentences"][0],
+            second_sentence,
+        ]
+    }
 
-    aggregated: dict[str, int] = {}
-    for page_entry in manifest["pages"]:
-        page_data = json.loads(
-            (out_dir / page_entry["file_name"]).read_text(encoding="utf-8")
-        )
-        for sentence in page_data["features"]:
-            for diagnostic in sentence["features"]["diagnostics"]:
-                code = diagnostic["code"]
-                aggregated[code] = aggregated.get(code, 0) + 1
+    result = GrammarFeatureExtractor().extract(loads_document(json.dumps(document)))
+    first_context = result.sentences[0].features.processing_support.local_context
+    second_context = result.sentences[1].features.processing_support.local_context
 
-    assert summary["page_diagnostic_counts"] == aggregated
-    assert "diagnostics" not in manifest
+    assert first_context.next_sentence_index == 1
+    assert second_context.previous_sentence_index == 0
+    assert first_context.same_unit_next_sentence_available is False
+    assert second_context.same_unit_previous_sentence_available is False
+
+
+def test_construction_family_summary_is_derived_from_emitted_constructions() -> None:
+    page = GrammarFeatureExtractor().extract_page(loads_document(json.dumps(sample_document())))
+    features = page.features[0].features
+    summary = features.processing_support.construction_family_summary
+
+    expected: dict[str, list[str]] = {}
+    for construction in features.constructions:
+        family = construction.type if construction.type != "complement_pattern" else None
+        if construction.family_hint and construction.family_hint != "predicate":
+            family = construction.family_hint
+        if family is not None:
+            expected.setdefault(family, []).append(construction.signature)
+
+    assert set(summary) == set(expected)
+    for family, signatures in expected.items():
+        assert summary[family].count == len(signatures)
+        assert summary[family].signatures == tuple(sorted(set(signatures)))
+    assert "other" not in summary
+
+
+def _word(
+    text: str,
+    lemma: str,
+    upos: str,
+    head: int,
+    deprel: str,
+    start_char: int,
+    end_char: int,
+    feats: str | None = None,
+) -> dict[str, object]:
+    word: dict[str, object] = {
+        "text": text,
+        "lemma": lemma,
+        "upos": upos,
+        "head": head,
+        "deprel": deprel,
+        "start_char": start_char,
+        "end_char": end_char,
+    }
+    if feats is not None:
+        word["feats"] = feats
+    return word
 
 
 def test_cli_rejects_raw_text_with_no_stdout() -> None:

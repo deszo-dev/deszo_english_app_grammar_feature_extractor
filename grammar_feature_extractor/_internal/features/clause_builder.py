@@ -26,9 +26,7 @@ def build_clauses(
     markers: tuple[ClauseMarkerFeature, ...],
     diagnostics: list[FeatureDiagnostic],
 ) -> tuple[ClauseFeature, ...]:
-    clause_heads = tuple(
-        ref for ref in ctx.refs if _clause_type(ctx.word_by_ref[ref].deprel)
-    )
+    clause_heads = _clause_heads(ctx)
     marker_map = marker_by_clause_head(markers)
     clauses: list[ClauseFeature] = []
     for ref in clause_heads:
@@ -100,6 +98,22 @@ def _first_ref_with_deprel(
     return matches[0] if matches else None
 
 
+def _clause_heads(ctx: SentenceContext) -> tuple[WordRef, ...]:
+    heads: list[WordRef] = []
+    has_quote = "'" in ctx.text or '"' in ctx.text
+    for ref in ctx.refs:
+        word = ctx.word_by_ref[ref]
+        if _clause_type(word.deprel):
+            heads.append(ref)
+        elif (
+            has_quote
+            and word.upos in {"VERB", "AUX"}
+            and word.deprel in {"conj", "parataxis"}
+        ):
+            heads.append(ref)
+    return tuple(dict.fromkeys(heads))
+
+
 def _clause_type(deprel: str) -> ClauseType | None:
     if deprel == "root":
         return "root"
@@ -113,6 +127,8 @@ def _clause_type(deprel: str) -> ClauseType | None:
         return "advcl"
     if deprel == "acl":
         return "acl"
+    if deprel == "parataxis":
+        return "reported_speech"
     return None
 
 

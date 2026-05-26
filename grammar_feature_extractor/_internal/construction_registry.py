@@ -12,6 +12,7 @@ PRESENT_SIMPLE_DO_QUESTION = "present_simple_do_question"
 PRESENT_PROGRESSIVE_AFFIRMATIVE = "present_progressive_affirmative"
 PRESENT_PERFECT_HAVE_PARTICIPLE = "present_perfect_have_participle"
 PAST_SIMPLE_REGULAR = "past_simple_regular"
+PAST_SIMPLE_LEXICAL_AFFIRMATIVE = "past_simple_lexical_affirmative"
 PAST_SIMPLE_NEGATIVE = "past_simple_negative"
 COPULAR_BE_NEGATIVE = "copular_be_negative"
 MODAL_NEGATIVE_BASE = "modal_negative_base"
@@ -37,6 +38,7 @@ ConstructionSignature: TypeAlias = Literal[
     "present_progressive_affirmative",
     "present_perfect_have_participle",
     "past_simple_regular",
+    "past_simple_lexical_affirmative",
     "past_simple_negative",
     "copular_be_negative",
     "modal_negative_base",
@@ -63,6 +65,7 @@ REGISTERED_CONSTRUCTION_SIGNATURES = (
     PRESENT_PROGRESSIVE_AFFIRMATIVE,
     PRESENT_PERFECT_HAVE_PARTICIPLE,
     PAST_SIMPLE_REGULAR,
+    PAST_SIMPLE_LEXICAL_AFFIRMATIVE,
     PAST_SIMPLE_NEGATIVE,
     COPULAR_BE_NEGATIVE,
     MODAL_NEGATIVE_BASE,

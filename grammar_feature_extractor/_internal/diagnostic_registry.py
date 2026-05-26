@@ -25,6 +25,7 @@ DiagnosticCode: TypeAlias = Literal[
     "low_confidence_predicate_evidence",
     "non_predicative_fragment",
     "parser_degraded_predicate",
+    "non_finite_clause_candidate",
     "registry_signature_missing",
     "malformed_morphology_feats",
     "disabled_feature_group",
@@ -158,6 +159,13 @@ DIAGNOSTIC_REGISTRY: dict[str, DiagnosticSpec] = {
     "registry_signature_missing": DiagnosticSpec(
         code="registry_signature_missing",
         severity="warning",
+        result_impact="feature_omitted",
+        refs_required=True,
+        feature_path_required=True,
+    ),
+    "non_finite_clause_candidate": DiagnosticSpec(
+        code="non_finite_clause_candidate",
+        severity="info",
         result_impact="feature_omitted",
         refs_required=True,
         feature_path_required=True,

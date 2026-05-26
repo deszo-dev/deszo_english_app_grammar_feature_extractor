@@ -27,6 +27,24 @@ def add_baseline_diagnostics(
                     feature_path="syntax.predicates",
                 )
             )
+        main_morph = ctx.morph_by_ref[predicate.main].features
+        if (
+            predicate.form_signature == "unknown"
+            and main_morph.get("VerbForm") in {"Part", "Ger", "Inf"}
+            and not predicate.finite
+        ):
+            diagnostics.append(
+                FeatureDiagnostic(
+                    severity="info",
+                    code="non_finite_clause_candidate",
+                    message=(
+                        "Non-finite verb form was kept as a candidate instead of "
+                        "being emitted as a finite tense-aspect construction."
+                    ),
+                    refs=(predicate.main,),
+                    feature_path="syntax.predicates",
+                )
+            )
     _fragment_diagnostic(ctx, predicates, diagnostics)
     for np in np_profiles:
         if np.article_slot.requiredness == "not_applicable":

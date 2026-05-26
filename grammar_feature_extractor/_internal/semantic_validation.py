@@ -83,79 +83,15 @@ def validate_manifest_semantics(manifest: dict[str, object], output_dir: Path) -
     if pages and expected_start != total_sentences:
         raise ValueError("Manifest last page range does not match total_sentences.")
 
-    _validate_manifest_diagnostic_summary(manifest, output_dir, pages)
+    _validate_manifest_diagnostics(manifest)
 
 
-def _validate_manifest_diagnostic_summary(
+def _validate_manifest_diagnostics(
     manifest: dict[str, object],
-    output_dir: Path,
-    pages: list[object],
 ) -> None:
-    summary = manifest.get("diagnostic_summary")
-    if summary is None:
-        return
-    if not isinstance(summary, dict):
-        raise ValueError("Manifest diagnostic_summary must be an object.")
-    source = summary.get("source")
-    if not isinstance(source, str) or not source:
-        raise ValueError("diagnostic_summary.source must be a non-empty string.")
-    page_counts = summary.get("page_diagnostic_counts")
-    document_counts = summary.get("document_summary_counts")
-    total_page = summary.get("total_page_diagnostics")
-    total_doc = summary.get("total_document_summary_diagnostics")
-    if not isinstance(page_counts, dict):
-        raise ValueError("diagnostic_summary.page_diagnostic_counts must be an object.")
-    if not isinstance(document_counts, dict):
-        raise ValueError(
-            "diagnostic_summary.document_summary_counts must be an object."
-        )
-    if not isinstance(total_page, int) or total_page < 0:
-        raise ValueError(
-            "diagnostic_summary.total_page_diagnostics must be a non-negative integer."
-        )
-    if not isinstance(total_doc, int) or total_doc < 0:
-        raise ValueError(
-            "diagnostic_summary.total_document_summary_diagnostics must be a "
-            "non-negative integer."
-        )
-    if sum(int(v) for v in page_counts.values()) != total_page:
-        raise ValueError(
-            "diagnostic_summary.page_diagnostic_counts must sum to "
-            "total_page_diagnostics."
-        )
-    if sum(int(v) for v in document_counts.values()) != total_doc:
-        raise ValueError(
-            "diagnostic_summary.document_summary_counts must sum to "
-            "total_document_summary_diagnostics."
-        )
-
-    import json as _json
-
-    aggregated: dict[str, int] = {}
-    aggregated_total = 0
-    for page_entry in pages:
-        if not isinstance(page_entry, dict):
-            continue
-        file_name = page_entry.get("file_name")
-        if not isinstance(file_name, str):
-            continue
-        page_data = _json.loads((output_dir / file_name).read_text(encoding="utf-8"))
-        for sentence in page_data.get("features", []):
-            features = sentence.get("features", {})
-            for diag in features.get("diagnostics", []):
-                code = str(diag.get("code", ""))
-                aggregated[code] = aggregated.get(code, 0) + 1
-                aggregated_total += 1
-    if aggregated_total != total_page:
-        raise ValueError(
-            "diagnostic_summary.total_page_diagnostics does not match "
-            "aggregated page diagnostics."
-        )
-    if {k: int(v) for k, v in page_counts.items()} != aggregated:
-        raise ValueError(
-            "diagnostic_summary.page_diagnostic_counts does not exactly aggregate "
-            "page-level features.diagnostics."
-        )
+    diagnostics = manifest.get("diagnostics")
+    if not isinstance(diagnostics, list):
+        raise ValueError("Manifest diagnostics must be a list.")
 
 
 def validate_runtime_metadata_payload(metadata: dict[str, object]) -> None:

@@ -1749,7 +1749,7 @@ def _schema_construction_signature(value: str) -> str:
     signature_map = {
         "modal_negative_base": "modal_must_base",
         "present_simple_do_negative_question": "present_simple_do_question",
-        "past_simple_negative": "past_simple_regular",
+        "past_simple_negative": "past_simple_lexical_affirmative",
         "perfect_negative": "present_perfect_have_participle",
         "copular_be_negative": "subject_be_present_not_complement",
         "passive_negative": "passive_be_participle",
@@ -1932,6 +1932,15 @@ def _find_coordinator_ref(
 def _output_completeness_from_sentences(
     sentences: tuple[SentenceGrammarFeatures, ...],
 ) -> JsonObject:
+    degraded_codes = {
+        "unknown_predicate_type",
+        "possible_parser_error",
+        "quoted_speech_fragment",
+        "heading_fragment",
+        "address_or_date_fragment",
+        "non_predicative_fragment",
+        "non_finite_clause_candidate",
+    }
     evidence_omitted = any(
         any(
             diagnostic.code == "evidence_omitted_by_config"
@@ -1946,7 +1955,11 @@ def _output_completeness_from_sentences(
             for sentence in sentences
         )
     omitted: list[JsonValue] = ["evidence"] if evidence_omitted else []
+    degraded = any(
+        any(diagnostic.code in degraded_codes for diagnostic in sentence.features.diagnostics)
+        for sentence in sentences
+    )
     return {
-        "matcher_complete": not evidence_omitted,
+        "matcher_complete": not evidence_omitted and not degraded,
         "omitted_feature_groups": omitted,
     }
