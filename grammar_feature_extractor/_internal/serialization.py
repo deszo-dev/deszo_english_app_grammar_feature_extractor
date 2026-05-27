@@ -779,7 +779,9 @@ def _clause_to_dict(
     if item.predicate is not None:
         result["predicate"] = item.predicate
     if item.marker is not None:
-        result["marker"] = _clause_marker_to_dict(item.marker, context, index)
+        result["marker"] = _clause_marker_to_dict(
+            item.marker, context, index, group="clause_marker_inline"
+        )
     if item.semantic_relation is not None:
         result["semantic_relation"] = item.semantic_relation
     return result
@@ -808,9 +810,10 @@ def _clause_marker_to_dict(
     item: ClauseMarkerFeature,
     context: SerializationContext,
     index: int,
+    group: str = "clause_marker",
 ) -> JsonObject:
     return {
-        "id": _feature_id(context, "clause_marker", index),
+        "id": _feature_id(context, group, index),
         "marker_ref": item.marker_ref,
         "marker": item.marker,
         "clause_head": item.clause_head,
@@ -825,9 +828,10 @@ def _complement_to_dict(
     item: PredicateComplementFeature,
     context: SerializationContext,
     index: int,
+    group: str = "complement",
 ) -> JsonObject:
     result: JsonObject = {
-        "id": _feature_id(context, "complement", index),
+        "id": _feature_id(context, group, index),
         "governor": item.governor,
         "head": item.head,
         "type": item.type,
@@ -866,7 +870,12 @@ def _predicate_to_dict(
         "polarity": item.polarity,
         "clause_head": item.clause_head,
         "complements": [
-            _complement_to_dict(complement, context, complement_index)
+            _complement_to_dict(
+                complement,
+                context,
+                index * 1000 + complement_index,
+                group="predicate_complement",
+            )
             for complement_index, complement in enumerate(item.complements, start=1)
         ],
         "agreement": _agreement_to_dict(item.agreement),
@@ -1131,7 +1140,12 @@ def _verb_pattern_to_dict(
         "lemma": item.lemma,
         "pattern": item.pattern,
         "complements": [
-            _complement_to_dict(complement, context, complement_index)
+            _complement_to_dict(
+                complement,
+                context,
+                index * 1000 + complement_index,
+                group="verb_pattern_complement",
+            )
             for complement_index, complement in enumerate(item.complements, start=1)
         ],
         "confidence": item.confidence,
@@ -1788,7 +1802,13 @@ def _noun_inflection_to_dict(
 ) -> JsonObject:
     ref = item.refs[0] if item.refs else 1
     token = next((word for word in evidence.words if word.ref == ref), None)
-    number = "plural" if "plural" in item.kind else "unknown"
+    number = (
+        "plural"
+        if "plural" in item.kind
+        else "singular"
+        if "singular" in item.kind
+        else "unknown"
+    )
     result: JsonObject = {
         "id": _feature_id(context, "noun_inflection", index),
         "ref": ref,
@@ -1959,7 +1979,30 @@ def _output_completeness_from_sentences(
         any(diagnostic.code in degraded_codes for diagnostic in sentence.features.diagnostics)
         for sentence in sentences
     )
+    if degraded:
+        omitted.extend(_degraded_omitted_groups(sentences, degraded_codes))
     return {
         "matcher_complete": not evidence_omitted and not degraded,
         "omitted_feature_groups": omitted,
     }
+
+
+def _degraded_omitted_groups(
+    sentences: tuple[SentenceGrammarFeatures, ...],
+    degraded_codes: set[str],
+) -> list[JsonValue]:
+    groups: list[JsonValue] = []
+    for sentence in sentences:
+        for diagnostic in sentence.features.diagnostics:
+            if diagnostic.code not in degraded_codes:
+                continue
+            path = diagnostic.feature_path or ""
+            if "syntax" in path and "syntax" not in groups:
+                groups.append("syntax")
+            if "construction" in path and "constructions" not in groups:
+                groups.append("constructions")
+            if "lexical" in path and "lexical" not in groups:
+                groups.append("lexical")
+    if not groups:
+        groups.append("diagnostics")
+    return groups

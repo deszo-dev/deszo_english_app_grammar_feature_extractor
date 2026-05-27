@@ -277,11 +277,28 @@ def _write_output_dir(
         "page_count": page_count,
         "total_sentences": total_sentences,
         "pages": pages_manifest,
-        "diagnostics": [],
+        "diagnostics": _manifest_diagnostics(document),
     }
     manifest_payload = json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
     _atomic_write_text(out_path / "grammar_features.manifest.json", manifest_payload)
     validate_manifest_semantics(manifest, out_path)
+
+
+def _manifest_diagnostics(document: AnnotatedDocument) -> list[dict[str, object]]:
+    if document.input_lineage.source_status not in {"succeeded", "completed"}:
+        return [
+            {
+                "severity": "warning",
+                "code": "partial_upstream_input",
+                "message": (
+                    "Input lineage reports partial upstream status; output contains "
+                    "only the selected safe sentence stream available to the extractor."
+                ),
+                "refs": [],
+                "feature_path": "input_lineage.source_status",
+            }
+        ]
+    return []
 
 
 def _write_batch_output_dir(

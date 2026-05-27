@@ -72,6 +72,8 @@ def build_quantifiers(ctx: SentenceContext) -> tuple[TypedQuantifierFeature, ...
         if word.upos not in {"DET", "PRON", "ADJ", "NUM"}:
             continue
         qtype = _QUANTIFIER_LEMMAS[lemma]
+        if not _is_syntactically_compatible_quantifier(ctx, ref, qtype):
+            continue
         items.append(
             TypedQuantifierFeature(
                 ref=ref,
@@ -82,6 +84,34 @@ def build_quantifiers(ctx: SentenceContext) -> tuple[TypedQuantifierFeature, ...
             )
         )
     return tuple(items)
+
+
+def _is_syntactically_compatible_quantifier(
+    ctx: SentenceContext,
+    ref: int,
+    qtype: QuantifierType,
+) -> bool:
+    word = ctx.word_by_ref[ref]
+    head = ctx.word_by_ref.get(word.head)
+    if qtype == "little" and word.upos == "ADJ":
+        if word.deprel == "amod" and head is not None:
+            head_number = ctx.morph_by_ref[word.head].features.get("Number")
+            previous = ctx.word_by_ref.get(ref - 1)
+            has_a_little = previous is not None and previous.text.casefold() in {"a", "an"}
+            return has_a_little and head_number != "Plur"
+        return False
+    if qtype == "few" and word.upos == "ADJ":
+        if word.deprel == "amod" and head is not None:
+            return ctx.morph_by_ref[word.head].features.get("Number") == "Plur"
+        return False
+    if qtype in {"many", "much"} and word.upos == "ADJ" and word.deprel == "amod":
+        if head is None:
+            return False
+        head_number = ctx.morph_by_ref[word.head].features.get("Number")
+        if qtype == "many":
+            return head_number == "Plur"
+        return head_number != "Plur"
+    return True
 
 
 __all__ = ["build_quantifiers"]

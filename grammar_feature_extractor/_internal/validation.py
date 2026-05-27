@@ -93,7 +93,13 @@ def _parse_stanza_document(value: Mapping[object, object]) -> AnnotatedDocument:
 def _parse_stanza_unit(value: object, path: str) -> list[AnnotatedSentence]:
     unit = _mapping(value, path)
     execution_status = unit.get("execution_status")
-    if execution_status not in {None, "completed", "succeeded", "success"}:
+    if execution_status not in {
+        None,
+        "completed",
+        "completed_with_warnings",
+        "succeeded",
+        "success",
+    }:
         raise InputValidationError(f"{path}.execution_status must be completed/succeeded.")
     unit_id = _string(_required(unit, "unit_id"), f"{path}.unit_id")
     unit_type = _string(_required(unit, "unit_type"), f"{path}.unit_type")
@@ -105,7 +111,13 @@ def _parse_stanza_unit(value: object, path: str) -> list[AnnotatedSentence]:
     annotation_execution_status = annotation.get("execution_status")
     if annotation_status not in {None, "succeeded", "success", "partial"}:
         raise InputValidationError(f"{path}.annotation.status is not usable.")
-    if annotation_execution_status not in {None, "completed", "succeeded", "success"}:
+    if annotation_execution_status not in {
+        None,
+        "completed",
+        "completed_with_warnings",
+        "succeeded",
+        "success",
+    }:
         raise InputValidationError(f"{path}.annotation.execution_status is not usable.")
     _reject_blocking_diagnostics(
         _sequence(annotation.get("diagnostics", []), f"{path}.annotation.diagnostics"),

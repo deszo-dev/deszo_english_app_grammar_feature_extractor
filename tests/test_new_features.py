@@ -70,6 +70,56 @@ def test_syntax_has_all_new_typed_groups() -> None:
     assert isinstance(syntax.passive, tuple)
 
 
+def test_little_adjective_on_plural_count_noun_is_not_quantifier() -> None:
+    payload = stanza_document_from_words(
+        "Little ducks came out.",
+        [
+            _word("Little", "little", "ADJ", 2, "amod", 0, 6),
+            _word("ducks", "duck", "NOUN", 3, "nsubj", 7, 12, "Number=Plur"),
+            _word("came", "come", "VERB", 0, "root", 13, 17, "Tense=Past|VerbForm=Fin"),
+            _word("out", "out", "ADV", 3, "advmod", 18, 21),
+        ],
+    )
+    result = GrammarFeatureExtractor().extract(loads_document(json.dumps(payload)))
+
+    assert result.sentences[0].features.lexical.quantifiers == ()
+
+
+def test_a_little_uncountable_pattern_remains_quantifier_candidate() -> None:
+    payload = stanza_document_from_words(
+        "A little water spilled.",
+        [
+            _word("A", "a", "DET", 3, "det", 0, 1),
+            _word("little", "little", "ADJ", 3, "amod", 2, 8),
+            _word("water", "water", "NOUN", 4, "nsubj", 9, 14),
+            _word("spilled", "spill", "VERB", 0, "root", 15, 22, "Tense=Past|VerbForm=Fin"),
+        ],
+    )
+    result = GrammarFeatureExtractor().extract(loads_document(json.dumps(payload)))
+    quantifiers = result.sentences[0].features.lexical.quantifiers
+
+    assert len(quantifiers) == 1
+    assert quantifiers[0].quantifier_type == "little"
+
+
+def test_noun_inflection_serialization_uses_ud_number() -> None:
+    payload = stanza_document_from_words(
+        "A duck slept.",
+        [
+            _word("A", "a", "DET", 2, "det", 0, 1),
+            _word("duck", "duck", "NOUN", 3, "nsubj", 2, 6, "Number=Sing"),
+            _word("slept", "sleep", "VERB", 0, "root", 7, 12, "Tense=Past|VerbForm=Fin"),
+        ],
+    )
+    page = GrammarFeatureExtractor().extract_page(loads_document(json.dumps(payload)))
+    from grammar_feature_extractor._internal.serialization import page_to_dict
+
+    noun_inflections = page_to_dict(page)["features"][0]["features"]["lexical"][
+        "noun_inflections"
+    ]
+    assert noun_inflections[0]["number"] == "singular"
+
+
 def test_output_dir_writes_pages_and_manifest(tmp_path: Path) -> None:
     payload_path = tmp_path / "input.json"
     payload_path.write_text(json.dumps(sample_document()), encoding="utf-8")
@@ -131,3 +181,27 @@ def test_output_dir_is_deterministic_under_debug(tmp_path: Path) -> None:
         (debug_dir / "grammar_features.manifest.json").read_text(encoding="utf-8")
     )
     assert plain_manifest["pages"][0]["sha256"] == debug_manifest["pages"][0]["sha256"]
+
+
+def _word(
+    text: str,
+    lemma: str,
+    upos: str,
+    head: int,
+    deprel: str,
+    start_char: int,
+    end_char: int,
+    feats: str | None = None,
+) -> dict[str, object]:
+    word: dict[str, object] = {
+        "text": text,
+        "lemma": lemma,
+        "upos": upos,
+        "head": head,
+        "deprel": deprel,
+        "start_char": start_char,
+        "end_char": end_char,
+    }
+    if feats is not None:
+        word["feats"] = feats
+    return word

@@ -295,6 +295,71 @@ def test_manifest_uses_schema_valid_diagnostics_field(tmp_path: Path) -> None:
     assert "diagnostic_summary" not in manifest
 
 
+def test_partial_input_status_is_summarized_in_manifest_diagnostics(tmp_path: Path) -> None:
+    document = sample_document()
+    document["status"] = "partial"
+    out_dir = tmp_path / "out"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "grammar_feature_extractor",
+            "--output-dir",
+            str(out_dir),
+            "--page-size",
+            "1",
+        ],
+        input=json.dumps(document),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    manifest = json.loads(
+        (out_dir / "grammar_features.manifest.json").read_text(encoding="utf-8")
+    )
+    assert manifest["diagnostics"][0]["code"] == "partial_upstream_input"
+
+
+def test_degraded_output_completeness_names_omitted_group() -> None:
+    document = stanza_document_from_words(
+        "Perhaps.",
+        [_word("Perhaps", "perhaps", "ADV", 0, "root", 0, 7)],
+    )
+    page = GrammarFeatureExtractor().extract_page(loads_document(json.dumps(document)))
+    payload = json.loads(dumps_page(page))
+
+    assert payload["output_completeness"]["matcher_complete"] is False
+    assert payload["output_completeness"]["omitted_feature_groups"]
+
+
+def test_recursive_feature_ids_are_unique_within_sentence() -> None:
+    document = stanza_document_from_words(
+        "I gave her a book because she wanted to read it.",
+        [
+            _word("I", "I", "PRON", 2, "nsubj", 0, 1),
+            _word("gave", "give", "VERB", 0, "root", 2, 6, "Tense=Past|VerbForm=Fin"),
+            _word("her", "she", "PRON", 2, "iobj", 7, 10),
+            _word("a", "a", "DET", 5, "det", 11, 12),
+            _word("book", "book", "NOUN", 2, "obj", 13, 17, "Number=Sing"),
+            _word("because", "because", "SCONJ", 8, "mark", 18, 25),
+            _word("she", "she", "PRON", 8, "nsubj", 26, 29),
+            _word("wanted", "want", "VERB", 2, "advcl", 30, 36, "Tense=Past|VerbForm=Fin"),
+            _word("to", "to", "PART", 10, "mark", 37, 39),
+            _word("read", "read", "VERB", 8, "xcomp", 40, 44, "VerbForm=Inf"),
+            _word("it", "it", "PRON", 10, "obj", 45, 47),
+        ],
+    )
+    page = GrammarFeatureExtractor().extract_page(loads_document(json.dumps(document)))
+    sentence = json.loads(dumps_page(page))["features"][0]
+    ids = _collect_ids(sentence["features"])
+
+    assert len(ids) == len(set(ids)), [
+        item for item in ids if ids.count(item) > 1
+    ]
+
+
 def test_same_unit_context_flags_require_matching_source_unit_id() -> None:
     first = stanza_document_from_words(
         "She reads.",
@@ -392,6 +457,20 @@ def _word(
     if feats is not None:
         word["feats"] = feats
     return word
+
+
+def _collect_ids(value: object) -> list[str]:
+    ids: list[str] = []
+    if isinstance(value, dict):
+        item_id = value.get("id")
+        if isinstance(item_id, str):
+            ids.append(item_id)
+        for child in value.values():
+            ids.extend(_collect_ids(child))
+    elif isinstance(value, list):
+        for child in value:
+            ids.extend(_collect_ids(child))
+    return ids
 
 
 def test_cli_rejects_raw_text_with_no_stdout() -> None:

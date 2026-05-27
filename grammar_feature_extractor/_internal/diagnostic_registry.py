@@ -26,6 +26,7 @@ DiagnosticCode: TypeAlias = Literal[
     "non_predicative_fragment",
     "parser_degraded_predicate",
     "non_finite_clause_candidate",
+    "partial_upstream_input",
     "registry_signature_missing",
     "malformed_morphology_feats",
     "disabled_feature_group",
@@ -168,6 +169,13 @@ DIAGNOSTIC_REGISTRY: dict[str, DiagnosticSpec] = {
         severity="info",
         result_impact="feature_omitted",
         refs_required=True,
+        feature_path_required=True,
+    ),
+    "partial_upstream_input": DiagnosticSpec(
+        code="partial_upstream_input",
+        severity="warning",
+        result_impact="confidence_lowered",
+        refs_required=False,
         feature_path_required=True,
     ),
     "negation_not_propagated": DiagnosticSpec(

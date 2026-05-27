@@ -40,6 +40,18 @@ def test_accepts_dracula_single_unit_and_preserves_provenance() -> None:
     assert first.words[0].source_word_id == "u0000-p-chapter-001:s0000:w0001"
 
 
+def test_accepts_completed_with_warnings_stanza_units() -> None:
+    payload = _fixture("dracula_single_unit_stanza_document.json")
+    unit = payload["units"][0]  # type: ignore[index]
+    unit["execution_status"] = "completed_with_warnings"  # type: ignore[index]
+    unit["annotation"]["status"] = "partial"  # type: ignore[index]
+    unit["annotation"]["execution_status"] = "completed_with_warnings"  # type: ignore[index]
+
+    document = parse_annotated_document(payload)
+
+    assert len(document.sentences) == 3
+
+
 def test_extract_serializes_lineage_and_sentence_provenance() -> None:
     document = loads_document(
         (FIXTURE_DIR / "dracula_single_unit_stanza_document.json").read_text(
