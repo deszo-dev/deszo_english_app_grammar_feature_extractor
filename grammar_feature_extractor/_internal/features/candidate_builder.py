@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from grammar_feature_extractor._internal.models import (
     CandidateFeature,
+    NPFeature,
     PredicateFeature,
 )
 
 
 def build_predicate_candidates(
-    predicates: tuple[PredicateFeature, ...],
+    predicates: tuple["PredicateFeature", ...],
     sentence_index: int,
 ) -> tuple[CandidateFeature, ...]:
     candidates: list[CandidateFeature] = []
@@ -52,4 +53,31 @@ def build_predicate_candidates(
     return tuple(candidates)
 
 
-__all__ = ["build_predicate_candidates"]
+def build_np_candidates(
+    np_profiles: tuple[NPFeature, ...],
+    sentence_index: int,
+) -> tuple[CandidateFeature, ...]:
+    candidates: list[CandidateFeature] = []
+    for index, profile in enumerate(np_profiles):
+        if profile.phrase_type != "common_noun_np":
+            continue
+        if profile.has_determiner:
+            continue
+        if profile.number not in (None, "singular"):
+            continue
+        candidates.append(
+            CandidateFeature(
+                candidate_id=f"s{sentence_index}.np.{index}",
+                group="np",
+                decision="ambiguous",
+                reason="bare_singular_np",
+                evidence_refs=(profile.head,),
+                confidence="low",
+                candidate_type="zero_article_np",
+                signature=None,
+            )
+        )
+    return tuple(candidates)
+
+
+__all__ = ["build_predicate_candidates", "build_np_candidates"]

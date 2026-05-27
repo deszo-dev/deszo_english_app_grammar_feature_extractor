@@ -45,6 +45,7 @@ from grammar_feature_extractor._internal.features.multiword_cue_builder import (
     build_multiword_cues,
 )
 from grammar_feature_extractor._internal.features.candidate_builder import (
+    build_np_candidates,
     build_predicate_candidates,
 )
 from grammar_feature_extractor._internal.features.conflict_builder import (
@@ -366,7 +367,9 @@ def extract_sentence_features(
         multiword_cues=multiword_cues,
     )
     normalization_traces = build_predicate_normalization_traces(predicates)
-    candidate_features = build_predicate_candidates(predicates, sentence_index)
+    candidate_features = build_predicate_candidates(
+        predicates, sentence_index
+    ) + build_np_candidates(np_profiles, sentence_index)
     feature_conflicts = build_predicate_conflicts(predicates, passive, sentence_index)
     negative_evidence = (
         build_predicate_negative_evidence(context, predicates)

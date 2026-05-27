@@ -1279,6 +1279,7 @@ class CountabilityFeature:
     status: CountabilityValue
     source: CountabilitySource
     confidence: Confidence
+    evidence_refs: tuple[WordRef, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)

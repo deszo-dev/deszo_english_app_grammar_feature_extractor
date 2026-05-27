@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from grammar_feature_extractor._internal.models import (
     QuantifierCompatibleNumber,
     QuantifierPolaritySensitivity,
@@ -7,6 +10,20 @@ from grammar_feature_extractor._internal.models import (
     TypedQuantifierFeature,
 )
 from grammar_feature_extractor._internal.sentence_context import SentenceContext
+
+
+def _load_uncountable_lemmas() -> frozenset[str]:
+    lex_path = Path(__file__).resolve().parent.parent / "lexicons" / "countability.json"
+    try:
+        data = json.loads(lex_path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, ValueError):
+        return frozenset()
+    return frozenset(
+        lemma.casefold() for lemma in data.get("uncountable", [])
+    )
+
+
+_UNCOUNTABLE_LEMMAS = _load_uncountable_lemmas()
 
 _QUANTIFIER_LEMMAS: dict[str, QuantifierType] = {
     "some": "some",
@@ -95,10 +112,16 @@ def _is_syntactically_compatible_quantifier(
     head = ctx.word_by_ref.get(word.head)
     if qtype == "little" and word.upos == "ADJ":
         if word.deprel == "amod" and head is not None:
+            head_lemma = (head.lemma or head.text).casefold()
             head_number = ctx.morph_by_ref[word.head].features.get("Number")
             previous = ctx.word_by_ref.get(ref - 1)
-            has_a_little = previous is not None and previous.text.casefold() in {"a", "an"}
-            return has_a_little and head_number != "Plur"
+            has_a_little = (
+                previous is not None and previous.text.casefold() in {"a", "an"}
+            )
+            head_is_uncountable = head_lemma in _UNCOUNTABLE_LEMMAS
+            if head_number == "Plur":
+                return False
+            return head_is_uncountable and (has_a_little or head_number != "Plur")
         return False
     if qtype == "few" and word.upos == "ADJ":
         if word.deprel == "amod" and head is not None:
@@ -107,10 +130,13 @@ def _is_syntactically_compatible_quantifier(
     if qtype in {"many", "much"} and word.upos == "ADJ" and word.deprel == "amod":
         if head is None:
             return False
+        head_lemma = (head.lemma or head.text).casefold()
         head_number = ctx.morph_by_ref[word.head].features.get("Number")
+        head_is_uncountable = head_lemma in _UNCOUNTABLE_LEMMAS
         if qtype == "many":
             return head_number == "Plur"
-        return head_number != "Plur"
+        # `much` requires uncountable head
+        return head_is_uncountable or (head_number == "Sing" and head_is_uncountable)
     return True
 
 

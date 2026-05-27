@@ -226,21 +226,38 @@ def _countability(
     lemma = (ctx.word_by_ref[ref].lemma or ctx.word_by_ref[ref].text).casefold()
     if phrase_type == "pronoun_np":
         return CountabilityFeature(
-            status="pronoun_not_applicable", source="parser", confidence="high"
+            status="pronoun_not_applicable",
+            source="parser",
+            confidence="high",
+            evidence_refs=(ref,),
         )
     if phrase_type == "proper_noun_np":
         return CountabilityFeature(
-            status="proper_name", source="parser", confidence="high"
+            status="proper_name",
+            source="parser",
+            confidence="high",
+            evidence_refs=(ref,),
         )
     if lemma in UNCOUNTABLE_LEXICON:
         return CountabilityFeature(
-            status="uncountable", source="lexicon", confidence="high"
+            status="uncountable",
+            source="lexicon",
+            confidence="high",
+            evidence_refs=(ref,),
         )
     if number == "plural":
         return CountabilityFeature(
-            status="count_plural", source="morphology", confidence="high"
+            status="count_plural",
+            source="morphology",
+            confidence="high",
+            evidence_refs=(ref,),
         )
-    return CountabilityFeature(status="unknown", source="unknown", confidence="low")
+    return CountabilityFeature(
+        status="unknown",
+        source="unknown",
+        confidence="low",
+        evidence_refs=(ref,),
+    )
 
 
 def _plural_analysis(

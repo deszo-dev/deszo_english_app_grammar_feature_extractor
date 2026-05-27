@@ -27,6 +27,9 @@ from grammar_feature_extractor._internal.pipeline import GrammarFeatureExtractor
 from grammar_feature_extractor._internal.runtime_metadata import (
     contract_runtime_metadata,
 )
+from grammar_feature_extractor._internal.schema_validation_report import (
+    write_schema_validation_report,
+)
 from grammar_feature_extractor._internal.semantic_validation import (
     validate_manifest_semantics,
 )
@@ -282,23 +285,38 @@ def _write_output_dir(
     manifest_payload = json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
     _atomic_write_text(out_path / "grammar_features.manifest.json", manifest_payload)
     validate_manifest_semantics(manifest, out_path)
+    write_schema_validation_report(out_path)
 
 
 def _manifest_diagnostics(document: AnnotatedDocument) -> list[dict[str, object]]:
-    if document.input_lineage.source_status not in {"succeeded", "completed"}:
-        return [
-            {
-                "severity": "warning",
-                "code": "partial_upstream_input",
-                "message": (
-                    "Input lineage reports partial upstream status; output contains "
-                    "only the selected safe sentence stream available to the extractor."
-                ),
-                "refs": [],
-                "feature_path": "input_lineage.source_status",
-            }
-        ]
-    return []
+    lineage = document.input_lineage
+    if lineage.source_status in {"succeeded", "completed", "success"}:
+        return []
+    selected = lineage.selected_unit_count
+    sentences_present = len(document.sentences)
+    details: dict[str, object] = {
+        "processed_unit_count": selected,
+        "skipped_unit_count": 0,
+        "unsafe_unit_count": 0,
+        "failed_unit_count": 0,
+        "skipped_reasons": {},
+        "processed_sentence_count": sentences_present,
+        "source_status": lineage.source_status,
+        "_estimated": True,
+    }
+    return [
+        {
+            "severity": "warning",
+            "code": "partial_upstream_input",
+            "message": (
+                "Input lineage reports partial upstream status; manifest exposes "
+                "estimated unit rollup for downstream risk quantification."
+            ),
+            "refs": [],
+            "feature_path": "input_lineage.source_status",
+            "details": details,
+        }
+    ]
 
 
 def _write_batch_output_dir(

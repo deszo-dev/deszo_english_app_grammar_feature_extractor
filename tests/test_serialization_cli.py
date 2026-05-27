@@ -180,6 +180,143 @@ def test_cli_input_dir_requires_output_dir(tmp_path: Path) -> None:
     assert json.loads(result.stderr)["error_code"] == "configuration_error"
 
 
+def test_schema_validation_report_is_written_and_clean(tmp_path: Path) -> None:
+    out_dir = tmp_path / "out"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "grammar_feature_extractor",
+            "--output-dir",
+            str(out_dir),
+            "--page-size",
+            "1",
+        ],
+        input=json.dumps(sample_document()),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    report_path = out_dir / "grammar_features.schema_validation.json"
+    assert report_path.exists()
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    assert report["schema_version"] == "schema_validation.v5"
+    assert report["ok"] is True
+    assert report["pages"], "schema validation report must list at least one page"
+    for page in report["pages"]:
+        assert page["ok"] is True, page
+
+
+def test_little_amod_count_noun_is_not_a_quantifier() -> None:
+    """Regression for QA-A1 P1-3: `A little daisy` should not classify `little` as quantifier."""
+    words: list[dict[str, object]] = [
+        {"text": "A", "lemma": "a", "upos": "DET", "head": 3, "deprel": "det",
+         "start_char": 0, "end_char": 1},
+        {"text": "little", "lemma": "little", "upos": "ADJ", "head": 3, "deprel": "amod",
+         "start_char": 2, "end_char": 8},
+        {"text": "daisy", "lemma": "daisy", "upos": "NOUN", "feats": "Number=Sing",
+         "head": 4, "deprel": "nsubj", "start_char": 9, "end_char": 14},
+        {"text": "grew", "lemma": "grow", "upos": "VERB", "feats": "Tense=Past",
+         "head": 0, "deprel": "root", "start_char": 15, "end_char": 19},
+        {"text": ".", "lemma": ".", "upos": "PUNCT", "head": 4, "deprel": "punct",
+         "start_char": 19, "end_char": 20},
+    ]
+    payload = stanza_document_from_words("A little daisy grew.", words)
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    output = json.loads(result.stdout)
+    quantifiers = output["features"][0]["features"]["lexical"].get("quantifiers", [])
+    assert not any(
+        q.get("quantifier_type") == "little" for q in quantifiers
+    ), f"`little` as amod size modifier of count noun should not be a quantifier: {quantifiers}"
+
+
+def test_little_amod_uncountable_noun_is_a_quantifier() -> None:
+    """Regression for QA-A1 P1-3 (positive case): `a little water` keeps `little` quantifier."""
+    words: list[dict[str, object]] = [
+        {"text": "A", "lemma": "a", "upos": "DET", "head": 3, "deprel": "det",
+         "start_char": 0, "end_char": 1},
+        {"text": "little", "lemma": "little", "upos": "ADJ", "head": 3, "deprel": "amod",
+         "start_char": 2, "end_char": 8},
+        {"text": "water", "lemma": "water", "upos": "NOUN", "feats": "Number=Sing",
+         "head": 4, "deprel": "obj", "start_char": 9, "end_char": 14},
+        {"text": "remained", "lemma": "remain", "upos": "VERB", "feats": "Tense=Past",
+         "head": 0, "deprel": "root", "start_char": 15, "end_char": 23},
+        {"text": ".", "lemma": ".", "upos": "PUNCT", "head": 4, "deprel": "punct",
+         "start_char": 23, "end_char": 24},
+    ]
+    payload = stanza_document_from_words("A little water remained.", words)
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    output = json.loads(result.stdout)
+    quantifiers = output["features"][0]["features"]["lexical"].get("quantifiers", [])
+    assert any(
+        q.get("quantifier_type") == "little" for q in quantifiers
+    ), f"`little` modifying uncountable `water` should be quantifier: {quantifiers}"
+
+
+def test_feature_ids_are_unique_per_sentence() -> None:
+    """Regression for QA-A1 P1-2: duplicate sN.np_quantifier.1 across NPs in same sentence."""
+    words: list[dict[str, object]] = [
+        {"text": "Some", "lemma": "some", "upos": "DET", "head": 2, "deprel": "det",
+         "start_char": 0, "end_char": 4},
+        {"text": "boys", "lemma": "boy", "upos": "NOUN", "feats": "Number=Plur",
+         "head": 6, "deprel": "nsubj", "start_char": 5, "end_char": 9},
+        {"text": "and", "lemma": "and", "upos": "CCONJ", "head": 5, "deprel": "cc",
+         "start_char": 10, "end_char": 13},
+        {"text": "some", "lemma": "some", "upos": "DET", "head": 5, "deprel": "det",
+         "start_char": 14, "end_char": 18},
+        {"text": "girls", "lemma": "girl", "upos": "NOUN", "feats": "Number=Plur",
+         "head": 2, "deprel": "conj", "start_char": 19, "end_char": 24},
+        {"text": "played", "lemma": "play", "upos": "VERB", "feats": "Tense=Past",
+         "head": 0, "deprel": "root", "start_char": 25, "end_char": 31},
+        {"text": ".", "lemma": ".", "upos": "PUNCT", "head": 6, "deprel": "punct",
+         "start_char": 31, "end_char": 32},
+    ]
+    payload = stanza_document_from_words("Some boys and some girls played.", words)
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    output = json.loads(result.stdout)
+
+    seen_ids: dict[str, int] = {}
+    duplicates: list[str] = []
+    for sentence in output["features"]:
+        seen_ids.clear()
+        f = sentence["features"]
+        for np in f["syntax"].get("np_profiles", []):
+            np_id = np.get("id")
+            if np_id:
+                seen_ids[np_id] = seen_ids.get(np_id, 0) + 1
+            for quantifier in np.get("quantifiers", []):
+                qid = quantifier.get("id")
+                if qid:
+                    seen_ids[qid] = seen_ids.get(qid, 0) + 1
+        for fid, count in seen_ids.items():
+            if count > 1:
+                duplicates.append(f"{fid} (x{count})")
+
+    assert not duplicates, f"Duplicate feature IDs: {duplicates}"
+
+
 def test_lexical_groups_filled_on_dracula_fixture() -> None:
     from grammar_feature_extractor import GrammarFeatureExtractor
     from grammar_feature_extractor._internal.serialization import loads_document

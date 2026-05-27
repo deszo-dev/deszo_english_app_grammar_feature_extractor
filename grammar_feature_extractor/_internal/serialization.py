@@ -102,8 +102,38 @@ def page_to_dict(page: GrammarFeaturePage) -> JsonObject:
         "runtime_metadata": _coerce_json_object(contract_runtime_metadata()),
         "input_lineage": _input_lineage_to_dict(page.input_lineage),
         "output_completeness": _output_completeness_from_sentences(page.features),
+        "diagnostic_summary": _page_diagnostic_summary(page.features),
+        "char_offset_space": "document_global",
         "page": _page_info_to_dict(page.page),
         "features": [_sentence_to_dict(sentence) for sentence in page.features],
+    }
+
+
+def _page_diagnostic_summary(
+    sentences: tuple[SentenceGrammarFeatures, ...],
+) -> JsonObject:
+    by_group: dict[str, dict[str, int]] = {}
+    by_code: dict[str, int] = {}
+    total = 0
+    for sentence in sentences:
+        for diagnostic in sentence.features.diagnostics:
+            normalized = _normalized_diagnostic(diagnostic)
+            if normalized is None:
+                continue
+            total += 1
+            code = normalized.code
+            by_code[code] = by_code.get(code, 0) + 1
+            path = normalized.feature_path or "features"
+            group = path.split("[")[0]
+            bucket = by_group.setdefault(group, {})
+            bucket[normalized.severity] = bucket.get(normalized.severity, 0) + 1
+    return {
+        "by_group": {
+            group: dict(sorted(severities.items()))
+            for group, severities in sorted(by_group.items())
+        },
+        "by_code": dict(sorted(by_code.items())),
+        "total": total,
     }
 
 
@@ -114,6 +144,7 @@ def document_to_dict(document: GrammarFeatureDocument) -> JsonObject:
         "runtime_metadata": _coerce_json_object(contract_runtime_metadata()),
         "input_lineage": _input_lineage_to_dict(document.input_lineage),
         "output_completeness": _output_completeness_from_sentences(document.sentences),
+        "char_offset_space": "document_global",
         "source_sentence_count": document.source_sentence_count,
         "sentences": [_sentence_to_dict(sentence) for sentence in document.sentences],
     }
@@ -1199,7 +1230,9 @@ def _countability_to_dict(item: CountabilityFeature) -> JsonObject | None:
         "value": item.status,
         "source": _schema_countability_source(item.source),
         "confidence": item.confidence,
-        "provenance": _synthetic_provenance_from_refs((), item.source, item.confidence),
+        "provenance": _synthetic_provenance_from_refs(
+            tuple(item.evidence_refs), item.source, item.confidence
+        ),
     }
 
 
@@ -1623,7 +1656,11 @@ def _feature_id(
     group: str,
     index: int,
 ) -> str:
-    return _feature_id_value(cast(int, context["sentence_number"]), group, index)
+    sentence_number = cast(int, context["sentence_number"])
+    counters = cast(dict[str, int], context.setdefault("_id_counters", {}))
+    next_index = counters.get(group, 0) + 1
+    counters[group] = next_index
+    return _feature_id_value(sentence_number, group, next_index)
 
 
 def _feature_id_value(sentence_number: int, group: str, index: int) -> str:
@@ -1949,18 +1986,48 @@ def _find_coordinator_ref(
     return None
 
 
-def _output_completeness_from_sentences(
-    sentences: tuple[SentenceGrammarFeatures, ...],
-) -> JsonObject:
-    degraded_codes = {
+_MATCHER_UNSAFE_REASONS = frozenset(
+    {
         "unknown_predicate_type",
+        "predicate_type_unknown",
+        "form_signature_unknown",
         "possible_parser_error",
+        "parser_degraded_predicate",
+        "low_confidence_predicate_evidence",
+        "registry_signature_missing",
+    }
+)
+
+_MATCHER_SAFE_REASONS = frozenset(
+    {
+        "non_finite_clause_candidate",
+        "non_predicative_fragment",
+        "fragment_non_predicative_root",
         "quoted_speech_fragment",
         "heading_fragment",
         "address_or_date_fragment",
-        "non_predicative_fragment",
-        "non_finite_clause_candidate",
     }
+)
+
+
+def _reason_subgroup(feature_path: str | None) -> tuple[str, str | None]:
+    if not feature_path:
+        return "unknown", None
+    path = feature_path
+    parts = path.split(".")
+    group = parts[0] if parts else "unknown"
+    subgroup: str | None = None
+    if len(parts) >= 2:
+        # strip array indexing like [*] in `features.syntax.predicates[*].tavm.form_signature`
+        cleaned = ".".join(part.split("[")[0] for part in parts[1:])
+        subgroup = cleaned or None
+    return group or "unknown", subgroup
+
+
+def _output_completeness_from_sentences(
+    sentences: tuple[SentenceGrammarFeatures, ...],
+) -> JsonObject:
+    degraded_codes = _MATCHER_UNSAFE_REASONS | _MATCHER_SAFE_REASONS
     evidence_omitted = any(
         any(
             diagnostic.code == "evidence_omitted_by_config"
@@ -1974,16 +2041,87 @@ def _output_completeness_from_sentences(
             and sentence.features.morphology.word_morphology != ()
             for sentence in sentences
         )
-    omitted: list[JsonValue] = ["evidence"] if evidence_omitted else []
-    degraded = any(
-        any(diagnostic.code in degraded_codes for diagnostic in sentence.features.diagnostics)
-        for sentence in sentences
-    )
-    if degraded:
-        omitted.extend(_degraded_omitted_groups(sentences, degraded_codes))
+
+    # Build structured omissions
+    omissions_by_key: dict[
+        tuple[str, str | None, str], dict[str, object]
+    ] = {}
+    for sentence in sentences:
+        for diagnostic in sentence.features.diagnostics:
+            if diagnostic.code not in degraded_codes:
+                continue
+            group_value = "features"
+            subgroup_value = None
+            reason = diagnostic.code
+            scope = "sentence"
+            if diagnostic.feature_path:
+                group_value, subgroup_value = _reason_subgroup(
+                    diagnostic.feature_path
+                )
+                # feature_path is `features.X.Y` — peel "features." prefix
+                if group_value == "features" and subgroup_value:
+                    head, _, rest = subgroup_value.partition(".")
+                    group_value = head
+                    subgroup_value = rest or None
+            matcher_safe = reason in _MATCHER_SAFE_REASONS
+            key = (group_value, subgroup_value, reason)
+            bucket = omissions_by_key.setdefault(
+                key,
+                {
+                    "group": group_value,
+                    "subgroup": subgroup_value,
+                    "reason": reason,
+                    "scope": scope,
+                    "matcher_safe": matcher_safe,
+                    "affected_sentence_count": 0,
+                    "affected_sentence_indexes_sample": [],
+                },
+            )
+            bucket["affected_sentence_count"] = (
+                int(bucket["affected_sentence_count"]) + 1
+            )
+            samples = bucket["affected_sentence_indexes_sample"]
+            assert isinstance(samples, list)
+            if len(samples) < 10 and sentence.sentence_index not in samples:
+                samples.append(sentence.sentence_index)
+
+    omissions: list[JsonValue] = []
+    if evidence_omitted:
+        omissions.append(
+            {
+                "group": "evidence",
+                "subgroup": None,
+                "reason": "evidence_omitted_by_config",
+                "scope": "page",
+                "matcher_safe": False,
+                "affected_sentence_count": len(sentences),
+                "affected_sentence_indexes_sample": [
+                    sentence.sentence_index
+                    for sentence in sentences[:10]
+                ],
+            }
+        )
+    for key in sorted(omissions_by_key):
+        omissions.append(omissions_by_key[key])
+
+    has_unsafe = any(not bool(item["matcher_safe"]) for item in omissions)
+    matcher_complete = not has_unsafe
+
+    # Legacy `omitted_feature_groups` (deprecated)
+    legacy_groups: list[JsonValue] = []
+    if evidence_omitted:
+        legacy_groups.append("evidence")
+    for item in omissions:
+        if item.get("group") in {"evidence"}:
+            continue
+        group_label = str(item.get("group", ""))
+        if group_label and group_label not in legacy_groups:
+            legacy_groups.append(group_label)
+
     return {
-        "matcher_complete": not evidence_omitted and not degraded,
-        "omitted_feature_groups": omitted,
+        "matcher_complete": matcher_complete,
+        "omissions": omissions,
+        "omitted_feature_groups": legacy_groups,
     }
 
 
