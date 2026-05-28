@@ -364,6 +364,7 @@ RelativeType: TypeAlias = Literal[
     "object_relative",
     "possessive_relative",
     "place_relative",
+    "time_relative",
     "reduced_participle_relative",
     "reduced_to_infinitive_relative",
     "unknown",
@@ -1232,6 +1233,7 @@ class TypedQuantifierFeature:
     quantifier_type: QuantifierType
     compatible_number: QuantifierCompatibleNumber | None
     polarity_sensitivity: QuantifierPolaritySensitivity | None
+    confidence: Confidence = "high"
 
 
 @dataclass(frozen=True, slots=True)

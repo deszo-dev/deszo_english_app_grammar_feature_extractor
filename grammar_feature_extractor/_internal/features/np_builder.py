@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from grammar_feature_extractor._internal.features.dependency_helpers import (
     children_with_deprel,
     sorted_refs,
@@ -34,9 +37,20 @@ from grammar_feature_extractor._internal.sentence_context import SentenceContext
 VOWEL_LETTERS = frozenset({"a", "e", "i", "o", "u"})
 VOWEL_SOUND_EXCEPTIONS = frozenset({"hour", "honest", "honor", "honour", "heir"})
 CONSONANT_SOUND_EXCEPTIONS = frozenset({"university", "european", "user", "one"})
-UNCOUNTABLE_LEXICON = frozenset(
-    {"water", "advice", "information", "money", "furniture", "news"}
-)
+def _load_uncountable_lexicon() -> frozenset[str]:
+    lex_path = (
+        Path(__file__).resolve().parent.parent / "lexicons" / "countability.json"
+    )
+    try:
+        data = json.loads(lex_path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, ValueError):
+        return frozenset(
+            {"water", "advice", "information", "money", "furniture", "news"}
+        )
+    return frozenset(lemma.casefold() for lemma in data.get("uncountable", []))
+
+
+UNCOUNTABLE_LEXICON = _load_uncountable_lexicon()
 IRREGULAR_PLURALS = {"children": "child"}
 INVARIANT_NOUNS = frozenset({"sheep"})
 

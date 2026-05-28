@@ -1220,6 +1220,7 @@ def _typed_quantifier_to_dict(
         result["compatible_number"] = item.compatible_number
     if item.polarity_sensitivity is not None:
         result["polarity_sensitivity"] = item.polarity_sensitivity
+    result["confidence"] = item.confidence
     return result
 
 
@@ -2107,16 +2108,25 @@ def _output_completeness_from_sentences(
     has_unsafe = any(not bool(item["matcher_safe"]) for item in omissions)
     matcher_complete = not has_unsafe
 
-    # Legacy `omitted_feature_groups` (deprecated)
+    # Legacy `omitted_feature_groups` (deprecated): now emits dotted
+    # `group.subgroup` labels and excludes matcher-safe omissions so the field
+    # truthfully encodes "matcher cannot trust these subgroups".
     legacy_groups: list[JsonValue] = []
     if evidence_omitted:
         legacy_groups.append("evidence")
     for item in omissions:
         if item.get("group") in {"evidence"}:
             continue
+        if item.get("matcher_safe") is True:
+            continue
         group_label = str(item.get("group", ""))
-        if group_label and group_label not in legacy_groups:
-            legacy_groups.append(group_label)
+        subgroup_label = item.get("subgroup")
+        if subgroup_label:
+            label = f"{group_label}.{subgroup_label}"
+        else:
+            label = group_label
+        if label and label not in legacy_groups:
+            legacy_groups.append(label)
 
     return {
         "matcher_complete": matcher_complete,

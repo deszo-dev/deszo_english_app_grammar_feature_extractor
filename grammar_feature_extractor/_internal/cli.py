@@ -294,15 +294,22 @@ def _manifest_diagnostics(document: AnnotatedDocument) -> list[dict[str, object]
         return []
     selected = lineage.selected_unit_count
     sentences_present = len(document.sentences)
+    # Hardened partial-upstream rollup: split exact (from lineage) from
+    # inferred (heuristic). Hard requirement: nothing in `exact` may be a
+    # heuristic estimate.
     details: dict[str, object] = {
-        "processed_unit_count": selected,
-        "skipped_unit_count": 0,
-        "unsafe_unit_count": 0,
-        "failed_unit_count": 0,
-        "skipped_reasons": {},
-        "processed_sentence_count": sentences_present,
         "source_status": lineage.source_status,
-        "_estimated": True,
+        "exact": {
+            "processed_unit_count": selected,
+            "processed_sentence_count": sentences_present,
+        },
+        "estimated": {
+            "skipped_unit_count": 0,
+            "unsafe_unit_count": 0,
+            "failed_unit_count": 0,
+            "skipped_reasons": {},
+        },
+        "estimation_basis": "selected_unit_count_only",
     }
     return [
         {
@@ -310,7 +317,8 @@ def _manifest_diagnostics(document: AnnotatedDocument) -> list[dict[str, object]
             "code": "partial_upstream_input",
             "message": (
                 "Input lineage reports partial upstream status; manifest exposes "
-                "estimated unit rollup for downstream risk quantification."
+                "exact and estimated unit rollups for downstream risk "
+                "quantification."
             ),
             "refs": [],
             "feature_path": "input_lineage.source_status",

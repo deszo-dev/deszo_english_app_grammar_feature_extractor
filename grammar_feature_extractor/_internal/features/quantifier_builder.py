@@ -89,7 +89,8 @@ def build_quantifiers(ctx: SentenceContext) -> tuple[TypedQuantifierFeature, ...
         if word.upos not in {"DET", "PRON", "ADJ", "NUM"}:
             continue
         qtype = _QUANTIFIER_LEMMAS[lemma]
-        if not _is_syntactically_compatible_quantifier(ctx, ref, qtype):
+        compatible, confidence = _quantifier_compatibility(ctx, ref, qtype)
+        if not compatible:
             continue
         items.append(
             TypedQuantifierFeature(
@@ -98,6 +99,7 @@ def build_quantifiers(ctx: SentenceContext) -> tuple[TypedQuantifierFeature, ...
                 quantifier_type=qtype,
                 compatible_number=_COMPATIBLE_NUMBER.get(qtype, "unknown"),
                 polarity_sensitivity=_POLARITY_SENSITIVITY.get(qtype, "both"),
+                confidence=confidence,
             )
         )
     return tuple(items)
@@ -108,36 +110,58 @@ def _is_syntactically_compatible_quantifier(
     ref: int,
     qtype: QuantifierType,
 ) -> bool:
+    compatible, _ = _quantifier_compatibility(ctx, ref, qtype)
+    return compatible
+
+
+def _quantifier_compatibility(
+    ctx: SentenceContext,
+    ref: int,
+    qtype: QuantifierType,
+) -> tuple[bool, str]:
+    """Return (compatible, confidence).
+
+    For `little`/`much`, head countability is consulted: lexicon-uncountable head
+    keeps `confidence="high"`; an `a little X` shape with unknown countability is
+    accepted but downgraded to `confidence="medium"`.
+    """
     word = ctx.word_by_ref[ref]
     head = ctx.word_by_ref.get(word.head)
     if qtype == "little" and word.upos == "ADJ":
         if word.deprel == "amod" and head is not None:
             head_lemma = (head.lemma or head.text).casefold()
             head_number = ctx.morph_by_ref[word.head].features.get("Number")
-            previous = ctx.word_by_ref.get(ref - 1)
-            has_a_little = (
-                previous is not None and previous.text.casefold() in {"a", "an"}
-            )
             head_is_uncountable = head_lemma in _UNCOUNTABLE_LEMMAS
             if head_number == "Plur":
-                return False
-            return head_is_uncountable and (has_a_little or head_number != "Plur")
-        return False
+                return False, "high"
+            if head_is_uncountable:
+                return True, "high"
+            # Unknown countability — reject quantifier classification; the
+            # candidate_builder may still expose this as an ambiguous candidate.
+            return False, "high"
+        return False, "high"
     if qtype == "few" and word.upos == "ADJ":
         if word.deprel == "amod" and head is not None:
-            return ctx.morph_by_ref[word.head].features.get("Number") == "Plur"
-        return False
+            return (
+                ctx.morph_by_ref[word.head].features.get("Number") == "Plur",
+                "high",
+            )
+        return False, "high"
     if qtype in {"many", "much"} and word.upos == "ADJ" and word.deprel == "amod":
         if head is None:
-            return False
+            return False, "high"
         head_lemma = (head.lemma or head.text).casefold()
         head_number = ctx.morph_by_ref[word.head].features.get("Number")
         head_is_uncountable = head_lemma in _UNCOUNTABLE_LEMMAS
         if qtype == "many":
-            return head_number == "Plur"
-        # `much` requires uncountable head
-        return head_is_uncountable or (head_number == "Sing" and head_is_uncountable)
-    return True
+            return head_number == "Plur", "high"
+        # `much`: requires uncountable head
+        if head_is_uncountable:
+            return True, "high"
+        if head_number == "Sing":
+            return True, "medium"
+        return False, "high"
+    return True, "high"
 
 
 __all__ = ["build_quantifiers"]
