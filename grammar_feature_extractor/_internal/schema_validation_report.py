@@ -89,8 +89,24 @@ def build_schema_validation_report(out_dir: Path) -> dict[str, Any]:
         if manifest_path.exists()
         else None
     )
-    all_ok = all(entry["ok"] for entry in page_entries) and (
-        manifest_entry is None or manifest_entry["ok"]
+    # Look for a batch manifest one level up or alongside `out_dir`.
+    batch_entry: dict[str, Any] | None = None
+    for candidate in (
+        out_dir / "grammar_features.batch_manifest.json",
+        out_dir.parent / "grammar_features.batch_manifest.json",
+    ):
+        if candidate.exists():
+            schema_name = "grammar_feature_batch_manifest.v5.schema.json"
+            if not (_schema_dir() / schema_name).exists():
+                # Fall back to single-document manifest schema if a dedicated
+                # batch schema is not yet published.
+                schema_name = "grammar_feature_manifest.v5.schema.json"
+            batch_entry = _validate_file(candidate, schema_name)
+            break
+    all_ok = (
+        all(entry["ok"] for entry in page_entries)
+        and (manifest_entry is None or manifest_entry["ok"])
+        and (batch_entry is None or batch_entry["ok"])
     )
     return {
         "schema_version": "schema_validation.v5",
@@ -98,6 +114,7 @@ def build_schema_validation_report(out_dir: Path) -> dict[str, Any]:
         "ok": all_ok,
         "pages": page_entries,
         "manifest": manifest_entry,
+        "batch_manifest": batch_entry,
     }
 
 

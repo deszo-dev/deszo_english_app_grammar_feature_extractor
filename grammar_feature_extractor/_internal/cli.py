@@ -294,23 +294,41 @@ def _manifest_diagnostics(document: AnnotatedDocument) -> list[dict[str, object]
         return []
     selected = lineage.selected_unit_count
     sentences_present = len(document.sentences)
-    # Hardened partial-upstream rollup: split exact (from lineage) from
-    # inferred (heuristic). Hard requirement: nothing in `exact` may be a
-    # heuristic estimate.
+    exact: dict[str, object] = {
+        "processed_unit_count": selected,
+        "processed_sentence_count": sentences_present,
+    }
+    estimated: dict[str, object] = {}
+    estimation_basis = "selected_unit_count_only"
+
+    # When upstream lineage provides structured counts, promote them to `exact`.
+    if lineage.total_unit_count is not None:
+        exact["total_unit_count"] = lineage.total_unit_count
+        estimation_basis = "lineage_unit_rollup_exact"
+    if lineage.skipped_unit_count is not None:
+        exact["skipped_unit_count"] = lineage.skipped_unit_count
+    else:
+        estimated["skipped_unit_count"] = 0
+    if lineage.unsafe_unit_count is not None:
+        exact["unsafe_unit_count"] = lineage.unsafe_unit_count
+    else:
+        estimated["unsafe_unit_count"] = 0
+    if lineage.failed_unit_count is not None:
+        exact["failed_unit_count"] = lineage.failed_unit_count
+    else:
+        estimated["failed_unit_count"] = 0
+    if lineage.skipped_reasons:
+        exact["skipped_reasons"] = dict(lineage.skipped_reasons)
+    else:
+        estimated["skipped_reasons"] = {}
+
     details: dict[str, object] = {
         "source_status": lineage.source_status,
-        "exact": {
-            "processed_unit_count": selected,
-            "processed_sentence_count": sentences_present,
-        },
-        "estimated": {
-            "skipped_unit_count": 0,
-            "unsafe_unit_count": 0,
-            "failed_unit_count": 0,
-            "skipped_reasons": {},
-        },
-        "estimation_basis": "selected_unit_count_only",
+        "exact": exact,
+        "estimation_basis": estimation_basis,
     }
+    if estimated:
+        details["estimated"] = estimated
     return [
         {
             "severity": "warning",

@@ -32,6 +32,16 @@ PRESENT_PARTICIPLE_FRAGMENT = "present_participle_fragment"
 PAST_PARTICIPLE_FRAGMENT = "past_participle_fragment"
 TO_INFINITIVE_FRAGMENT = "to_infinitive_fragment"
 
+# Newly-introduced signatures for progressive/perfect-progressive/passive
+# coverage (QA-A1(3) + progressive report).
+MODAL_PERFECT_PROGRESSIVE = "modal_perfect_progressive"
+MODAL_PERFECT_PASSIVE = "modal_perfect_passive"
+PRESENT_PERFECT_PASSIVE = "present_perfect_passive"
+PAST_PERFECT_PASSIVE = "past_perfect_passive"
+PRESENT_PROGRESSIVE_PASSIVE = "present_progressive_passive"
+PAST_PROGRESSIVE_PASSIVE = "past_progressive_passive"
+PERFECT_PROGRESSIVE_PASSIVE = "perfect_progressive_passive"
+
 REGISTERED_FORM_SIGNATURES: frozenset[str] = frozenset(
     {
         UNKNOWN,
@@ -54,9 +64,16 @@ REGISTERED_FORM_SIGNATURES: frozenset[str] = frozenset(
         MODAL_BASE_VERB,
         MODAL_PERFECT,
         MODAL_PROGRESSIVE,
+        MODAL_PERFECT_PROGRESSIVE,
+        MODAL_PERFECT_PASSIVE,
         PASSIVE_BE_PARTICIPLE,
         PASSIVE_PERFECT,
         PASSIVE_PROGRESSIVE,
+        PRESENT_PERFECT_PASSIVE,
+        PAST_PERFECT_PASSIVE,
+        PRESENT_PROGRESSIVE_PASSIVE,
+        PAST_PROGRESSIVE_PASSIVE,
+        PERFECT_PROGRESSIVE_PASSIVE,
         BE_PRESENT_COPULAR,
         BE_PAST_COPULAR,
         THERE_BE_EXISTENTIAL_PRESENT,

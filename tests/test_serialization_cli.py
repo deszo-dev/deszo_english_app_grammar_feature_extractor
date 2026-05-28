@@ -180,6 +180,275 @@ def test_cli_input_dir_requires_output_dir(tmp_path: Path) -> None:
     assert json.loads(result.stderr)["error_code"] == "configuration_error"
 
 
+def test_present_progressive_be_vbg_emits_progressive_aspect() -> None:
+    """Regression for progressive-resolver report (A1): `She is running.` → progressive."""
+    words: list[dict[str, object]] = [
+        {"text": "She", "lemma": "she", "upos": "PRON", "feats": "Number=Sing|Person=3",
+         "head": 3, "deprel": "nsubj", "start_char": 0, "end_char": 3},
+        {"text": "is", "lemma": "be", "upos": "AUX", "xpos": "VBZ",
+         "feats": "Mood=Ind|Tense=Pres|VerbForm=Fin",
+         "head": 3, "deprel": "aux", "start_char": 4, "end_char": 6},
+        {"text": "running", "lemma": "run", "upos": "VERB", "xpos": "VBG",
+         "feats": "Tense=Pres|VerbForm=Part",
+         "head": 0, "deprel": "root", "start_char": 7, "end_char": 14},
+        {"text": ".", "lemma": ".", "upos": "PUNCT", "head": 3, "deprel": "punct",
+         "start_char": 14, "end_char": 15},
+    ]
+    payload = stanza_document_from_words("She is running.", words)
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    output = json.loads(result.stdout)
+    predicates = output["features"][0]["features"]["syntax"]["predicates"]
+    assert predicates, "expected at least one predicate"
+    pred = predicates[0]
+    assert pred["aspect"] == "progressive", pred
+    assert pred["tavm"]["form_signature"] == "present_progressive", pred["tavm"]
+    assert pred["voice"] == "active"
+
+
+def test_past_progressive_was_vbg_emits_past_progressive() -> None:
+    """Regression A1: `They were running.` → past_progressive."""
+    words: list[dict[str, object]] = [
+        {"text": "They", "lemma": "they", "upos": "PRON", "feats": "Number=Plur|Person=3",
+         "head": 3, "deprel": "nsubj", "start_char": 0, "end_char": 4},
+        {"text": "were", "lemma": "be", "upos": "AUX", "xpos": "VBD",
+         "feats": "Mood=Ind|Tense=Past|VerbForm=Fin",
+         "head": 3, "deprel": "aux", "start_char": 5, "end_char": 9},
+        {"text": "running", "lemma": "run", "upos": "VERB", "xpos": "VBG",
+         "feats": "Tense=Pres|VerbForm=Part",
+         "head": 0, "deprel": "root", "start_char": 10, "end_char": 17},
+        {"text": ".", "lemma": ".", "upos": "PUNCT", "head": 3, "deprel": "punct",
+         "start_char": 17, "end_char": 18},
+    ]
+    payload = stanza_document_from_words("They were running.", words)
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    pred = json.loads(result.stdout)["features"][0]["features"]["syntax"]["predicates"][0]
+    assert pred["aspect"] == "progressive"
+    assert pred["tense"] == "past"
+    assert pred["tavm"]["form_signature"] == "past_progressive"
+
+
+def test_have_been_vbn_is_perfect_passive_not_perfect_progressive() -> None:
+    """Regression A1 (Bug B): `We have been invited.` → perfect + passive."""
+    words: list[dict[str, object]] = [
+        {"text": "We", "lemma": "we", "upos": "PRON", "feats": "Number=Plur|Person=1",
+         "head": 4, "deprel": "nsubj:pass", "start_char": 0, "end_char": 2},
+        {"text": "have", "lemma": "have", "upos": "AUX", "xpos": "VBP",
+         "feats": "Mood=Ind|Tense=Pres|VerbForm=Fin",
+         "head": 4, "deprel": "aux", "start_char": 3, "end_char": 7},
+        {"text": "been", "lemma": "be", "upos": "AUX", "xpos": "VBN",
+         "feats": "VerbForm=Part|Tense=Past",
+         "head": 4, "deprel": "aux:pass", "start_char": 8, "end_char": 12},
+        {"text": "invited", "lemma": "invite", "upos": "VERB", "xpos": "VBN",
+         "feats": "Tense=Past|VerbForm=Part|Voice=Pass",
+         "head": 0, "deprel": "root", "start_char": 13, "end_char": 20},
+        {"text": ".", "lemma": ".", "upos": "PUNCT", "head": 4, "deprel": "punct",
+         "start_char": 20, "end_char": 21},
+    ]
+    payload = stanza_document_from_words("We have been invited.", words)
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    pred = json.loads(result.stdout)["features"][0]["features"]["syntax"]["predicates"][0]
+    assert pred["aspect"] == "perfect", pred
+    assert pred["voice"] == "passive", pred
+    assert pred["aspect"] != "perfect_progressive"
+
+
+def test_copular_be_adjective_ing_is_not_progressive() -> None:
+    """Negative A7: `The story is interesting.` → copular, NOT progressive."""
+    words: list[dict[str, object]] = [
+        {"text": "The", "lemma": "the", "upos": "DET", "head": 2, "deprel": "det",
+         "start_char": 0, "end_char": 3},
+        {"text": "story", "lemma": "story", "upos": "NOUN",
+         "feats": "Number=Sing", "head": 4, "deprel": "nsubj",
+         "start_char": 4, "end_char": 9},
+        {"text": "is", "lemma": "be", "upos": "AUX", "xpos": "VBZ",
+         "feats": "Mood=Ind|Tense=Pres|VerbForm=Fin",
+         "head": 4, "deprel": "cop", "start_char": 10, "end_char": 12},
+        {"text": "interesting", "lemma": "interesting", "upos": "ADJ",
+         "feats": "Degree=Pos",
+         "head": 0, "deprel": "root", "start_char": 13, "end_char": 24},
+        {"text": ".", "lemma": ".", "upos": "PUNCT", "head": 4, "deprel": "punct",
+         "start_char": 24, "end_char": 25},
+    ]
+    payload = stanza_document_from_words("The story is interesting.", words)
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    pred = json.loads(result.stdout)["features"][0]["features"]["syntax"]["predicates"][0]
+    assert pred["aspect"] != "progressive", pred
+    assert pred["tavm"]["form_signature"] in {"be_present_copular", "be_past_copular"}, pred["tavm"]
+
+
+def test_progressive_construction_emitted_on_be_vbg() -> None:
+    """Regression A6: `She is running.` emits a present_progressive_clause construction."""
+    words: list[dict[str, object]] = [
+        {"text": "She", "lemma": "she", "upos": "PRON", "feats": "Number=Sing|Person=3",
+         "head": 3, "deprel": "nsubj", "start_char": 0, "end_char": 3},
+        {"text": "is", "lemma": "be", "upos": "AUX", "xpos": "VBZ",
+         "feats": "Mood=Ind|Tense=Pres|VerbForm=Fin",
+         "head": 3, "deprel": "aux", "start_char": 4, "end_char": 6},
+        {"text": "running", "lemma": "run", "upos": "VERB", "xpos": "VBG",
+         "feats": "Tense=Pres|VerbForm=Part",
+         "head": 0, "deprel": "root", "start_char": 7, "end_char": 14},
+        {"text": ".", "lemma": ".", "upos": "PUNCT", "head": 3, "deprel": "punct",
+         "start_char": 14, "end_char": 15},
+    ]
+    payload = stanza_document_from_words("She is running.", words)
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    constructions = json.loads(result.stdout)["features"][0]["features"]["constructions"]
+    signatures = {item["signature"] for item in constructions}
+    assert "present_progressive_clause" in signatures, signatures
+
+
+def test_aux_chain_emitted_with_predicate() -> None:
+    """A5 regression: predicate carries aux_chain with chain_signature."""
+    words: list[dict[str, object]] = [
+        {"text": "She", "lemma": "she", "upos": "PRON", "feats": "Number=Sing|Person=3",
+         "head": 4, "deprel": "nsubj", "start_char": 0, "end_char": 3},
+        {"text": "has", "lemma": "have", "upos": "AUX", "xpos": "VBZ",
+         "feats": "Mood=Ind|Tense=Pres|VerbForm=Fin", "head": 4, "deprel": "aux",
+         "start_char": 4, "end_char": 7},
+        {"text": "been", "lemma": "be", "upos": "AUX", "xpos": "VBN",
+         "feats": "VerbForm=Part|Tense=Past", "head": 4, "deprel": "aux",
+         "start_char": 8, "end_char": 12},
+        {"text": "playing", "lemma": "play", "upos": "VERB", "xpos": "VBG",
+         "feats": "Tense=Pres|VerbForm=Part",
+         "head": 0, "deprel": "root", "start_char": 13, "end_char": 20},
+        {"text": ".", "lemma": ".", "upos": "PUNCT", "head": 4, "deprel": "punct",
+         "start_char": 20, "end_char": 21},
+    ]
+    payload = stanza_document_from_words("She has been playing.", words)
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    pred = json.loads(result.stdout)["features"][0]["features"]["syntax"]["predicates"][0]
+    chain = pred.get("aux_chain")
+    assert chain is not None, pred
+    assert chain["main_verb_form"] == "VBG", chain
+    assert chain["chain_signature"].endswith("vbg"), chain
+
+
+def test_matcher_safe_summary_present_on_pages() -> None:
+    """B1 regression: output_completeness exposes matcher_safe_summary block."""
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(sample_document()),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    payload = json.loads(result.stdout)
+    completeness = payload["output_completeness"]
+    summary = completeness["matcher_safe_summary"]
+    assert "all_omissions_safe" in summary
+    assert "unsafe_reason_codes" in summary
+    assert completeness["legacy_omitted_feature_groups_deprecated"] is True
+
+
+def test_modal_have_been_vbg_signature_is_modal_perfect_progressive() -> None:
+    """Regression A3: `must have been eating` → modal_perfect_progressive."""
+    words: list[dict[str, object]] = [
+        {"text": "I", "lemma": "I", "upos": "PRON", "feats": "Number=Sing|Person=1",
+         "head": 5, "deprel": "nsubj", "start_char": 0, "end_char": 1},
+        {"text": "must", "lemma": "must", "upos": "AUX", "xpos": "MD",
+         "feats": "VerbForm=Fin", "head": 5, "deprel": "aux",
+         "start_char": 2, "end_char": 6},
+        {"text": "have", "lemma": "have", "upos": "AUX", "xpos": "VB",
+         "feats": "VerbForm=Inf", "head": 5, "deprel": "aux",
+         "start_char": 7, "end_char": 11},
+        {"text": "been", "lemma": "be", "upos": "AUX", "xpos": "VBN",
+         "feats": "VerbForm=Part|Tense=Past", "head": 5, "deprel": "aux",
+         "start_char": 12, "end_char": 16},
+        {"text": "eating", "lemma": "eat", "upos": "VERB", "xpos": "VBG",
+         "feats": "Tense=Pres|VerbForm=Part",
+         "head": 0, "deprel": "root", "start_char": 17, "end_char": 23},
+        {"text": ".", "lemma": ".", "upos": "PUNCT", "head": 5, "deprel": "punct",
+         "start_char": 23, "end_char": 24},
+    ]
+    payload = stanza_document_from_words("I must have been eating.", words)
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    pred = json.loads(result.stdout)["features"][0]["features"]["syntax"]["predicates"][0]
+    assert pred["aspect"] == "perfect_progressive", pred
+    assert pred["tavm"]["form_signature"] == "modal_perfect_progressive", pred["tavm"]
+
+
+def test_have_been_vbg_is_perfect_progressive() -> None:
+    """Regression A1 (positive case): `She has been playing.` → perfect_progressive."""
+    words: list[dict[str, object]] = [
+        {"text": "She", "lemma": "she", "upos": "PRON", "feats": "Number=Sing|Person=3",
+         "head": 4, "deprel": "nsubj", "start_char": 0, "end_char": 3},
+        {"text": "has", "lemma": "have", "upos": "AUX", "xpos": "VBZ",
+         "feats": "Mood=Ind|Tense=Pres|VerbForm=Fin",
+         "head": 4, "deprel": "aux", "start_char": 4, "end_char": 7},
+        {"text": "been", "lemma": "be", "upos": "AUX", "xpos": "VBN",
+         "feats": "VerbForm=Part|Tense=Past",
+         "head": 4, "deprel": "aux", "start_char": 8, "end_char": 12},
+        {"text": "playing", "lemma": "play", "upos": "VERB", "xpos": "VBG",
+         "feats": "Tense=Pres|VerbForm=Part",
+         "head": 0, "deprel": "root", "start_char": 13, "end_char": 20},
+        {"text": ".", "lemma": ".", "upos": "PUNCT", "head": 4, "deprel": "punct",
+         "start_char": 20, "end_char": 21},
+    ]
+    payload = stanza_document_from_words("She has been playing.", words)
+    result = subprocess.run(
+        [sys.executable, "-m", "grammar_feature_extractor"],
+        input=json.dumps(payload),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    pred = json.loads(result.stdout)["features"][0]["features"]["syntax"]["predicates"][0]
+    assert pred["aspect"] == "perfect_progressive", pred
+    assert pred["voice"] == "active"
+    assert pred["tavm"]["form_signature"] == "present_perfect_progressive"
+
+
 def test_schema_validation_report_is_written_and_clean(tmp_path: Path) -> None:
     out_dir = tmp_path / "out"
     result = subprocess.run(

@@ -12,19 +12,26 @@ from grammar_feature_extractor._internal.form_signature_registry import (
     FUTURE_SIMPLE,
     MODAL_BASE_VERB,
     MODAL_PERFECT,
+    MODAL_PERFECT_PASSIVE,
+    MODAL_PERFECT_PROGRESSIVE,
     MODAL_PROGRESSIVE,
     PASSIVE_BE_PARTICIPLE,
     PASSIVE_PERFECT,
     PASSIVE_PROGRESSIVE,
     PAST_PERFECT,
+    PAST_PERFECT_PASSIVE,
     PAST_PERFECT_PROGRESSIVE,
     PAST_PROGRESSIVE,
+    PAST_PROGRESSIVE_PASSIVE,
     PAST_SIMPLE,
     PAST_SIMPLE_DO_NEGATIVE,
     PAST_SIMPLE_DO_QUESTION,
+    PERFECT_PROGRESSIVE_PASSIVE,
     PRESENT_PERFECT,
+    PRESENT_PERFECT_PASSIVE,
     PRESENT_PERFECT_PROGRESSIVE,
     PRESENT_PROGRESSIVE,
+    PRESENT_PROGRESSIVE_PASSIVE,
     PRESENT_SIMPLE_DO_NEGATIVE,
     PRESENT_SIMPLE_DO_QUESTION,
     PRESENT_SIMPLE_LEXICAL,
@@ -428,15 +435,40 @@ def _aspect(
     auxiliaries: tuple[AuxiliaryFeature, ...],
 ) -> AspectValue:
     has_have = any(auxiliary.lemma == "have" for auxiliary in auxiliaries)
-    has_be = any(auxiliary.lemma == "be" for auxiliary in auxiliaries)
+    has_finite_be = any(
+        auxiliary.lemma == "be"
+        and auxiliary.role in {"tense_aux", "passive_aux"}
+        for auxiliary in auxiliaries
+    )
+    has_been = any(
+        auxiliary.lemma == "be"
+        and auxiliary.surface.casefold() == "been"
+        for auxiliary in auxiliaries
+    )
+    main_word = ctx.word_by_ref[main]
     main_morph = ctx.morph_by_ref[main].features
-    if has_have and main_morph.get("VerbForm") == "Part":
-        if has_be:
-            return "perfect_progressive"
+    main_xpos = (main_word.xpos or "").upper()
+    verb_form = main_morph.get("VerbForm")
+    main_tense = main_morph.get("Tense")
+
+    is_vbg = main_xpos == "VBG" or (
+        verb_form == "Part" and main_tense == "Pres"
+    ) or verb_form == "Ger"
+    is_vbn = main_xpos == "VBN" or (
+        verb_form == "Part" and main_tense == "Past"
+    )
+
+    # Perfect progressive: have/has/had + been + VBG (active).
+    if has_have and has_been and is_vbg:
+        return "perfect_progressive"
+    # Perfect (active or passive): have/has/had + VBN. Voice resolver handles
+    # `have been + VBN` as passive separately.
+    if has_have and (is_vbn or verb_form == "Part"):
         return "perfect"
-    if has_be and main_morph.get("VerbForm") == "Ger":
+    # Progressive: finite be + VBG. Excludes copular `be + adj/noun/pp`.
+    if has_finite_be and is_vbg:
         return "progressive"
-    if main_morph.get("VerbForm") in {"Fin", "Inf"}:
+    if verb_form in {"Fin", "Inf"}:
         return "simple"
     return "unknown"
 
@@ -457,7 +489,24 @@ def _voice(
         and ctx.word_by_ref[clause.roles.subject].deprel == "nsubj:pass"
     ):
         return "passive"
-    return "active" if ctx.word_by_ref[main].upos in {"VERB", "AUX"} else "unknown"
+    # Fallback: have/has/had + been + VBN with no aux:pass — Stanza
+    # occasionally omits aux:pass deprel. Voice is passive if main is VBN and
+    # the auxiliary chain contains both `have` and `been`.
+    has_have = any(aux.lemma == "have" for aux in auxiliaries)
+    has_been = any(
+        aux.lemma == "be" and aux.surface.casefold() == "been"
+        for aux in auxiliaries
+    )
+    main_word = ctx.word_by_ref[main]
+    main_morph = ctx.morph_by_ref[main].features
+    main_xpos = (main_word.xpos or "").upper()
+    is_vbn = main_xpos == "VBN" or (
+        main_morph.get("VerbForm") == "Part"
+        and main_morph.get("Tense") == "Past"
+    )
+    if has_have and has_been and is_vbn:
+        return "passive"
+    return "active" if main_word.upos in {"VERB", "AUX"} else "unknown"
 
 
 def _form_signature(
@@ -486,13 +535,25 @@ def _form_signature(
         return BE_PRESENT_COPULAR
 
     if voice == "passive":
+        if has_modal and aspect == "perfect":
+            return MODAL_PERFECT_PASSIVE
+        if has_modal and aspect == "perfect_progressive":
+            return PERFECT_PROGRESSIVE_PASSIVE
+        if aspect == "perfect_progressive":
+            return PERFECT_PROGRESSIVE_PASSIVE
         if aspect == "perfect":
-            return PASSIVE_PERFECT
+            if tense == "past":
+                return PAST_PERFECT_PASSIVE
+            return PRESENT_PERFECT_PASSIVE
         if aspect == "progressive":
-            return PASSIVE_PROGRESSIVE
+            if tense == "past":
+                return PAST_PROGRESSIVE_PASSIVE
+            return PRESENT_PROGRESSIVE_PASSIVE
         return PASSIVE_BE_PARTICIPLE
 
     if has_modal:
+        if aspect == "perfect_progressive":
+            return MODAL_PERFECT_PROGRESSIVE
         if aspect == "perfect":
             return MODAL_PERFECT
         if aspect == "progressive":

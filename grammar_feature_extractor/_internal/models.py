@@ -668,6 +668,11 @@ class StanzaDocumentInputLineage:
     selected_unit_count: int
     global_sentence_count: int
     global_word_count: int
+    total_unit_count: int | None = None
+    skipped_unit_count: int | None = None
+    unsafe_unit_count: int | None = None
+    failed_unit_count: int | None = None
+    skipped_reasons: tuple[tuple[str, int], ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -922,6 +927,21 @@ class AgreementFeature:
 
 
 @dataclass(frozen=True, slots=True)
+class AuxChain:
+    chain_signature: str
+    ordered_refs: tuple[WordRef, ...]
+    ordered_lemmas: tuple[str, ...]
+    ordered_surfaces: tuple[str, ...]
+    main_ref: WordRef
+    main_verb_form: str
+    finite_anchor_ref: WordRef | None = None
+    modal_ref: WordRef | None = None
+    perfect_aux_ref: WordRef | None = None
+    progressive_aux_ref: WordRef | None = None
+    passive_aux_ref: WordRef | None = None
+
+
+@dataclass(frozen=True, slots=True)
 class PredicateFeature:
     id: str
     main: WordRef
@@ -950,6 +970,7 @@ class PredicateFeature:
     provenance: ProofProvenance
     future_marking: FutureMarkingFeature | None = None
     expletive_subject: WordRef | None = None
+    aux_chain: AuxChain | None = None
 
 
 @dataclass(frozen=True, slots=True)

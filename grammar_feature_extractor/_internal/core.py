@@ -44,12 +44,17 @@ from grammar_feature_extractor._internal.features.verb_pattern_builder import (
 from grammar_feature_extractor._internal.features.multiword_cue_builder import (
     build_multiword_cues,
 )
+from grammar_feature_extractor._internal.features.aux_chain_builder import (
+    build_aux_chains_for_predicates,
+)
 from grammar_feature_extractor._internal.features.candidate_builder import (
     build_np_candidates,
     build_predicate_candidates,
 )
 from grammar_feature_extractor._internal.features.conflict_builder import (
+    build_morphology_xpos_conflicts,
     build_predicate_conflicts,
+    build_quantifier_conflicts,
 )
 from grammar_feature_extractor._internal.features.negative_evidence_builder import (
     build_np_negative_evidence,
@@ -57,6 +62,12 @@ from grammar_feature_extractor._internal.features.negative_evidence_builder impo
 )
 from grammar_feature_extractor._internal.features.normalization_trace_builder import (
     build_predicate_normalization_traces,
+)
+from grammar_feature_extractor._internal.features.progressive_construction_builder import (
+    build_progressive_constructions,
+)
+from grammar_feature_extractor._internal.features.progressive_diagnostics_builder import (
+    build_progressive_contradiction_diagnostics,
 )
 from dataclasses import replace as _dc_replace
 
@@ -288,6 +299,7 @@ def extract_sentence_features(
     clauses = build_clauses(context, subordination, diagnostics)
     complements = build_complements(context)
     predicates = build_predicates(context, clauses, complements)
+    predicates = build_aux_chains_for_predicates(context, predicates)
     if _is_non_predicative_unit(source_unit_type, source_unit_role):
         predicates = _convert_to_not_applicable(predicates)
         if config.include_diagnostics:
@@ -321,6 +333,7 @@ def extract_sentence_features(
     discourse = build_discourse_segments(context, predicates, np_profiles)
     constructions = (
         build_constructions(predicates, np_profiles, word_order)
+        + build_progressive_constructions(predicates)
         if config.include_construction_signatures
         else ()
     )
@@ -366,11 +379,20 @@ def extract_sentence_features(
         noun_inflections=lexical_items["noun_inflections"],
         multiword_cues=multiword_cues,
     )
+    if config.include_diagnostics:
+        for diag in build_progressive_contradiction_diagnostics(context, predicates):
+            diagnostics.append(diag)
     normalization_traces = build_predicate_normalization_traces(predicates)
     candidate_features = build_predicate_candidates(
         predicates, sentence_index
     ) + build_np_candidates(np_profiles, sentence_index)
-    feature_conflicts = build_predicate_conflicts(predicates, passive, sentence_index)
+    feature_conflicts = (
+        build_predicate_conflicts(predicates, passive, sentence_index)
+        + build_quantifier_conflicts(
+            context, lexical_features.quantifiers, sentence_index
+        )
+        + build_morphology_xpos_conflicts(context, predicates, sentence_index)
+    )
     negative_evidence = (
         build_predicate_negative_evidence(context, predicates)
         + build_np_negative_evidence(context, np_profiles)

@@ -926,7 +926,31 @@ def _predicate_to_dict(
         result["object"] = item.object
     if item.indirect_object is not None:
         result["indirect_object"] = item.indirect_object
+    if item.aux_chain is not None:
+        result["aux_chain"] = _aux_chain_to_dict(item.aux_chain)
     return result
+
+
+def _aux_chain_to_dict(chain: object) -> JsonObject:
+    payload: JsonObject = {
+        "chain_signature": chain.chain_signature,
+        "ordered_refs": list(chain.ordered_refs),
+        "ordered_lemmas": list(chain.ordered_lemmas),
+        "ordered_surfaces": list(chain.ordered_surfaces),
+        "main_ref": chain.main_ref,
+        "main_verb_form": chain.main_verb_form,
+    }
+    for attr, key in (
+        ("finite_anchor_ref", "finite_anchor_ref"),
+        ("modal_ref", "modal_ref"),
+        ("perfect_aux_ref", "perfect_aux_ref"),
+        ("progressive_aux_ref", "progressive_aux_ref"),
+        ("passive_aux_ref", "passive_aux_ref"),
+    ):
+        value = getattr(chain, attr, None)
+        if value is not None:
+            payload[key] = value
+    return payload
 
 
 def _future_marking_to_dict(item: FutureMarkingFeature) -> JsonObject:
@@ -2128,10 +2152,23 @@ def _output_completeness_from_sentences(
         if label and label not in legacy_groups:
             legacy_groups.append(label)
 
+    unsafe_reason_codes = sorted(
+        {
+            str(item["reason"])
+            for item in omissions
+            if not bool(item.get("matcher_safe", False))
+        }
+    )
+    matcher_safe_summary = {
+        "all_omissions_safe": matcher_complete,
+        "unsafe_reason_codes": unsafe_reason_codes,
+    }
     return {
         "matcher_complete": matcher_complete,
+        "matcher_safe_summary": matcher_safe_summary,
         "omissions": omissions,
         "omitted_feature_groups": legacy_groups,
+        "legacy_omitted_feature_groups_deprecated": True,
     }
 
 

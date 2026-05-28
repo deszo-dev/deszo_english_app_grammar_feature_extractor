@@ -27,6 +27,17 @@ ARTICLE_DEFINITE_THE_NP = "article_definite_the_np"
 ZERO_ARTICLE_PLURAL_GENERIC_CANDIDATE = "zero_article_plural_generic_candidate"
 COMPARISON_AS_AS = "comparison_as_as"
 
+# Progressive/perfect-progressive/passive clauses (A6).
+PRESENT_PROGRESSIVE_CLAUSE = "present_progressive_clause"
+PAST_PROGRESSIVE_CLAUSE = "past_progressive_clause"
+MODAL_PROGRESSIVE_CLAUSE = "modal_progressive_clause"
+PRESENT_PERFECT_PROGRESSIVE_CLAUSE = "present_perfect_progressive_clause"
+PAST_PERFECT_PROGRESSIVE_CLAUSE = "past_perfect_progressive_clause"
+MODAL_PERFECT_PROGRESSIVE_CLAUSE = "modal_perfect_progressive_clause"
+PRESENT_PERFECT_PASSIVE_CLAUSE = "present_perfect_passive_clause"
+PAST_PERFECT_PASSIVE_CLAUSE = "past_perfect_passive_clause"
+PROGRESSIVE_PASSIVE_CLAUSE = "progressive_passive_clause"
+
 ConstructionSignature: TypeAlias = Literal[
     "subject_be_present_complement",
     "be_subject_complement_question",
@@ -52,6 +63,15 @@ ConstructionSignature: TypeAlias = Literal[
     "article_definite_the_np",
     "zero_article_plural_generic_candidate",
     "comparison_as_as",
+    "present_progressive_clause",
+    "past_progressive_clause",
+    "modal_progressive_clause",
+    "present_perfect_progressive_clause",
+    "past_perfect_progressive_clause",
+    "modal_perfect_progressive_clause",
+    "present_perfect_passive_clause",
+    "past_perfect_passive_clause",
+    "progressive_passive_clause",
 ]
 
 REGISTERED_CONSTRUCTION_SIGNATURES = (
@@ -79,4 +99,13 @@ REGISTERED_CONSTRUCTION_SIGNATURES = (
     ARTICLE_DEFINITE_THE_NP,
     ZERO_ARTICLE_PLURAL_GENERIC_CANDIDATE,
     COMPARISON_AS_AS,
+    PRESENT_PROGRESSIVE_CLAUSE,
+    PAST_PROGRESSIVE_CLAUSE,
+    MODAL_PROGRESSIVE_CLAUSE,
+    PRESENT_PERFECT_PROGRESSIVE_CLAUSE,
+    PAST_PERFECT_PROGRESSIVE_CLAUSE,
+    MODAL_PERFECT_PROGRESSIVE_CLAUSE,
+    PRESENT_PERFECT_PASSIVE_CLAUSE,
+    PAST_PERFECT_PASSIVE_CLAUSE,
+    PROGRESSIVE_PASSIVE_CLAUSE,
 )
